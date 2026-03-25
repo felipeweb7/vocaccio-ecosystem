@@ -13,6 +13,9 @@ const nextConfig = {
       headers: [{
         key: "Document-Policy",
         value: "js-profiling",
+      }, {
+        key: "Cache-Control",
+        value: "no-store, must-revalidate",
       }, ],
     }, ];
   },

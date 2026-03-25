@@ -16,16 +16,13 @@ import UtmSaver from '@gitroom/helpers/utils/utm.saver';
 import { DubAnalytics } from '@gitroom/frontend/components/layout/dubAnalytics';
 import { FacebookComponent } from '@gitroom/frontend/components/layout/facebook.component';
 import { cookies } from 'next/headers';
-import { cookieName, fallbackLng } from '@gitroom/react/translation/i18n.config';
+import {
+  cookieName,
+  fallbackLng,
+} from '@gitroom/react/translation/i18n.config';
 import { HtmlComponent } from '@gitroom/frontend/components/layout/html.component';
 import Script from 'next/script';
-// import dynamicLoad from 'next/dynamic';
-// const SetTimezone = dynamicLoad(
-//   () => import('@gitroom/frontend/components/layout/set.timezone'),
-//   {
-//     ssr: false,
-//   }
-// );
+import { ChangeDirClient } from '@gitroom/frontend/components/new-layout/change.dir.client';
 
 const jakartaSans = Plus_Jakarta_Sans({
   weight: ['600', '500'],
@@ -54,6 +51,7 @@ export default async function AppLayout({ children }: { children: ReactNode }) {
           />
         )}
       </head>
+      <ChangeDirClient />
       <body
         className={clsx(jakartaSans.className, 'dark text-primary !bg-primary')}
       >
