@@ -73,7 +73,7 @@ export const ImportDebugPostModal: FC<{ close: () => void }> = ({ close }) => {
     }
   }, []);
 
-  const matchingIntegrations = useMemo(() => {
+  const matchingIntegrations = useMemo((): any[] => {
     if (!parsed || !integrations?.length) return [];
     return integrations.filter(
       (i: any) => i.identifier === parsed._debug.providerIdentifier
@@ -90,7 +90,7 @@ export const ImportDebugPostModal: FC<{ close: () => void }> = ({ close }) => {
         ...payload,
         type: 'draft',
         date: new Date().toISOString(),
-        tags: [],
+        tags: [] as { value: string; label: string }[],
         posts: payload.posts.map((post) => ({
           ...post,
           integration: { id: selectedIntegrationId },

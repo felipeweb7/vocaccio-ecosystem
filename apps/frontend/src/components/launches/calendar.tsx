@@ -548,7 +548,7 @@ export const ListView = () => {
                   missingRelease={openMissingRelease(post.id)}
                   editPost={editPost(post, false)}
                   duplicatePost={editPost(post, true)}
-                  copyDebugJson={user?.admin ? copyDebugJson(post) : undefined}
+                  copyDebugJson={user?.isSuperAdmin ? copyDebugJson(post) : undefined}
                   post={post}
                   integrations={integrations}
                   deletePost={deletePost(post)}
@@ -868,7 +868,7 @@ export const CalendarColumn: FC<{
                   missingRelease={openMissingRelease(post.id)}
                   editPost={editPost(post, false)}
                   duplicatePost={editPost(post, true)}
-                  copyDebugJson={user?.admin ? copyDebugJson(post) : undefined}
+                  copyDebugJson={user?.isSuperAdmin ? copyDebugJson(post) : undefined}
                   post={post}
                   integrations={integrations}
                   deletePost={deletePost(post)}
