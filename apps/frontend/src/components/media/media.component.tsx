@@ -33,6 +33,7 @@ import { ReactSortable } from 'react-sortablejs';
 import { MediaComponentInner } from '@gitroom/frontend/components/launches/helpers/media.settings.component';
 import { AiVideo } from '@gitroom/frontend/components/launches/ai.video';
 import { useModals } from '@gitroom/frontend/components/layout/new-modal';
+import { ThirdPartyMediaLibrary } from '@gitroom/frontend/components/third-parties/third-party.media-library';
 import { Dashboard } from '@uppy/react';
 import {
   ChevronLeftIcon,
@@ -427,7 +428,12 @@ export const MediaBox: FC<{
             className="hidden"
             multiple={true}
           />
-          {!isLoading && !!data?.results?.length && btn}
+          {!isLoading && !!data?.results?.length && (
+            <div className="flex gap-[8px]">
+              {btn}
+              <ThirdPartyMediaLibrary onImported={() => mutate()} />
+            </div>
+          )}
         </div>
         <div className="w-full pointer-events-none relative mt-[5px] mb-[5px]">
           <div className="w-full h-[46px] overflow-hidden absolute left-0 bg-newBgColorInner uppyChange">
@@ -481,7 +487,10 @@ export const MediaBox: FC<{
                     'You can also drag & drop pictures.'
                   )}
                 </div>
-                <div className="forceChange">{btn}</div>
+                <div className="forceChange flex gap-[8px]">
+                  {btn}
+                  <ThirdPartyMediaLibrary onImported={() => mutate()} />
+                </div>
               </>
             )}
             {isLoading && (
