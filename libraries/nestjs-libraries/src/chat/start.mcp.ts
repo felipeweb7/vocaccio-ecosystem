@@ -115,6 +115,7 @@ export const startMcp = async (app: INestApplication) => {
           sessionIdGenerator: () => {
             return randomUUID();
           },
+          enableJsonResponse: true,
         },
         req,
         res,
