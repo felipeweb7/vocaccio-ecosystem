@@ -43,19 +43,17 @@ export class IntegrationTriggerTool implements AgentToolInterface {
       outputSchema: z.object({
         output: z.array(z.record(z.string(), z.any())),
       }),
-      execute: async (args, options) => {
-        const { context, runtimeContext } = args;
-        checkAuth(args, options);
-        console.log('triggerTool', context);
+      execute: async (inputData, context) => {
+        checkAuth(inputData, context);
+        console.log('triggerTool', inputData);
         const organizationId = JSON.parse(
-          // @ts-ignore
-          runtimeContext.get('organization') as string
+          (context?.requestContext as any)?.get('organization') as string
         ).id;
 
         const getIntegration =
           await this._integrationService.getIntegrationById(
             organizationId,
-            context.integrationId
+            inputData.integrationId
           );
 
         if (!getIntegration) {
@@ -78,10 +76,10 @@ export class IntegrationTriggerTool implements AgentToolInterface {
         if (
           // @ts-ignore
           !tools[integrationProvider.identifier].some(
-            (p) => p.methodName === context.methodName
+            (p) => p.methodName === inputData.methodName
           ) ||
           // @ts-ignore
-          !integrationProvider[context.methodName]
+          !integrationProvider[inputData.methodName]
         ) {
           return { output: 'tool not found' };
         }
@@ -89,14 +87,14 @@ export class IntegrationTriggerTool implements AgentToolInterface {
         while (true) {
           try {
             // @ts-ignore
-            const load = await integrationProvider[context.methodName](
+            const load = await integrationProvider[inputData.methodName](
               getIntegration.token,
-              context.dataSchema.reduce(
-                (all, current) => ({
+              inputData.dataSchema.reduce(
+                (all: Record<string, string>, current: { key: string; value: string }) => ({
                   ...all,
                   [current.key]: current.value,
                 }),
-                {}
+                {} as Record<string, string>
               ),
               getIntegration.internalId,
               getIntegration

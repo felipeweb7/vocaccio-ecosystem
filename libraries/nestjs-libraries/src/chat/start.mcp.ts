@@ -6,6 +6,7 @@ import { randomUUID } from 'crypto';
 import { OrganizationService } from '@gitroom/nestjs-libraries/database/prisma/organizations/organization.service';
 import { OAuthService } from '@gitroom/nestjs-libraries/database/prisma/oauth/oauth.service';
 import { runWithContext } from './async.storage';
+
 export const startMcp = async (app: INestApplication) => {
   const mastraService = app.get(MastraService, { strict: false });
   const organizationService = app.get(OrganizationService, { strict: false });
@@ -22,7 +23,7 @@ export const startMcp = async (app: INestApplication) => {
 
   const mastra = await mastraService.mastra();
   const agent = mastra.getAgent('postiz');
-  const tools = await agent.getTools();
+  const tools = await agent.listTools();
 
   const serverConfig = {
     name: 'Postiz MCP',
@@ -76,6 +77,7 @@ export const startMcp = async (app: INestApplication) => {
           sessionIdGenerator: () => {
             return randomUUID();
           },
+          enableJsonResponse: true,
         },
         req,
         res,
@@ -119,6 +121,7 @@ export const startMcp = async (app: INestApplication) => {
             sessionIdGenerator: () => {
               return randomUUID();
             },
+            enableJsonResponse: true,
           },
           req,
           res,

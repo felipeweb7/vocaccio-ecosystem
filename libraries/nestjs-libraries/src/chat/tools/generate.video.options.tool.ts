@@ -1,6 +1,5 @@
 import {
   AgentToolInterface,
-  ToolReturn,
 } from '@gitroom/nestjs-libraries/chat/agent.tool.interface';
 import { createTool } from '@mastra/core/tools';
 import { Injectable } from '@nestjs/common';
@@ -33,9 +32,8 @@ export class GenerateVideoOptionsTool implements AgentToolInterface {
           })
         ),
       }),
-      execute: async (args, options) => {
-        const { context, runtimeContext } = args;
-        checkAuth(args, options);
+      execute: async (inputData, context) => {
+        checkAuth(inputData, context);
         const videos = this._videoManagerService.getAllVideos();
         console.log(
           JSON.stringify(

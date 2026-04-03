@@ -48,20 +48,18 @@ export class GenerateVideoTool implements AgentToolInterface {
       outputSchema: z.object({
         url: z.string(),
       }),
-      execute: async (args, options) => {
-        const { context, runtimeContext } = args;
-        checkAuth(args, options);
-        // @ts-ignore
-        const org = JSON.parse(runtimeContext.get('organization') as string);
+      execute: async (inputData, context) => {
+        checkAuth(inputData, context);
+        const org = JSON.parse((context?.requestContext as any)?.get('organization') as string);
         const value = await this._mediaService.generateVideo(org, {
-          type: context.identifier,
-          output: context.output,
-          customParams: context.customParams.reduce(
-            (all, current) => ({
+          type: inputData.identifier,
+          output: inputData.output,
+          customParams: inputData.customParams.reduce(
+            (all: Record<string, any>, current: { key: string; value: any }) => ({
               ...all,
               [current.key]: current.value,
             }),
-            {}
+            {} as Record<string, any>
           ),
         });
 

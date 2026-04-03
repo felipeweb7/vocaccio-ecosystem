@@ -27,13 +27,11 @@ export class GenerateImageTool implements AgentToolInterface {
         id: z.string(),
         path: z.string(),
       }),
-      execute: async (args, options) => {
-        const { context, runtimeContext } = args;
-        checkAuth(args, options);
-        // @ts-ignore
-        const org = JSON.parse(runtimeContext.get('organization') as string);
+      execute: async (inputData, context) => {
+        checkAuth(inputData, context);
+        const org = JSON.parse((context?.requestContext as any)?.get('organization') as string);
         const image = await this._mediaService.generateImage(
-          context.prompt,
+          inputData.prompt,
           org
         );
 
