@@ -43,6 +43,11 @@ export type ProviderPreviewProps = {
    */
   integration?: Partial<MockIntegration>;
   /**
+   * Per-post media (outer array = thread entries, inner = media items).
+   * Forwarded to the provider's `checkValidity` during validate().
+   */
+  posts?: Array<Array<{ path: string; thumbnail?: string }>>;
+  /**
    * Imperative handle populated on mount. The parent calls
    * `controlRef.current?.validate()` / `.getValues()` to pull state on demand.
    */
@@ -102,6 +107,7 @@ export const ProviderPreviewComponent: FC<ProviderPreviewProps> = ({
   onChange,
   errors,
   integration,
+  posts,
   controlRef,
 }) => {
   const meta = useMemo(() => {
@@ -125,17 +131,38 @@ export const ProviderPreviewComponent: FC<ProviderPreviewProps> = ({
       getValues: () => form.getValues() as Record<string, unknown>,
       validate: async () => {
         const isValid = await form.trigger(undefined, { shouldFocus: false });
+        const errs = flattenFormErrors(form.formState.errors);
+        let customError: string | true = true;
+        if (meta?.checkValidity) {
+          try {
+            const additional = (integration?.additionalSettings as
+              | string
+              | undefined) ?? '[]';
+            const additionalSettings =
+              typeof additional === 'string'
+                ? JSON.parse(additional || '[]')
+                : additional;
+            customError = await meta.checkValidity(
+              posts ?? [],
+              form.getValues(),
+              additionalSettings,
+            );
+          } catch (e: any) {
+            customError = e?.message ?? 'checkValidity threw';
+          }
+        }
+        if (customError !== true) errs.push(customError);
         return {
-          isValid,
+          isValid: isValid && customError === true,
           value: form.getValues() as Record<string, unknown>,
-          errors: flattenFormErrors(form.formState.errors),
+          errors: errs,
         };
       },
     };
     return () => {
       if (controlRef.current) controlRef.current = null;
     };
-  }, [controlRef, form]);
+  }, [controlRef, form, meta, integration, posts]);
 
   const contextValue = useMemo<IntegrationContextType>(
     () => ({

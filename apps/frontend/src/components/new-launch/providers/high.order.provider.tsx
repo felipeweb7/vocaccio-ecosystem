@@ -363,6 +363,7 @@ export const withProvider = function <T extends object>(params: {
     dto,
     postComment,
     maximumCharacters,
+    checkValidity,
   };
 
   return Wrapped;
@@ -377,6 +378,11 @@ export const getProviderSettingsMeta = (component: unknown) => {
         dto?: any;
         postComment: PostComment;
         maximumCharacters?: number | ((settings: any) => number);
+        checkValidity?: (
+          value: Array<Array<{ path: string; thumbnail?: string }>>,
+          settings: any,
+          additionalSettings: any
+        ) => Promise<string | true>;
       }
     | undefined;
 };
