@@ -17,6 +17,10 @@ export type ProviderPreviewValidation = {
   isValid: boolean;
   value: Record<string, unknown>;
   errors: string[];
+  /** react-hook-form trigger() result. False = at least one DTO field failed. */
+  formValid: boolean;
+  /** Non-null when the provider's checkValidity() returned a string. */
+  checkValidityError: string | null;
 };
 
 export type ProviderPreviewHandle = {
@@ -130,7 +134,7 @@ export const ProviderPreviewComponent: FC<ProviderPreviewProps> = ({
     controlRef.current = {
       getValues: () => form.getValues() as Record<string, unknown>,
       validate: async () => {
-        const isValid = await form.trigger(undefined, { shouldFocus: false });
+        const formValid = await form.trigger(undefined, { shouldFocus: false });
         const errs = flattenFormErrors(form.formState.errors);
         let customError: string | true = true;
         if (meta?.checkValidity) {
@@ -151,11 +155,15 @@ export const ProviderPreviewComponent: FC<ProviderPreviewProps> = ({
             customError = e?.message ?? 'checkValidity threw';
           }
         }
-        if (customError !== true) errs.push(customError);
+        const checkValidityError =
+          customError === true ? null : customError;
+        if (checkValidityError) errs.push(checkValidityError);
         return {
-          isValid: isValid && customError === true,
+          isValid: formValid && checkValidityError === null,
           value: form.getValues() as Record<string, unknown>,
           errors: errs,
+          formValid,
+          checkValidityError,
         };
       },
     };
