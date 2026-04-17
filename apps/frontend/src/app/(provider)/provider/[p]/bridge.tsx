@@ -41,7 +41,13 @@ export const ProviderPreviewBridge: FC<{ provider: string }> = ({
     window.__validateProviderPreview__ = async () =>
       controlRef.current
         ? await controlRef.current.validate()
-        : { isValid: false, value: {}, errors: ['not-ready'] };
+        : {
+            isValid: false,
+            value: {},
+            errors: ['not-ready'],
+            formValid: false,
+            checkValidityError: null,
+          };
     return () => {
       delete window.__getProviderPreviewValues__;
       delete window.__validateProviderPreview__;
