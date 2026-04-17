@@ -120,10 +120,16 @@ export const ProviderPreviewComponent: FC<ProviderPreviewProps> = ({
     return getProviderSettingsMeta(entry.component);
   }, [provider]);
 
+  // When `value` is absent or `{}`, don't feed it to react-hook-form at all —
+  // passing an empty object as `values` wipes out DTO-level defaults that the
+  // SettingsComponent relies on (e.g. tiktok privacy = PUBLIC).
+  const hasSeededValue =
+    !!value && typeof value === 'object' && Object.keys(value).length > 0;
+
   const form = useForm({
     resolver: meta?.dto ? classValidatorResolver(meta.dto) : undefined,
-    defaultValues: value ?? {},
-    values: value,
+    defaultValues: hasSeededValue ? value : undefined,
+    values: hasSeededValue ? value : undefined,
     mode: 'all',
     criteriaMode: 'all',
     reValidateMode: 'onChange',
