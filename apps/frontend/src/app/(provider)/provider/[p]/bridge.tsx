@@ -23,6 +23,13 @@ declare global {
     __PROVIDER_INIT__?: InitPayload;
     __getProviderPreviewValues__?: () => Record<string, unknown>;
     __validateProviderPreview__?: () => Promise<ProviderPreviewValidation>;
+    /**
+     * Returns the provider's resolved character limit (number) or null when
+     * the provider doesn't declare one. Resolution uses the seeded
+     * __PROVIDER_INIT__.integration.additionalSettings (e.g. X bumps to
+     * 4000 when {title:'Verified', value:true} is present).
+     */
+    __getProviderMaxCharacters__?: () => number | null;
   }
 }
 
@@ -48,9 +55,12 @@ export const ProviderPreviewBridge: FC<{ provider: string }> = ({
             formValid: false,
             checkValidityError: null,
           };
+    window.__getProviderMaxCharacters__ = () =>
+      controlRef.current?.getMaximumCharacters() ?? null;
     return () => {
       delete window.__getProviderPreviewValues__;
       delete window.__validateProviderPreview__;
+      delete window.__getProviderMaxCharacters__;
     };
   }, []);
 

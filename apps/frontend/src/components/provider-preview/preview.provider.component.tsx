@@ -26,6 +26,12 @@ export type ProviderPreviewValidation = {
 export type ProviderPreviewHandle = {
   getValues: () => Record<string, unknown>;
   validate: () => Promise<ProviderPreviewValidation>;
+  /**
+   * Resolves the provider's `maximumCharacters` against the seeded
+   * integration.additionalSettings. Returns null when the provider doesn't
+   * declare a limit (caller should treat as unbounded / fall back).
+   */
+  getMaximumCharacters: () => number | null;
 };
 
 export type ProviderPreviewProps = {
@@ -137,25 +143,43 @@ export const ProviderPreviewComponent: FC<ProviderPreviewProps> = ({
 
   useEffect(() => {
     if (!controlRef) return;
+    const resolveAdditionalSettings = (): unknown[] => {
+      const additional = (integration?.additionalSettings as
+        | string
+        | unknown[]
+        | undefined) ?? '[]';
+      if (Array.isArray(additional)) return additional;
+      try {
+        const parsed = JSON.parse(additional || '[]');
+        return Array.isArray(parsed) ? parsed : [];
+      } catch {
+        return [];
+      }
+    };
     controlRef.current = {
       getValues: () => form.getValues() as Record<string, unknown>,
+      getMaximumCharacters: () => {
+        const max = meta?.maximumCharacters;
+        if (typeof max === 'number') return max;
+        if (typeof max === 'function') {
+          try {
+            return max(resolveAdditionalSettings());
+          } catch {
+            return null;
+          }
+        }
+        return null;
+      },
       validate: async () => {
         const formValid = await form.trigger(undefined, { shouldFocus: false });
         const errs = flattenFormErrors(form.formState.errors);
         let customError: string | true = true;
         if (meta?.checkValidity) {
           try {
-            const additional = (integration?.additionalSettings as
-              | string
-              | undefined) ?? '[]';
-            const additionalSettings =
-              typeof additional === 'string'
-                ? JSON.parse(additional || '[]')
-                : additional;
             customError = await meta.checkValidity(
               posts ?? [],
               form.getValues(),
-              additionalSettings,
+              resolveAdditionalSettings(),
             );
           } catch (e: any) {
             customError = e?.message ?? 'checkValidity threw';

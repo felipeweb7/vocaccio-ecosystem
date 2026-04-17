@@ -26,6 +26,12 @@
  *   webView.evaluateJavaScript('window.__validateProviderPreview__()')
  *     // => Promise<{ isValid: boolean, value: {...}, errors: string[] }>
  *
+ *   // Returns the provider's resolved character limit (number) or null
+ *   // when the provider doesn't declare one. Uses the seeded
+ *   // __PROVIDER_INIT__.integration.additionalSettings:
+ *   webView.evaluateJavaScript('window.__getProviderMaxCharacters__()')
+ *     // => number | null
+ *
  * React Native example (RN WebView ref):
  *   const js = `window.__validateProviderPreview__().then(r =>
  *     window.ReactNativeWebView.postMessage(JSON.stringify(r)));
