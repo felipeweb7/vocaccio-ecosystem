@@ -199,7 +199,7 @@ export class AuthController {
     };
   }
 
-  @Get('/oauth/mobile-callback')
+  @Get('/oauth-mobile-callback')
   mobileCallback(
     @Query('code') code: string,
     @Query('state') state: string,
