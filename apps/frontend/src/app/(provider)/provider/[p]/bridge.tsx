@@ -33,7 +33,7 @@ declare global {
   }
 }
 
-export const ProviderPreviewBridge: FC<{ provider: string }> = ({
+const ProviderPreviewBridge: FC<{ provider: string }> = ({
   provider,
 }) => {
   // Read __PROVIDER_INIT__ in an effect, not via a useState lazy
@@ -44,10 +44,10 @@ export const ProviderPreviewBridge: FC<{ provider: string }> = ({
   // after mount; useForm's `values` prop then reactively resets the
   // form to the seed AFTER any field-level `register('x', { value })`
   // defaults have been applied, so the seed wins.
-  const [init, setInit] = useState<InitPayload>({});
+  const [init, setInit] = useState<InitPayload>(null);
   useEffect(() => {
     if (typeof window !== 'undefined' && window.__PROVIDER_INIT__) {
-      setInit(window.__PROVIDER_INIT__);
+      setInit(window.__PROVIDER_INIT__ || {});
     }
   }, []);
 
@@ -75,6 +75,10 @@ export const ProviderPreviewBridge: FC<{ provider: string }> = ({
     };
   }, []);
 
+  if (!init) {
+    return null;
+  }
+
   return (
     <ProviderPreviewComponent
       provider={provider}
@@ -86,3 +90,5 @@ export const ProviderPreviewBridge: FC<{ provider: string }> = ({
     />
   );
 };
+
+export default ProviderPreviewBridge;

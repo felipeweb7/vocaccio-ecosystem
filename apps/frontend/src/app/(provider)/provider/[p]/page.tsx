@@ -55,7 +55,7 @@
  * If a different channel is needed, adjust ./bridge.tsx — this page is only
  * a server wrapper that forwards the `:p` route param.
  */
-import { ProviderPreviewBridge } from './bridge';
+import { InBridge } from '@gitroom/frontend/app/(provider)/provider/[p]/in-bridge';
 
 export default async function Page({
   params,
@@ -63,5 +63,5 @@ export default async function Page({
   params: Promise<{ p: string }>;
 }) {
   const { p } = await params;
-  return <ProviderPreviewBridge provider={p} />;
+  return <InBridge provider={p} />;
 }
