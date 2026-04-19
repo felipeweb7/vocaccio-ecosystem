@@ -10,9 +10,9 @@ We, at Postiz (gitroomhq), cover the following scopes for vulnerability disclosu
 
 - The core repository for `postiz-app` (github.com/gitroomhq/postiz-app)
 - All `gitroomhq` repositories that are official components, tooling, or integrations of Postiz
-- Docker images of Positz on GHCR. (published under gitroomhq)
+- Official Postiz container images published under `gitroomhq` on GHCR
 - Official Postiz CLI tools and NPM packages (NPM org: @postiz)
-- Plugins for Postiz maintained within the `gitroomhq` organization.
+- Plugins for Postiz maintained within the `gitroomhq` organization
 
 Vulnerabilities in third-party dependencies or user-hosted infrastructure are outside of this scope.
 
