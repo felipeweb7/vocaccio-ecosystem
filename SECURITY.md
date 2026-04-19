@@ -6,12 +6,13 @@ The Postiz app is committed to ensuring the security and integrity of our users'
 
 ## Scope
 
-We, at Postiz, cover the following scopes for vulnerability disclosures:
+We, at Postiz (gitroomhq), cover the following scopes for vulnerability disclosures:
 
 - The core repository for `postiz-app` (github.com/gitroomhq/postiz-app)
-- All `gitroomhq` repositories related to Postiz (Containing `postiz` in the name / description / README.md)
-- Official Postiz CLI tools and NPM packages
-- Plugins maintained within the `gitroomhq` organization.
+- All `gitroomhq` repositories that are official components, tooling, or integrations of Postiz
+- Docker images of Positz on GHCR. (published under gitroomhq)
+- Official Postiz CLI tools and NPM packages (NPM org: @postiz)
+- Plugins for Postiz maintained within the `gitroomhq` organization.
 
 Vulnerabilities in third-party dependencies or user-hosted infrastructure are outside of this scope.
 
