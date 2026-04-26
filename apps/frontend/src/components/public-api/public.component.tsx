@@ -213,9 +213,16 @@ const McpSection = ({
     user.publicApi
   );
 
+  const remoteUrl = `${mcpBase}/mcp/${user.publicApi}`;
+  const cliUrl = `${mcpBase}/mcp`;
+
   const maskedConfig = revealed
     ? config
     : config.replace(new RegExp(user.publicApi.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'g'), '*'.repeat(user.publicApi.length));
+
+  const maskedRemoteUrl = revealed
+    ? remoteUrl
+    : remoteUrl.replace(user.publicApi, '*'.repeat(user.publicApi.length));
 
   return (
     <div className="bg-newBgColorInnerInner rounded-[12px] border border-newBorder overflow-hidden">
@@ -261,40 +268,47 @@ const McpSection = ({
                 onClick={() => setMethod(m)}
               >
                 {m === 'header'
-                  ? t('authorization_header', 'Authorization Header')
-                  : t('api_key_in_url', 'API Key in URL')}
+                  ? t('cli_claude_code_codex', 'CLI (Claude Code / Codex)')
+                  : t('remote_servers', 'Remote servers (ChatGPT, Claude)')}
               </button>
             ))}
           </div>
         </div>
-        <div className="flex flex-col gap-[6px]">
-          <div className="text-[13px] font-[600] text-customColor18">
-            {t('mcp_client', 'Client')}
+        {method === 'header' && (
+          <div className="flex flex-col gap-[6px]">
+            <div className="text-[13px] font-[600] text-customColor18">
+              {t('mcp_client', 'Client')}
+            </div>
+            <div className="flex flex-wrap gap-[6px]">
+              {mcpClients.map((client) => (
+                <button
+                  key={client}
+                  type="button"
+                  className={clsx(
+                    'cursor-pointer px-[14px] h-[36px] text-[13px] font-[500] rounded-[8px] transition-colors',
+                    activeClient === client
+                      ? 'bg-[#612BD3] text-white'
+                      : 'bg-btnSimple text-customColor18 hover:bg-boxHover hover:text-textColor'
+                  )}
+                  onClick={() => setActiveClient(client)}
+                >
+                  {client}
+                </button>
+              ))}
+            </div>
           </div>
-          <div className="flex flex-wrap gap-[6px]">
-            {mcpClients.map((client) => (
-              <button
-                key={client}
-                type="button"
-                className={clsx(
-                  'cursor-pointer px-[14px] h-[36px] text-[13px] font-[500] rounded-[8px] transition-colors',
-                  activeClient === client
-                    ? 'bg-[#612BD3] text-white'
-                    : 'bg-btnSimple text-customColor18 hover:bg-boxHover hover:text-textColor'
-                )}
-                onClick={() => setActiveClient(client)}
-              >
-                {client}
-              </button>
-            ))}
-          </div>
-        </div>
+        )}
         <div className="flex flex-col gap-[8px]">
           <div className="text-[12px] text-customColor18 font-[500]">
-            {hint}
+            {method === 'header'
+              ? hint
+              : t(
+                  'remote_server_url_hint',
+                  'Paste this URL into your remote MCP client (ChatGPT, Claude, etc.).'
+                )}
           </div>
           <pre className="bg-newBgColorInner border border-newBorder rounded-[8px] p-[16px] text-[13px] whitespace-pre-wrap break-all overflow-x-auto leading-[1.6]">
-            {maskedConfig}
+            {method === 'header' ? maskedConfig : maskedRemoteUrl}
           </pre>
           <div className="flex gap-[8px]">
             <button
@@ -327,7 +341,16 @@ const McpSection = ({
               </svg>
               {revealed ? t('hide', 'Hide') : t('reveal', 'Reveal')}
             </button>
-            <CopyButton text={config} label={t('copy', 'Copy')} />
+            <CopyButton
+              text={method === 'header' ? config : remoteUrl}
+              label={t('copy', 'Copy')}
+            />
+            {method === 'header' && (
+              <CopyButton
+                text={cliUrl}
+                label={t('copy_url', 'Copy URL')}
+              />
+            )}
           </div>
         </div>
       </div>
