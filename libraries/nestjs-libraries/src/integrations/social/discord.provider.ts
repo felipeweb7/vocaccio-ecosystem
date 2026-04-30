@@ -381,7 +381,7 @@ export class DiscordProvider extends SocialAbstract implements SocialProvider {
     if (body.includes('50013')) {
       return {
         type: 'bad-body',
-        value: 'Bot lacks permission in this channel',
+        value: 'Bot lacks permission to send messages in this channel',
       };
     }
 
