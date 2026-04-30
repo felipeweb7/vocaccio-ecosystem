@@ -411,6 +411,21 @@ const AddAnnouncement = () => {
   );
 };
 
+const ViewErrors = () => {
+  const t = useT();
+  const handleClick = useCallback(() => {
+    window.location.href = '/admin/errors';
+  }, []);
+  return (
+    <div
+      className="px-[10px] rounded-[4px] bg-blue-700 text-white cursor-pointer whitespace-nowrap"
+      onClick={handleClick}
+    >
+      {t('view_errors', 'View Errors')}
+    </div>
+  );
+};
+
 const ImportDebugPost = () => {
   const { openModal } = useModals();
   const t = useT();
@@ -527,6 +542,7 @@ export const Impersonate = () => {
                 </div>
                 <ImportDebugPost />
                 <AddAnnouncement />
+                <ViewErrors />
               </div>
             )}
           </div>
