@@ -1,4 +1,4 @@
-<!-- Remember to first apply at [the contribution form](https://contribute.egelhaus.de/p/postiz) before submitting a PR. -->
+<!-- Remember to first apply via [the contribution form](https://contribute.egelhaus.de/p/postiz) before submitting a PR. -->
 
 # What kind of change does this PR introduce?
 
