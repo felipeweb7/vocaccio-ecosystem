@@ -1,3 +1,5 @@
+<!-- Remember to first apply via [the contribution form](https://contribute.postiz.com/p/postiz) before submitting a PR. -->
+
 # What kind of change does this PR introduce?
 
 eg: Bug fix, feature, docs update, ...
