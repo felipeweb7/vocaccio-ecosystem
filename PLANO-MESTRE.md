@@ -829,7 +829,13 @@ Fase 3  — Volatis/Postiz cockpit + Sincronário + publicação (+ Temporal)   
           canais por cliente + carrosséis muito além do MVP; falta Sincronário)
 Fase 3.5 — Revisão geral de FE / coerência visual    EM ANDAMENTO (5 primitivos prontos,
           CRM refatorado, roxo Postiz removido do repo inteiro; falta auditar Volatis/portal)
+          ⚠️ ESCOPO CONGELADO 2026-07-09: fecha com o escopo já escrito; nada novo entra
+Fase M  — MOVIMENTO COMERCIAL (Oferta Âncora + pipeline + retainers)   INICIA AGORA,
+          em paralelo ao fechamento de F2/F3.5 — ver Camada 17.5 e
+          docs/comercial/ROADMAP-MONETIZACAO.md. NÃO é fase de código.
 Fase 4  — Memória por projeto + aprendizado com revisões               não iniciada
+          🔒 GATE DE MONETIZAÇÃO (2026-07-09): Fase 4 e TODA fase adiante só iniciam
+          com 3 clientes pagantes ativos (leitura ou retainer) — ver Camada 17.5
 Fase 5  — Religare + onboarding + cálculos HD/Tzolkin/Arquétipos + PDFs + Sibila
           Fatias 1-6 IMPLEMENTADAS (cálculos validados contra fonte externa); Sibila ainda
           é template determinístico, não síntese por LLM; falta validação visual final
@@ -866,6 +872,43 @@ Princípio-guia (ver [[feedback-vocaccio-ui-host-theme]] na memória):
 - **Processo:** toda mudança de UI verificada no browser (loop visual via Claude in Chrome),
   não só typecheck.
 - Auditar telas já entregues (Fases 1–3) e padronizar contra o sistema unificado.
+
+---
+
+### CAMADA 17.5 — FASE M: MOVIMENTO COMERCIAL (2026-07-09)
+
+> **Origem:** auditoria de consultoria 2026-07-09 — o projeto tem produto demais para a
+> demanda comprovada (query B3 em produção: `Integration` total=0) e receita zero. O ativo
+> mais vendável hoje é o **serviço produtizado entregue com a plataforma**, não o SaaS
+> (Fase H, última). Documento executável completo (jogadas ranqueadas, prompts prontos
+> para modelo menos capaz, critérios de pronto): **`docs/comercial/ROADMAP-MONETIZACAO.md`**.
+
+**Momento de execução (decidido, não re-discutir):** inicia AGORA, em paralelo ao
+fechamento de F2 (10% finais — o portal é parte da entrega do retainer) e de F3.5
+(escopo congelado). Não espera fase nenhuma fechar: as Jogadas 1/4/6 são escrita e
+handoff, não código.
+
+**Sequência resumida:**
+1. Jogada 1 — Oferta Âncora (Leitura Religare produtizada, R$497/R$1.497-hipótese)
+2. Jogada 4 — destravar pacote do Nicolas (paralelo)
+3. Jogada 6 — escada de precificação escrita (paralelo, marcada como hipótese)
+4. Jogada 2 — pipeline 20 nomes → 10 conversas → 3 vendas
+5. Após 3 vendas: Jogada 3 (landing com copy provada) + Jogada 5 (retainers
+   Presença/Presença+Growth com clientes da agência, operando DENTRO do Vocaccio)
+
+**🔒 Gate de monetização (regra dura):** Fase 4 em diante, aprofundamentos do Religare
+(Sibila-LLM, MBTI, Eneagrama, astrologia natal), Kanban-bot e Comunidade das Comunidades
+só voltam à mesa com **3 clientes pagantes ativos**. Pode rodar em paralelo às jogadas:
+fechar F2, fechar F3.5 congelada, AT-3 quando F3.5 fechar. Nada além.
+
+**Regras de "parar de fazer" (raciocínio completo no roadmap):**
+1. Ecossistema de agentes/skills congelado como está até a 1ª venda (exceção: erro bloqueante).
+2. Polimento visual só pela regra do escoteiro (`auditoria-glass` em arquivo já tocado),
+   sem frente dedicada até haver cliente pagante reclamando de tela.
+3. Nenhuma expansão de produto fora do gate.
+
+**Régua semanal do Felipe:** ~50% vender · 25% entregar · 20% produto congelado · 5% meta.
+Semana sem mensagem de venda enviada = semana em que produto não deveria ter andado.
 
 ---
 
@@ -1110,9 +1153,12 @@ ISR na LP · F6+: Vercel Analytics, Sentry free, alerta LCP > 3s.
 
 ---
 
-**Estado atual (2026-07-03): Fases 0-1 ✅ concluídas · Fase 2 ~90% (validar portal no
-browser) · Fase 3 ~65% (falta Sincronário) · Fase 3.5 em andamento (auditar Volatis/portal
-nos primitivos novos) · Religare (Fase 5) com Fatias 1-6 implementadas, adiantada em paralelo
-· Ateliê Virtual AT-0/AT-1/AT-2 concluídos, AT-3 em espera até Fase 3.5 fechar.**
+**Estado atual (2026-07-09): Fases 0-1 ✅ concluídas · Fase 2 ~90% (validar portal no
+browser) · Fase 3 ~65% (falta Sincronário) · Fase 3.5 em andamento, ESCOPO CONGELADO
+(auditar Volatis/portal nos primitivos novos e fechar) · Religare (Fase 5) com Fatias 1-6
+implementadas, adiantada em paralelo · Ateliê Virtual AT-0/AT-1/AT-2 concluídos, AT-3 em
+espera até Fase 3.5 fechar · **Fase M (Movimento Comercial) INICIADA — prioridade nº 1,
+ver Camada 17.5 e `docs/comercial/ROADMAP-MONETIZACAO.md`; gate: Fase 4+ só com 3
+clientes pagantes.**
 Cada sessão: ler `/phases/checkpoint-faseN.md` mais recente antes de qualquer coisa —
 o mais recente é `phases/checkpoint-fase2-fase3.5-retomada.md`.
