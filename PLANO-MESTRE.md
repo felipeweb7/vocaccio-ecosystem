@@ -41,6 +41,15 @@
 **Agente Economizador (Dumbledore):** antes de task complexa avaliar — modelo mínimo
 suficiente? contexto já em cache? algo já implementado resolve? dá pra quebrar em 2?
 
+**Skills operacionais (Dumbledore orquestra, 2026-07-09):** `boot-real`, `poda-segura` e
+`auditoria-glass` (`.claude/skills/`) formalizam os 3 loops mais caros já sofridos no projeto
+(typecheck mentindo, poda cega de dependência, débito visual glass). Tabela de gatilho/dono em
+`.claude/agents/README.md`. O Dumbledore não deixa isso implícito ao delegar: ao mandar Sirius
+pra tarefa de backend que mexe schema/deps/rotas, nomeia "rode `boot-real`"/"rode `poda-segura`"
+no prompt de delegação; ao mandar Flitwick pra tela dentro de shell glass, nomeia "rode
+`auditoria-glass`". Regra vale para qualquer skill local nova que vier a existir — o roteamento é
+sempre explícito no `README.md` dos agentes, não confiado à memória do sub-agente.
+
 **Referência de qualidade visual (Dumbledore):** skill `impeccable` instalada globalmente
 (`~/.claude/skills/impeccable`) — usar como referência prioritária de boas práticas de
 front-end (hierarquia visual, acessibilidade, espaçamento, motion, anti-padrões) em toda

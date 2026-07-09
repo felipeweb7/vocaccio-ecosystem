@@ -27,7 +27,10 @@ _(nenhum ainda — primeira ronda)_
   arquivo (não substituição global cega, já que `--new-bgColor*` também é usado em contextos
   que legitimamente precisam de opacidade, ex. popovers/dropdowns) e trocar por
   `bg-transparent`/token glass onde o container pai já é `.voc-glass-*` | status: MADURO,
-  correção pontual aplicada só na tela relatada — resto pendente de auditoria dedicada.
+  correção pontual aplicada só na tela relatada — resto pendente de auditoria dedicada. **2026-07-09:**
+  mecanismo formalizado como skill `auditoria-glass` (`.claude/skills/auditoria-glass/SKILL.md`) —
+  inventário vivo em `docs/zelador/auditoria-glass-progresso.md` (criado na primeira execução),
+  Flitwick invoca proativamente. Cluster gradua quando esse arquivo zerar os 44 pendentes.
 
 ## Clusters graduados (correção já aplicada)
 

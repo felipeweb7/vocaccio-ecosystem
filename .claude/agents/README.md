@@ -132,6 +132,23 @@ fora — a página deu 429 (rate limit) e o conteúdo nunca foi lido de verdade.
    Opus para arquitetura/decisão.
 4. **Não super-delegar**: tarefa pequena e local o Dumbledore faz inline; sub-agente custa um cold start.
 
+## Skills operacionais do projeto (roteamento do Dumbledore)
+Além das skills globais (impeccable, marketing, segurança), o Vocaccio tem 3 skills locais em
+`.claude/skills/` que formalizam os loops mais caros do projeto. O Dumbledore **invoca por
+padrão** (ou cobra do sub-agente dono que invoque) sempre que o gatilho aparecer — não é opcional
+esperar o Felipe pedir:
+
+| Skill | Gatilho | Dono/quem invoca |
+|---|---|---|
+| **`boot-real`** | Antes de declarar "backend ok"; após tocar `schema.prisma`, migrations, tsconfig, deps ou rotas; antes de qualquer commit de backend | **Sirius** invoca sempre; Dumbledore cobra se ele pular |
+| **`poda-segura`** | Remover/desligar dependência, provider, rota ou módulo (qualquer onda do plano de leveza) | **Sirius** (execução) + **Filch**/**McGonagall** (ao sequenciar a onda, nomeiam a skill no plano) |
+| **`auditoria-glass`** | Tocar tela dentro de shell glass, ou qualquer arquivo ainda na lista de `bg-newBgColorInner`/`bg-newBgColor` sobre `.voc-glass-*` | **Flitwick** invoca sempre que edita arquivo da lista pendente; **Filch** aponta recorrência sem reabrir a investigação |
+
+Regra geral: se a tarefa bate um destes gatilhos e o sub-agente não menciona a skill no plano/
+resposta, o Dumbledore (ou o Filch, se estiver rodando) cobra — mesmo mecanismo da cobrança de
+modelo+esforço esquecido. Skill nova relevante ao projeto segue o fluxo de mérito da seção 8 do
+`.md` do Filch antes de virar hábito automático.
+
 ## Plano de leveza (2026-07)
 O emagrecimento do núcleo Postiz segue `docs/auditoria/plano-leveza-2026-07.md`
 (fases 0→A→B→D→C→E; v2.0 pós-lançamento). Regras para TODOS os agentes:
