@@ -62,7 +62,7 @@ cluster como GRADUADO.**
 - [ ] apps/frontend/src/components/new-launch/providers/tiktok/tiktok.preview.tsx — 1 — launches
 - [ ] apps/frontend/src/components/new-layout/layout.media.component.tsx — 1 — layout
 - [ ] apps/frontend/src/components/onboarding/onboarding.modal.tsx — 1 — onboarding (modal)
-- [ ] apps/frontend/src/components/platform-analytics/platform.analytics.tsx — 4 — analytics
+- [x] apps/frontend/src/components/platform-analytics/platform.analytics.tsx — 4 — analytics (2026-07-11, commit b9e85ab0)
 - [ ] apps/frontend/src/components/plugs/plugs.tsx — 4 — plugs (quarentena)
 - [ ] apps/frontend/src/components/public-api/public.component.tsx — 9 — settings
 - [ ] apps/frontend/src/components/third-parties/third-party.component.tsx — 2 — third-party (quarentena)
@@ -75,6 +75,30 @@ cluster como GRADUADO.**
 - [ ] apps/frontend/src/components/volatis/carousel/template-select.component.tsx — 2 — Volatis
 
 Total: 56 arquivos / 176 ocorrências.
+
+## Retomada — mesma sessão 2026-07-11 (Flitwick, execução direta após correção de papel)
+
+O agente de background lançado no início da sessão de fato executou (commits
+`2d7e33a7` CRM e `021e941a` admin/billing/media/settings, mais o doc de
+progresso original acima) — a mensagem "delegado, rodando em background" desta
+sessão estava certa quanto ao mecanismo, mas eu (Flitwick, executor único
+desta conversa) confirmei o resultado e continuei o trabalho diretamente.
+
+Ao retomar, tentei consertar `admin/stats/page.tsx`, `admin/errors/page.tsx`,
+`billing/page.tsx`, `layout.media.component.tsx`, `settings.component.tsx`,
+`first.billing.component.tsx` — todos já estavam corrigidos pelo commit
+`021e941a` (edits idênticas viraram no-op, confirmado via `git diff --stat`
+antes de commitar qualquer coisa). O único arquivo genuinamente pendente que
+peguei foi:
+
+- [x] `apps/frontend/src/components/platform-analytics/platform.analytics.tsx`
+  — 4 ocorrências (loading state, empty state, sidebar, painel principal) —
+  mesmo padrão root-panel do resto do batch — commit `b9e85ab0`.
+
+**Total real fechado agora: 13 de 56 arquivos** (12 do batch anterior + 1
+platform-analytics). `git diff --stat` confirmado limpo após o commit (só
+`PLANO-MESTRE.md` seguia modificado, de origem de outra sessão concorrente,
+fora do escopo desta tarefa — não tocado).
 
 ## Status ao fim da sessão 2026-07-11 (Flitwick)
 
@@ -124,5 +148,6 @@ Verificar no checkout principal (`C:\dev\vocaccio`, dev server real) antes de
 fechar o cluster como GRADUADO no CADERNO — checar especialmente loading
 state, estado vazio e header colapsado das telas de CRM tocadas.
 
-Cluster no CADERNO permanece **MADURO** (não GRADUADO) — 12 de 56 arquivos
-fechados nesta sessão, 44 seguem pendentes.
+Cluster no CADERNO permanece **MADURO** (não GRADUADO) — 13 de 56 arquivos
+fechados nesta sessão (commits `2d7e33a7`, `021e941a`, `b9e85ab0`), 43 seguem
+pendentes.
