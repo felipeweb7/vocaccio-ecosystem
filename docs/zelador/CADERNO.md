@@ -31,6 +31,20 @@ _(nenhum ainda — primeira ronda)_
   mecanismo formalizado como skill `auditoria-glass` (`.claude/skills/auditoria-glass/SKILL.md`) —
   inventário vivo em `docs/zelador/auditoria-glass-progresso.md` (criado na primeira execução),
   Flitwick invoca proativamente. Cluster gradua quando esse arquivo zerar os 44 pendentes.
+  **2026-07-11 (janela de exceção do Felipe, "colheita Fable 5"):** os 56 arquivos do
+  inventário (44 + 12 já mapeados) foram triados de ponta a ponta em duas sessões
+  (worktree compartilhado, commits intercalados) — `2d7e33a7`, `021e941a`, `b9e85ab0`,
+  `8e75c29c`, `cb27f0a4`, `3f0cf39a`, `146f48e9`, `dc560685`, `33a9328e`. ~27 tiveram troca
+  de código (painel grande/header/card de seção → `bg-transparent`); ~27 revisados e
+  mantidos intactos por serem controle pequeno ou modal/popover/tooltip flutuante
+  confirmado no JSX (`fixed`/`absolute`+`z-index`+`shadow`); 2 arquivos com ocorrências
+  ambíguas deixadas explicitamente como VERIFICAR-BROWSER (`time.table.tsx`, 2 `<pre>` em
+  `public.component.tsx`); `plugs.tsx`/`third-party.component.tsx` pulados (quarentena).
+  Detalhe completo em `docs/zelador/auditoria-glass-progresso.md`. **Status: candidato a
+  GRADUADO, não promovido ainda** — nenhuma tela foi confirmada em browser real
+  (`node_modules` ausente no worktree); promoção formal exige verificação visual no
+  checkout principal (`C:\dev\vocaccio`, dev server real), sobretudo `carousel-editor.component.tsx`
+  e os 2 pontos VERIFICAR-BROWSER.
 
 ## Clusters graduados (correção já aplicada)
 
