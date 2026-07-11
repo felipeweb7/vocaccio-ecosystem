@@ -49,7 +49,7 @@ const Field: FC<{ label: string; required?: boolean; children: React.ReactNode; 
 );
 
 const Section: FC<{ title: string; children: React.ReactNode }> = ({ title, children }) => (
-  <div className="bg-newBgColorInner rounded-[16px] border border-newTableBorder p-[20px] flex flex-col gap-[16px]">
+  <div className="bg-transparent rounded-[16px] border border-newTableBorder p-[20px] flex flex-col gap-[16px]">
     <h3 className="text-[13px] font-[800] uppercase tracking-[0.1em]" style={{ color: 'var(--voc-violet)' }}>{title}</h3>
     {children}
   </div>
