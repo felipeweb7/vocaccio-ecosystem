@@ -183,6 +183,10 @@ Cada erro tem nome e a regra que o previne. Se você se pegar no padrão, pare.
 - [ ] Memória (`MEMORY.md` + arquivo) atualizada se algo não-derivável do código mudou
 - [ ] Datas absolutas, não "hoje/ontem"
 
+**Regra transversal — cole, não afirme:** toda alegação de "verificado/
+testado/buildou" cita a evidência real da própria sessão (exit code, resposta
+do curl, output do grep). Sem evidência citável, reporte como NÃO verificado.
+
 **Qualquer resposta de sessão termina com:** recomendação de modelo+esforço
 para o próximo passo (regra do Griphook).
 
