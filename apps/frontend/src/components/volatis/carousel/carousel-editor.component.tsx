@@ -332,7 +332,7 @@ export const CarouselEditor = ({ carouselId, crmClientId = null }: EditorProps) 
   return (
     <div ref={root.ref} className="flex flex-col flex-1 min-h-0 min-w-0 text-newTextColor overflow-hidden">
       {/* Toolbar */}
-      <div className="flex items-center gap-[12px] px-[20px] h-[56px] shrink-0 bg-newBgColorInner border-b border-newBorder">
+      <div className="flex items-center gap-[12px] px-[20px] h-[56px] shrink-0 bg-transparent border-b border-newBorder">
         <Link
           href={`/hub/volatis/carrosseis${doc.crmClientId ? `?clientId=${doc.crmClientId}` : ''}`}
           title="Voltar à galeria"
@@ -439,10 +439,10 @@ export const CarouselEditor = ({ carouselId, crmClientId = null }: EditorProps) 
         style={{ height: Math.max(360, canvasAreaHeight) }}
       >
         {/* Painel esquerdo */}
-        <aside className="w-[320px] shrink-0 overflow-y-auto p-[14px] flex flex-col gap-[10px] bg-newBgColorInner">
+        <aside className="w-[320px] shrink-0 overflow-y-auto p-[14px] flex flex-col gap-[10px] bg-transparent">
           {/* Painel de Templates (drawer inline) */}
           {showTemplates && (
-            <div className="shrink-0 rounded-[12px] bg-newBgColor border border-newBorder overflow-hidden">
+            <div className="shrink-0 rounded-[12px] bg-transparent border border-newBorder overflow-hidden">
               <div className="flex items-center justify-between px-[14px] py-[11px] border-b border-newBorder">
                 <span className="text-[11px] font-[800] uppercase tracking-[0.1em] text-newTextColor">Templates</span>
                 <button
@@ -1228,7 +1228,7 @@ export const CarouselEditor = ({ carouselId, crmClientId = null }: EditorProps) 
         </aside>
 
         {/* Canvas central — overflow-auto para zoom > 100% */}
-        <main className="flex-1 min-w-0 grid place-items-center p-[24px] bg-newBgColor overflow-auto">
+        <main className="flex-1 min-w-0 grid place-items-center p-[24px] bg-transparent overflow-auto">
           {slide && canvasWidth > 0 && (
             <div className="rounded-[10px] overflow-hidden shadow-[0_20px_60px_rgba(0,0,0,0.45)] leading-[0] shrink-0">
               <CarouselStage
@@ -1251,7 +1251,7 @@ export const CarouselEditor = ({ carouselId, crmClientId = null }: EditorProps) 
 
         {/* Painel direito — frames */}
         <aside
-          className="w-[208px] shrink-0 overflow-y-auto p-[16px] flex flex-col gap-[10px] bg-newBgColorInner items-center"
+          className="w-[208px] shrink-0 overflow-y-auto p-[16px] flex flex-col gap-[10px] bg-transparent items-center"
           onClick={() => slideMenu !== null && setSlideMenu(null)}
         >
           <span className="self-start text-[11px] font-[700] uppercase tracking-[0.1em] text-textItemBlur">
@@ -1440,7 +1440,7 @@ const ToolbarIconBtn = ({
 const Panel = ({ title, children, defaultOpen = false }: { title: string; children: React.ReactNode; defaultOpen?: boolean }) => {
   const [open, setOpen] = useState(defaultOpen);
   return (
-    <section className="shrink-0 rounded-[12px] bg-newBgColor border border-newBorder overflow-hidden">
+    <section className="shrink-0 rounded-[12px] bg-transparent border border-newBorder overflow-hidden">
       <button
         type="button"
         onClick={() => setOpen((v) => !v)}
