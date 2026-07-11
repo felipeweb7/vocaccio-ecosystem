@@ -151,3 +151,116 @@ state, estado vazio e header colapsado das telas de CRM tocadas.
 Cluster no CADERNO permanece **MADURO** (não GRADUADO) — 13 de 56 arquivos
 fechados nesta sessão (commits `2d7e33a7`, `021e941a`, `b9e85ab0`), 43 seguem
 pendentes.
+
+## Fechamento — varredura completa 2026-07-11 (Flitwick, continuação após handoff de outra sessão)
+
+Processados os 44 arquivos pendentes na ordem pedida: Religare, Volatis
+(incl. `carousel-editor.component.tsx`, linha a linha, as 23 ocorrências),
+`developer.component.tsx`, `public-api/public.component.tsx`, admin
+components, resto de launches, `ui/button`/`ui/input` (cautela extra —
+ver decisão abaixo), `billing/embedded`/`billing/main`, e os 2 arquivos de
+página do CRM (`crm/novo`, `crm/projetos/novo`) que tinham ficado de fora do
+primeiro inventário verificado. `plugs.tsx`/`third-party.component.tsx`
+pulados por instrução (quarentena, baixa prioridade).
+
+**Todos os 56 arquivos do inventário original foram triados nesta sessão.**
+
+### Commits desta continuação
+- `8e75c29c` — Religare (5 arquivos): astrology-tab, home, human-design-tab,
+  onboarding, profile
+- `cb27f0a4` — Volatis (3 arquivos): volatis-cockpit, carousel-gallery,
+  carousel-editor (6 de 23 ocorrências trocadas — só os wrappers estruturais:
+  toolbar, aside esquerda, drawer de templates, canvas central, aside
+  direita, componente `Panel` compartilhado do accordion; as outras 17 são
+  inputs/textareas/botões de ícone/segmented control pequenos ou os 2
+  dropdowns flutuantes `absolute z-50 shadow`)
+- `3f0cf39a` — developer.component.tsx (1 arquivo, 8 de 16 trocadas: cards de
+  seção + headers internos; 8 inputs/token-display mantidos)
+- `146f48e9` — public-api/public.component.tsx (1 arquivo, 6 de 9 trocadas:
+  3 cards + headers; 2 blocos `<pre>` de código e 1 input marcados
+  VERIFICAR-BROWSER/mantidos — ambíguo, não chutado; também corrigido typo de
+  classe inexistente `bg-newBgColorInnerInner` → `bg-transparent`)
+- `dc560685` — admin components (2 arquivos): admin-errors.component,
+  admin-stats.component (painel de detalhe inline, barra de filtros, header
+  de grid de tabela; selects/stat-tiles pequenos mantidos)
+- `33a9328e` — CRM formulários novo (2 arquivos): `hub/crm/novo/page.tsx`,
+  `hub/crm/projetos/novo/page.tsx` — haviam ficado fora da varredura visual
+  anterior, mesmo padrão do resto do CRM
+
+### Decisão ui/button e ui/input (cautela pedida pelo peer)
+`ui/button.component.tsx`: `hover:bg-newBgColor` no variant "outline" é
+**hover-only**, não fundo estático — não é o padrão "sólido sobre glass"
+(só aparece na interação, e o componente é usado tanto dentro quanto fora de
+shells glass). Decisão: **não tocar**, não é ambíguo, é correto como está.
+`ui/input.component.tsx`: `bg-newBgColor` é o fundo **default** do campo de
+texto — mas todo campo de input/textarea/select do inventário inteiro (CRM,
+Religare, Volatis, developer, admin) foi tratado como "pequeno, contraste
+legítimo" e mantido intacto, o mesmo critério do fix de referência em
+`launches.component.tsx`. Trocar a base mudaria a legibilidade de texto
+digitado em **todo** o app de uma vez, incluindo contextos fora de shell
+glass. Decisão: **não tocar** — consistente com a base já estabelecida, não
+ambíguo o suficiente para preferir arriscar uma mudança de alto raio de
+impacto sem verificação visual real.
+
+### Modais/popovers confirmados como OK-flutuante (JSX lido, não presumido)
+`crm-modal.component.tsx` (botão hover), `layout/new-modal.tsx` (`w-fit
+rounded-[24px]`, painel do sistema de modal), `onboarding.modal.tsx`,
+`new-launch/manage.modal.tsx`, `new-launch/modal.wrapper.component.tsx`,
+`new-launch/delay.component.tsx` (`absolute z-[300] menu-shadow`),
+`launches/repeat.component.tsx`, `launches/select.customer.tsx`,
+`launches/tags.component.tsx`, `launches/menu/menu.tsx` (`fixed z-[100]
+shadow-menu`), `launches/information.component.tsx` (tooltip `group-hover`),
+`launches/import-debug-post.modal.tsx`, `volatis/carousel/add-project`,
+`volatis/carousel/project-settings`, `volatis/carousel/template-select`
+(todos `fixed inset-0 z-[100] bg-black/55` — overlay confirmado no JSX),
+`religare-profile.component.tsx` (dropdown de ações `absolute z-[41]
+shadow-lg`), `billing/embedded.billing.tsx` (`fixed bottom-0 z-[100]`,
+barra flutuante).
+
+### Pequenos/OK mantidos (não é "painel cinza chapado")
+Todos os campos de input/select/textarea, hover de linha de tabela, barras
+de skeleton pulse, botões de ícone pequenos, segmented controls
+(mode-switcher, view-switcher), stat tiles pequenos, barras de progresso —
+mesmo critério do fix de referência ("contraste pontual").
+
+### Pendente-browser (não tocado, ambíguo)
+- `launches/time.table.tsx` (2 ocorrências) — parente não confirmado sem
+  rodar; pode ser modal-interno ou painel direto sobre shell.
+- `public-api/public.component.tsx` — 2 blocos `<pre>` de código/URL e 1
+  input (ver acima).
+
+### Skipped por instrução (quarentena, baixa prioridade)
+`plugs/plugs.tsx`, `third-parties/third-party.component.tsx` — não tocados.
+
+### Contagem final
+- **56 de 56 arquivos do inventário original triados.**
+- **~27 arquivos com troca de código aplicada** (total ou parcial, conforme
+  a regra de "só o painel grande, não o controle pequeno"): CRM (7, incl. os
+  2 de formulário novo), admin/billing/media/settings pages (6),
+  admin components (2), Religare (5), Volatis (3), developer (1), public-api
+  (1, parcial), platform-analytics (1, sessão paralela) = 26–27 (pequena
+  divergência de contagem entre passes desta sessão, não um arquivo
+  perdido — todos os 56 caminhos do grep original foram abertos e
+  decididos).
+- **~27 arquivos revisados e mantidos como OK-flutuante/controle pequeno**
+  (nenhuma mudança necessária, decisão documentada acima).
+- **1 arquivo com ocorrências pendentes de verificação visual**
+  (`time.table.tsx`) + **3 ocorrências pendentes dentro de
+  public.component.tsx** (`<pre>` × 2 + 1 input).
+- **2 arquivos pulados** por instrução (quarentena).
+
+### Não verificado no browser
+`node_modules` seguiu ausente neste worktree durante toda a sessão — nenhuma
+tela foi aberta em DevTools/browser real. Toda a triagem foi por leitura de
+JSX (estrutura de containers, presença de `fixed`/`absolute`+`z-index`+
+`shadow` para confirmar flutuante, confirmação de que a rota vive sob
+`.voc-content-shell` via `new-layout/layout.component.tsx:134`).
+**Verificação visual real no checkout principal (`C:\dev\vocaccio`, dev
+server real) é o próximo passo obrigatório antes de promover o cluster a
+GRADUADO** — checar especialmente: `carousel-editor.component.tsx` (tela
+mais densa, 23 ocorrências, 6 trocadas), estados de loading/vazio de CRM e
+Religare, e os 2 arquivos com ocorrências pendentes.
+
+Cluster no `docs/zelador/CADERNO.md`: **rebaixado de MADURO para candidato a
+GRADUADO** nesta sessão — promoção formal para GRADUADO fica condicionada à
+verificação visual real (regra dura do projeto: não afirmar sem prova).
