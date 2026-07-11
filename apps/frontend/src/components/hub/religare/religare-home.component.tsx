@@ -56,7 +56,7 @@ export const ReligareHome: FC = () => {
   const hasExperts = experts.length > 0;
 
   return (
-    <div className="flex flex-col flex-1 bg-newBgColor min-h-full">
+    <div className="flex flex-col flex-1 bg-transparent min-h-full">
       <div className="max-w-[1000px] w-full mx-auto px-[20px] py-[28px]">
         {/* header */}
         <div className="flex items-start justify-between gap-[16px] flex-wrap mb-[24px]">
@@ -119,7 +119,7 @@ export const ReligareHome: FC = () => {
               return (
                 <div
                   key={expert.id}
-                  className="rounded-[16px] bg-newBgColorInner border border-newTableBorder p-[18px] flex flex-col"
+                  className="rounded-[16px] bg-transparent border border-newTableBorder p-[18px] flex flex-col"
                 >
                   <div className="flex items-center gap-[12px]">
                     <div
