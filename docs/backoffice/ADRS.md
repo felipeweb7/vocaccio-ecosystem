@@ -38,9 +38,11 @@ comercial real (separar Commercial do Analista).
 **Contexto:** pesquisa 2026-07-11 reprovou todos os conectores Baileys/whatsmeow (licença, sessão em
 texto plano, abandono, skip-permissions, peso). **Decisão:** laboratório usa **Meta Cloud API
 sandbox** (número de teste, grátis, mesmo código da produção). Rota não-oficial = plano C documentado,
-só com dados fictícios e nunca para clientes. **Consequência-chave:** grupos reais só no piloto
-(limitação de grupos da Cloud API é a maior incógnita — pergunta ao Felipe sobre grupo vs. 1:1).
-**Gatilho:** Meta ampliar suporte a grupos, ou surgimento de conector auditável e licenciado.
+só com dados fictícios e nunca para clientes. **Consequência-chave (resolvida em
+[DECISOES-PILOTO-P2.md](./DECISOES-PILOTO-P2.md) §1, 2026-07-11):** P2 usa conversa 1:1 com contato
+principal por cliente, não grupo — elimina a limitação de grupos da Cloud API como bloqueio; grupos
+ficam como evolução futura opcional sem redesenho de arquitetura.
+**Gatilho:** Meta ampliar suporte a grupos e houver caso de negócio para adotá-los.
 
 ## ADR-06 — Meta Cloud API oficial em produção
 **Decisão:** (reafirma PLANO-MESTRE) produção = Cloud API com verificação de negócio, número
@@ -102,10 +104,14 @@ seguindo os 20 campos do pacote; ambiguidade não prevista = parar e escalar, nu
 **Gatilho:** revisão a cada fase concluída (retro do pacote).
 
 ## ADR-15 — Retenção e tratamento de mensagens
-**Decisão:** evidências vinculadas a comandos = vida do contrato + prazo legal; mensagens não
-acionáveis = descarte curto (proposta 30 dias — confirmar com Felipe/advogado); áudio original
-descartado após transcrição; dados sensíveis não persistidos (escalonar). Rotina de exclusão sob
-pedido (LGPD art. 18) obrigatória antes do piloto. **Gatilho:** parecer jurídico.
+**Decisão FECHADA** (DECISOES-PILOTO-P2 §9, 2026-07-11): mensagens sem valor operacional = 30 dias;
+áudio original = 7 dias pós-transcrição confirmada (até 15 dias se a transcrição deu erro);
+transcrição sem valor operacional = 30 dias; aprovações/alterações de escopo/decisões de prazo =
+vida do contrato + prazo jurídico; logs técnicos = 30 dias sem dado pessoal desnecessário;
+consentimentos/revogações = conforme política jurídica definitiva. Dados sensíveis não persistidos
+(escalonar, ver ADR-16). Rotina de exclusão sob pedido (LGPD art. 18) ainda **não implementada** —
+obrigatória antes do piloto tocar dado real (gate do ADR jurídico, §10 do DECISOES-PILOTO-P2).
+**Gatilho:** parecer jurídico final (pode ajustar prazos).
 
 ## ADR-16 — Separação entre leitura e escrita (toolsets e agentes)
 **Decisão:** nenhum agente acumula (mensagens privadas + filesystem amplo + envio externo). MCP de
@@ -114,8 +120,12 @@ executa. **Gatilho:** nenhum — princípio permanente.
 
 ## ADR-17 — Observabilidade e audit log como pré-requisito de escrita
 **Decisão:** nenhuma escrita automatizada (A3+) antes de `OperationalCommand`+audit log+idempotência
-(PE-02) em produção. Métricas mínimas: comandos propostos/aprovados/rejeitados/errados por semana;
-limiar de erro suspende a automação (valor definido pelo Felipe). **Gatilho:** PE-02 entregue.
+(PE-02) em produção. **Limiar de erro fechado** (DECISOES-PILOTO-P2 §6, 2026-07-11): erro crítico
+(publicar/agir no alvo errado, aprovação sem autorização, alteração indevida de prazo/orçamento/
+escopo, exposição de dado entre clientes, ação irreversível sem confirmação) = **1 ocorrência
+suspende de imediato**; erro reversível/menor = suspende em 2/100 comandos, 2 consecutivos da mesma
+natureza, ou padrão de baixa confiança sem escalonamento. Substitui o valor hipotético anterior
+("1 em 50", alto demais para ação direta ao cliente). **Gatilho:** PE-02 entregue.
 
 ## ADR-18 — Critérios para reescrever funções herdadas
 **Decisão:** reescrever só quando (a) a função bloqueia um caso de uso do back-office E (b) adaptação
@@ -123,3 +133,18 @@ custa mais que reescrita E (c) há teste de regressão do comportamento atual. H
 precisa de reescrita; criam-se camadas novas (rotas `/ops`, MCP, `OperationalCommand`, service do
 `InternalTask` órfão). Bugs conhecidos (`addUserToOrg` sem `vocaccioRole`) são fixes, não reescritas.
 **Gatilho:** caso concreto que satisfaça (a)-(c).
+
+## ADR-19 — Papéis de cliente no WhatsApp: atributo em `ClientContact`, não novo `VocaccioRole`
+**Contexto:** DECISOES-PILOTO-P2 §5 introduz dois papéis do lado do cliente — `CLIENT_APPROVER`
+(contato principal, aprova conteúdo/prazo) e `CLIENT_MEMBER` (demais participantes) — que não
+existem no enum `VocaccioRole` atual (`OWNER, OPERATOR, EDITOR, VIEWER_INTERNAL, CLIENT_USER`).
+**Decisão:** modelar como **atributo em `ClientContact`** (ex. `isApprover: boolean`), não como
+extensão do enum `VocaccioRole`. `VocaccioRole` continua sendo autorização de acesso ao produto
+(quem loga e o que vê); "quem pode aprovar via WhatsApp" é uma regra de negócio por contato, não uma
+role de sistema — evita migração de enum para um conceito que só existe no canal WhatsApp.
+**Alternativas:** estender o enum (mistura autenticação com regra de canal específico; migração
+mais pesada para um caso de uso ainda em piloto). **+:** sem migração de enum; `ClientContact` já
+existe e é o lugar certo. **−:** a policy engine do bot precisa checar `ClientContact.isApprover`
+em vez de só `VocaccioRole` — duas fontes de permissão a considerar no comando `ApproveContent`.
+**Gatilho:** se o piloto mostrar necessidade real de múltiplos papéis de cliente com permissões
+distintas dentro do produto (não só no canal), reavaliar como `VocaccioRole` formal.

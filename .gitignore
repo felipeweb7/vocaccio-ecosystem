@@ -1,5 +1,9 @@
 # See http://help.github.com/ignore-files/ for more about ignoring files.
 
+# dados internos sensíveis (preços, nomes de equipe, estratégia jurídica) —
+# repo é público (fork sem opção de tornar privado); alimenta o site direto, sem passar pelo git
+docs/backoffice/DECISOES-PILOTO-P2.md
+
 # compiled output
 dist
 tmp

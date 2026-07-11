@@ -239,7 +239,7 @@ Colunas comprimidas; validação de repositórios em [pesquisa-repositorios.md](
 | Publicação | Publicar aprovados | Pós-gate | Serviço+gate | A3 (allowlist) | — (código) | post aprovado | API pública `/public/v1/posts` | Postiz | leve | baixo | reusar | P2 |
 | Relatório mensal | Horas manuais por cliente | Pós-gate | Skill | A1 | Sonnet | analytics+histórico | API pública | nativo+Postiz | leve | baixo | criar | P1 |
 | WhatsApp intake | Mensagens viram trabalho manual | Pós-gate | Pipeline (webhook+Haiku+SD) | A0→A2 | Haiku | mapa conversa→projeto | Meta Cloud API (sandbox no lab) | ver whatsapp-bot.md | leve sob demanda | médio/**alto (LGPD)** | laboratório | P1–P2 |
-| Proposta comercial | Propostas do zero | Pós-gate | Skill | A1 (envio A5) | Sonnet | CRM+faixas de preço | Read/Write | nativo | leve | baixo/médio | criar | P1 |
+| Proposta comercial | Propostas do zero | Pós-gate | Skill | A1 (envio A5) | Sonnet | CRM+faixas de preço (fechadas em DECISOES-PILOTO-P2 §11) | Read/Write | nativo | leve | baixo/médio | criar | P1 |
 | Pesquisa/concorrência | Research manual | Já parcial | Skill+subagente | A0 | Sonnet | brief do cliente | WebSearch (Fred & Jorge) | existente | leve | baixo | reusar | — |
 | Governança | Ação sem trilha | Pós-gate | Hook+SD | — | — (código) | comando proposto | policy engine+audit | nativo | leve | é a mitigação | criar | P2 |
 
@@ -315,8 +315,9 @@ model LGPD e revisão adversarial do estudo interno). Resumo das decisões:
   automática. A pesquisa reprovou todos os conectores não-oficiais (ADR-05) — o lab valida o mesmo
   código da produção.
 - **Produção:** Meta Cloud API oficial (webhooks, credenciais empresariais, retenção, isolamento por
-  tenant) — decisão já travada. **Risco arquitetural aberto:** suporte limitado da Cloud API a
-  grupos → pergunta 1 de PERGUNTAS-FELIPE (grupo por projeto × conversa 1:1).
+  tenant) — decisão já travada. **Resolvido em 2026-07-11** ([DECISOES-PILOTO-P2.md](./DECISOES-PILOTO-P2.md)
+  §1): P2 usa conversa 1:1 com contato principal por cliente, não grupo — elimina a limitação de
+  grupos da Cloud API como bloqueio arquitetural; grupos ficam como evolução futura opcional.
 - **O LLM nunca executa SQL nem responde direto ao grupo sem gate.** Toda saída é comando tipado com
   ator, cliente, projeto, evidência, confiança, idempotency key e flag de aprovação necessária.
 
@@ -428,7 +429,13 @@ Fichas e evidências em [pesquisa-repositorios.md](./pesquisa-repositorios.md). 
 
 ## 24. Perguntas em aberto
 
-Somente as que bloqueiam decisão, em [PERGUNTAS-FELIPE.md](./PERGUNTAS-FELIPE.md).
+**As 15 perguntas foram respondidas em 2026-07-11** — ver [DECISOES-PILOTO-P2.md](./DECISOES-PILOTO-P2.md)
+(fonte de verdade; [PERGUNTAS-FELIPE.md](./PERGUNTAS-FELIPE.md) fica como histórico). Uma resposta
+gerou um gap de schema a resolver antes do PE-02/PE-04 tocarem aprovação via WhatsApp: `VocaccioRole`
+não tem papel de cliente aprovador — resolvido como decisão de modelagem em **ADR-19** (atributo em
+`ClientContact`, não extensão de enum). Nenhuma outra pergunta permanece em aberto para o P2; o
+único gate duro restante é a **revisão jurídica** (DECISOES-PILOTO-P2 §10) antes de qualquer dado
+real de cliente.
 
 ---
 

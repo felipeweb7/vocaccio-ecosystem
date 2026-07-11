@@ -2,10 +2,13 @@
 
 **Gatilho:** P1, após PE-03. Nada aqui toca cliente real.
 
-1. **Objetivo:** provar o pipeline `whatsapp-bot.md` §2 até `Proposed Command` em **dry-run**:
-   receptor de webhook local (script Node simples + túnel sob demanda) → normalizer → debouncer →
-   resolver (mapa estático em JSON) → Intent Extractor (Haiku via Claude Code, saída = enum §3) →
-   policy engine (função pura) → comando proposto impresso/salvo em arquivo (SEM PE-02, sem banco).
+1. **Objetivo:** provar o pipeline `whatsapp-bot.md` §2 até `Proposed Command` em **dry-run**, no
+   modelo **1:1 fechado em DECISOES-PILOTO-P2.md §1** (conversa individual com contato principal,
+   não grupo): receptor de webhook local (script Node simples + túnel sob demanda) → normalizer →
+   debouncer (~30 min, DECISOES-PILOTO-P2 §2) → resolver (mapa estático `waId→CrmClient/Project` em
+   JSON) → Intent Extractor (Haiku via Claude Code, saída = enum §3) → policy engine (função pura,
+   inclui checagem de `isApprover` simulado — ver ADR-19) → comando proposto impresso/salvo em
+   arquivo (SEM PE-02, sem banco).
 2. **Problema:** o desenho do bot nunca foi exercitado; a viabilidade da classificação por Haiku e
    do debouncing é hipótese.
 3. **Resultado:** relatório de laboratório com taxa de acerto do classificador em ≥40 mensagens de
@@ -23,8 +26,10 @@
     pipeline dry-run funcional, relatório escrito.
 11. **Segurança:** número de teste apenas; **zero envio automático** (nem no sandbox — respostas só
     impressas); token do app em `.env` local do lab (gitignorado); mensagens de teste sem dados
-    pessoais reais; instrução embutida em mensagem → deve sair `HUMAN_ESCALATION_REQUIRED`
-    (caso de teste obrigatório de prompt injection).
+    pessoais reais (gate jurídico do DECISOES-PILOTO-P2 §10 ainda não cumprido); instrução
+    embutida em mensagem → deve sair `HUMAN_ESCALATION_REQUIRED` (caso de teste obrigatório de
+    prompt injection); testar explicitamente que aprovação por emoji (👍) NÃO gera `ApproveContent`
+    (DECISOES-PILOTO-P2 §4).
 12. **Erros:** assinatura de webhook inválida → descartar e logar; intent com confiança < 0.7 →
     `AMBIGUOUS_INSTRUCTION_DETECTED`.
 13. **Aceite:** ≥40 mensagens de fixture cobrindo os 13 eventos do §3 + 3 tentativas de injection;
@@ -34,8 +39,10 @@
 16. **Rollback:** apagar a pasta do lab + app de teste no Meta dashboard.
 17. **Modelo mínimo:** Sonnet constrói; Haiku classifica (medir com Haiku — é o modelo-alvo).
 18. **Limite de turnos:** ~40.
-19. **Decisões fechadas:** Cloud API sandbox (nunca Baileys aqui — ADR-05); dry-run sem banco;
-    enum fechado de eventos; limiar inicial 0.7.
+19. **Decisões fechadas:** Cloud API sandbox (nunca Baileys aqui — ADR-05); modelo 1:1, não grupo
+    (DECISOES-PILOTO-P2 §1); dry-run sem banco; enum fechado de eventos; limiar inicial 0.7;
+    emoji nunca é aprovação; `DEADLINE_CHANGE_REQUESTED`/`SCOPE_CHANGE_REQUESTED`/comercial =
+    sempre A5 (não testar autonomia maior que isso).
 20. **Escalonar se:** Haiku ficar <80% após 2 iterações de prompt (decidir Sonnet-classificador ×
-    redesenho é decisão de custo/arquitetura), ou se o modelo de grupos exigir revisão (pergunta 1
-    de PERGUNTAS-FELIPE).
+    redesenho é decisão de custo/arquitetura), ou se surgir demanda real de suportar grupos
+    (reabre ADR-05, hoje fechado para 1:1).

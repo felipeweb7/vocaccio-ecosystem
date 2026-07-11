@@ -1,6 +1,8 @@
 # Perguntas que só o Felipe pode responder
 
-> Somente o que bloqueia decisão. Respostas devem ser registradas aqui mesmo, com data.
+> **Status: RESPONDIDAS em 2026-07-11.** Ver [DECISOES-PILOTO-P2.md](./DECISOES-PILOTO-P2.md) —
+> fonte de verdade. Este arquivo fica como histórico do que foi perguntado; não editar as respostas
+> aqui, editar lá. Uma decisão gerou um gap de schema pendente (ver ADR-19 em [ADRS.md](./ADRS.md)).
 
 ## Operação e relacionamento
 1. **Grupo por projeto ou 1:1?** A Cloud API oficial tem suporte limitado a grupos. O modelo de

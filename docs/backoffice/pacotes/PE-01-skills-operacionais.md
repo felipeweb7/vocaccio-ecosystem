@@ -22,8 +22,8 @@
 9. **Estado inicial:** só existe a skill `atelie` (produção de entregável).
 10. **Estado final:** 4 skills novas invocáveis, documentadas no README de agents.
 11. **Segurança:** skills nunca chamam APIs externas nem escrevem fora das pastas de saída; dados
-    de cliente ficam locais; `ops-proposta` nunca inventa preço — usa faixas de
-    `PERGUNTAS-FELIPE.md` §11 ou marca "PREÇO: definir".
+    de cliente ficam locais; `ops-proposta` usa as faixas fechadas em `DECISOES-PILOTO-P2.md` §11
+    (nunca inventa preço fora delas; projeto robusto = "sob orçamento", conforme a tabela).
 12. **Erros:** cliente/projeto não identificado → skill pergunta, não assume; áudio sem transcrição
     disponível → instruir operador (sem instalar transcritor).
 13. **Aceite:** rodar cada skill com 1 caso real e 1 caso ambíguo; saída segue o frontmatter;
