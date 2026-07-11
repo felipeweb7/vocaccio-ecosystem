@@ -852,6 +852,9 @@ AT-0..AT-3 — Ateliê Virtual (back-office), ver Camada 10.5             AT-0/A
           AT-3 em espera até Fase 3.5 fechar
 Pós-conclusão — MBTI + Eneagrama no Religare ⛔ pós-conclusão
 Pós-conclusão — Astrologia natal no Religare (`sweph` já instalado) ⛔ pós-conclusão
+Pós-MVP    — Avaliar skill ditto (ohad6k/ditto) como base do "agente Felipe" (perfil
+          auto-minerado + cosmologia + treina o Felipe em prompting) ⛔ gate = 3 pagantes;
+          ver memória project-ditto-agente-felipe
 ```
 
 ---
@@ -900,6 +903,12 @@ handoff, não código.
 (Sibila-LLM, MBTI, Eneagrama, astrologia natal), Kanban-bot e Comunidade das Comunidades
 só voltam à mesa com **3 clientes pagantes ativos**. Pode rodar em paralelo às jogadas:
 fechar F2, fechar F3.5 congelada, AT-3 quando F3.5 fechar. Nada além.
+
+**Janela de exceção 2026-07-11 (única, aprovada pelo Felipe — "colheita Fable 5"):**
+antes do recongelamento, uma implementação em massa do que estava represado: varredura
+completa `auditoria-glass` (Flitwick), anotação da skill ditto para pós-MVP, e promoção
+das regras de delegação/verificação ao CLAUDE.md global. Após esta janela, o congelamento
+volta integralmente — próxima exceção só com pedido explícito do Felipe.
 
 **Regras de "parar de fazer" (raciocínio completo no roadmap):**
 1. Ecossistema de agentes/skills congelado como está até a 1ª venda (exceção: erro bloqueante).
