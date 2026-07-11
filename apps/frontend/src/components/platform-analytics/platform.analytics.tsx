@@ -137,7 +137,7 @@ export const PlatformAnalytics = () => {
 
   if (isLoading) {
     return (
-      <div className="bg-newBgColorInner p-[20px] flex flex-1 flex-col gap-[15px] transition-all items-center justify-center">
+      <div className="bg-transparent p-[20px] flex flex-1 flex-col gap-[15px] transition-all items-center justify-center">
         <LoadingComponent />
       </div>
     );
@@ -145,7 +145,7 @@ export const PlatformAnalytics = () => {
 
   if (!sortedIntegrations.length && !isLoading) {
     return (
-      <div className="bg-newBgColorInner p-[20px] flex flex-col gap-[15px] transition-all flex-1 justify-center items-center text-center">
+      <div className="bg-transparent p-[20px] flex flex-col gap-[15px] transition-all flex-1 justify-center items-center text-center">
         <div>
           <img src="/peoplemarketplace.svg" />
         </div>
@@ -174,7 +174,7 @@ export const PlatformAnalytics = () => {
     <>
       <div
         className={clsx(
-          'bg-newBgColorInner p-[20px] flex flex-col gap-[15px] transition-all',
+          'bg-transparent p-[20px] flex flex-col gap-[15px] transition-all',
           collapseMenu === '1' ? 'group sidebar w-[100px]' : 'w-[260px]'
         )}
       >
@@ -272,7 +272,7 @@ export const PlatformAnalytics = () => {
           ))}
         </div>
       </div>
-      <div className="bg-newBgColorInner flex-1 flex-col flex p-[20px] gap-[12px]">
+      <div className="bg-transparent flex-1 flex-col flex p-[20px] gap-[12px]">
         {!!options.length && (
           <div className="flex-1 flex flex-col gap-[14px]">
             <div className="max-w-[200px]">
