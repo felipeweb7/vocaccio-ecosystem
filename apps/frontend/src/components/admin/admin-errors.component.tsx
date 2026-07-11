@@ -59,8 +59,8 @@ const ErrorDetailsModal: FC<{ row: ErrorRow }> = ({ row }) => {
   }, [parsedMessage, parsedBody, row, toaster]);
 
   return (
-    <div className="rounded-[4px] border border-newTableBorder bg-newBgColorInner px-[16px] pb-[16px] relative w-full max-h-[80vh] overflow-auto">
-      <div className="sticky top-0 bg-newBgColorInner py-[16px] flex items-center justify-between gap-[12px] z-10 border-b border-newTableBorder mb-[12px]">
+    <div className="rounded-[4px] border border-newTableBorder bg-transparent px-[16px] pb-[16px] relative w-full max-h-[80vh] overflow-auto">
+      <div className="sticky top-0 bg-transparent py-[16px] flex items-center justify-between gap-[12px] z-10 border-b border-newTableBorder mb-[12px]">
         <div className="text-[16px] font-[600]">Error Details</div>
         <div className="flex gap-[8px] items-center">
           <Button onClick={copyAll}>Copy Debug Code</Button>
@@ -249,7 +249,7 @@ export const AdminErrorsComponent: FC = () => {
         </div>
       </div>
 
-      <div className="flex flex-wrap gap-[12px] items-end bg-newBgColorInner border border-newTableBorder rounded-[8px] p-[12px]">
+      <div className="flex flex-wrap gap-[12px] items-end bg-transparent border border-newTableBorder rounded-[8px] p-[12px]">
         <div className="flex flex-col gap-[6px]">
           <div className="text-[12px] opacity-70">Platform</div>
           <select
@@ -328,7 +328,7 @@ export const AdminErrorsComponent: FC = () => {
         <div className="opacity-70">No errors found.</div>
       ) : (
         <div className="border border-newTableBorder rounded-[8px] overflow-hidden">
-          <div className="grid grid-cols-[170px_120px_220px_1fr_220px] gap-[12px] px-[12px] py-[10px] bg-newBgColorInner text-[12px] uppercase opacity-70 border-b border-newTableBorder">
+          <div className="grid grid-cols-[170px_120px_220px_1fr_220px] gap-[12px] px-[12px] py-[10px] bg-transparent text-[12px] uppercase opacity-70 border-b border-newTableBorder">
             <div>Created</div>
             <div>Platform</div>
             <div>User / Org</div>
