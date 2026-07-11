@@ -123,6 +123,31 @@ qualquer skill encontrada segue decisão de mérito do Dumbledore (instalar é o
 mérito é real, "só inspirar" é o fallback). Padrão skill-lookup-installer do mcpmarket ficou de
 fora — a página deu 429 (rate limit) e o conteúdo nunca foi lido de verdade.
 
+## Briefing de delegação (regra do Dumbledore, 2026-07-11)
+Todo prompt de delegação a sub-agente segue o formato **job brief**, não passo-a-passo
+(fonte: método Fable validado externamente; adaptado ao time — ver registro no Caderno):
+
+```
+OBJETIVO: [o resultado, em 1 frase]
+PRONTO QUANDO: [critérios checáveis — não adjetivos]
+INSUMOS: [arquivos, memórias, docs, skills a invocar — tudo que o agente precisa, ele começa frio]
+REGRAS: [só as regras do CLAUDE.md que se aplicam a ESTA tarefa + limites duros abaixo]
+```
+
+**Calibragem por modelo (o ponto que os posts virais erram):** quanto mais capaz o modelo,
+menos scaffolding; quanto mais fraco, mais procedimento explícito. Dumbledore (Opus/Fable)
+recebe objetivo + critério de pronto e decide o caminho; **Sonnet recebe o brief + as skills
+nomeadas** (`boot-real`/`poda-segura`/`auditoria-glass`/`impeccable`); **Haiku (Moody/Griphook)
+recebe checklist fechado** — nunca tarefa aberta.
+
+**Limites duros de execução (anti-loop, valem para todo sub-agente):**
+- 3 ciclos de verificação falhando no mesmo ponto → **pare e devolva** o estado + hipóteses,
+  não insista num 4º.
+- 2 buscas infrutíferas pela mesma coisa (grep/web) → pare de procurar, reporte o que falta.
+- **Cole, não afirme:** toda alegação de "verificado/testado/buildou" cita a evidência real
+  da própria sessão (exit code, linha do curl, output do grep). Sem evidência citável =
+  reportar como **NÃO verificado** — nunca suavizar.
+
 ## Como o Dumbledore orquestra (princípios — inspirados no Ruflo)
 1. **Delegação paralela**: tarefas independentes (ex. front + back da mesma feature) vão para
    sub-agentes em paralelo; só serializa o que tem dependência real.

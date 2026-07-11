@@ -36,6 +36,22 @@ _(nenhum ainda — primeira ronda)_
 
 _(nenhum ainda)_
 
+## Decisões de avaliação de skill/metodologia externa (registro anti-re-avaliação)
+
+- **2026-07-11 | fontes: `TheColliny/FableClaudeMDForOpus` + `Sahir619/fable-method` + texto
+  viral "Fable 5 hacks"** | Auditoria de segurança (fetch): ambos os repos são metodologia de
+  prompt pura — sem chamada de rede, credencial ou pedido de desligar permissão. Veredito:
+  **SÓ INSPIRAR, não instalar** (Fase M congela o ecossistema; ~80% do conteúdo já existia
+  aqui — guardrails checáveis = CLAUDE.md seções 4/6, verifier de contexto frio = Moody,
+  transcript-artifact = boot-real). O que foi absorvido (commit desta data): briefing de
+  delegação GOAL/PRONTO/INSUMOS/REGRAS + calibragem de scaffolding por modelo + limites duros
+  anti-loop (3 verify falhos → devolve; 2 buscas vazias → para) no README dos agentes, e regra
+  "cole, não afirme" no CLAUDE.md. Claims do texto viral REJEITADOS como falsos/não
+  verificáveis: "'explain your reasoning' dispara classificador de recusa" (falso), "fallback
+  silencioso pra Opus 4.8" (sem evidência), "message 30 custa 31x" (ignora prompt caching),
+  "esvazie seus settings" (anti-padrão pro nosso setup), benchmarks numéricos (80.3%/3x/$10 —
+  inventados ou não verificáveis). Não re-avaliar essas fontes sem mudança material nelas.
+
 ## Clusters graduados (correção já aplicada)
 
 - **2026-07-03 | causa-raiz: checklist de poda incompleto (só `--merged`, sem `git status` por
