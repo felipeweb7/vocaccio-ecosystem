@@ -22,6 +22,12 @@
 > validados contra fonte externa). Nova **Camada 10.5 — Ateliê Virtual (Back-office)**,
 > que existia na memória mas nunca tinha sido escrita neste arquivo. Nenhuma decisão da
 > Camada 18 foi alterada — só status atualizado.
+>
+> **v6.3 (2026-07-12) — reconciliação de git + honestidade de estado:** duas branches
+> nunca mergeadas (`backoffice-planning`, `project-docs-skills`) reconciliadas na branch de
+> trabalho (PR aberto, aguardando revisão do Felipe). Back-office agêntico P0 FECHADO
+> (2026-07-11, `docs/backoffice/`, 18 ADRs). Plano de leveza executado até ondas B/C/D/E;
+> resíduos marcados v2.0, sem item bloqueante. Nenhuma decisão da Camada 18 alterada.
 
 ---
 
@@ -1162,12 +1168,13 @@ ISR na LP · F6+: Vercel Analytics, Sentry free, alerta LCP > 3s.
 
 ---
 
-**Estado atual (2026-07-09): Fases 0-1 ✅ concluídas · Fase 2 ~90% (validar portal no
-browser) · Fase 3 ~65% (falta Sincronário) · Fase 3.5 em andamento, ESCOPO CONGELADO
-(auditar Volatis/portal nos primitivos novos e fechar) · Religare (Fase 5) com Fatias 1-6
-implementadas, adiantada em paralelo · Ateliê Virtual AT-0/AT-1/AT-2 concluídos, AT-3 em
-espera até Fase 3.5 fechar · **Fase M (Movimento Comercial) INICIADA — prioridade nº 1,
-ver Camada 17.5 e `docs/comercial/ROADMAP-MONETIZACAO.md`; gate: Fase 4+ só com 3
-clientes pagantes.**
+**Estado atual (2026-07-12):** Fases 0-1 ✅ · Fase 2 ~90% (validar portal no browser)
+· Fase 3 ~65% (falta Sincronário) · Fase 3.5 ESCOPO CONGELADO (auditar Volatis/portal e
+fechar) · Religare (Fase 5) Fatias 1-6 implementadas · Ateliê AT-0/1/2 ✅, AT-3 em espera
+· leveza executada (resíduos v2.0) · back-office P0 fechado (11-07).
+**Fase M (Movimento Comercial) é PRIORIDADE Nº 1 desde 09-07 — porém 0 clientes pagantes
+até hoje e nenhum passo de execução comercial rodou.** Gate: Fase 4+ só com 3 pagantes.
+Próximo passo real = executar `docs/comercial/ROADMAP-MONETIZACAO.md`, não mais código de fase.
 Cada sessão: ler `/phases/checkpoint-faseN.md` mais recente antes de qualquer coisa —
-o mais recente é `phases/checkpoint-fase2-fase3.5-retomada.md`.
+o mais recente é `phases/checkpoint-fase2-fase3.5-retomada.md` (também desatualizado,
+02-04/07 — ver PR aberto em `claude/vocaccio-hub-kickoff-457fec` pro estado real de 12/07).
