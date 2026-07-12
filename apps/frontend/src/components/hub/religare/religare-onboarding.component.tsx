@@ -98,7 +98,7 @@ export const ReligareOnboarding: FC = () => {
   };
 
   return (
-    <div className="flex flex-col flex-1 bg-newBgColor min-h-full">
+    <div className="flex flex-col flex-1 bg-transparent min-h-full">
       <div className="max-w-[760px] w-full mx-auto px-[20px] py-[28px]">
         {/* header + stepper */}
         <div className="flex items-center gap-[10px] mb-[6px]">

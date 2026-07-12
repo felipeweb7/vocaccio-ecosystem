@@ -27,6 +27,21 @@
 
 ---
 
+## Skills operacionais disponíveis (2026-07-09)
+Duas skills formalizam a execução deste plano — usar em vez de repetir o checklist na mão:
+- **`poda-segura`** (`.claude/skills/poda-segura/SKILL.md`) — para qualquer onda C ainda aberta
+  (C4 e futuras) e para B2 (quarentena condicional de controllers, ainda não executada). Já lê o
+  veredito de cada onda registrado abaixo e obedece (não re-decide).
+- **`auditoria-glass`** (`.claude/skills/auditoria-glass/SKILL.md`) — cluster paralelo (débito
+  visual, não peso de dependência) registrado no Caderno do Zelador; roda independente das ondas
+  deste plano, mas mesma disciplina de commit por batch.
+
+**Próxima onda sugerida (ainda não executada):** B2 (quarentena condicional de `copilot`/
+`third-party`/`agents` no NestJS) é o item aberto de maior valor deste plano — exige boot real,
+que só o checkout principal `C:\dev\vocaccio` valida. Melhor momento: início de uma sessão nova
+(contexto frio, sem trabalho concorrente no worktree principal), rodando `poda-segura` do começo
+ao fim numa sessão dedicada, não encaixada no meio de outra frente.
+
 ## Fase 0 — Concluir a segurança em andamento *(pré-requisito, já iniciada)*
 A branch `fix/voc-idor-project-content` (Fase 1 da auditoria: VOC-01, 02, 04, 06, 09, 31, 32…) deve ser finalizada e mergeada **antes** das podas, para não misturar diffs.
 **Modelo:** Sonnet médio. **Verificação:** smoke de CRM/portal + boot real.

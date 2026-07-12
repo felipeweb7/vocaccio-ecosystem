@@ -58,8 +58,8 @@ function formatDate(iso: string) {
 // ─── Skeleton ─────────────────────────────────────────────────────────────────
 
 const Skeleton: FC = () => (
-  <div className="flex flex-col flex-1 bg-newBgColor animate-pulse">
-    <div className="bg-newBgColorInner border-b border-newTableBorder px-[20px] py-[24px]">
+  <div className="flex flex-col flex-1 bg-transparent animate-pulse">
+    <div className="bg-transparent border-b border-newTableBorder px-[20px] py-[24px]">
       <div className="max-w-[900px] mx-auto flex items-start gap-[16px]">
         <div className="w-[52px] h-[52px] rounded-[14px] bg-newBgColor" />
         <div className="flex-1 space-y-[10px]">
@@ -371,7 +371,7 @@ export const ClientDetail: FC<{ id: string }> = ({ id }) => {
       loadError?.status === 500 ? 'Erro interno no servidor (verifique os logs do backend).' :
       'Não foi possível carregar o cliente.';
     return (
-      <div className="flex flex-col items-center justify-center py-[80px] bg-newBgColor flex-1">
+      <div className="flex flex-col items-center justify-center py-[80px] bg-transparent flex-1">
         <p className="text-[16px] text-newTableText">{hint}</p>
         {loadError && (
           <p className="mt-[8px] text-[12px] font-mono text-newTableText opacity-60">
@@ -386,9 +386,9 @@ export const ClientDetail: FC<{ id: string }> = ({ id }) => {
   }
 
   return (
-    <div className="flex flex-col flex-1 bg-newBgColor min-h-full">
+    <div className="flex flex-col flex-1 bg-transparent min-h-full">
       {/* Header */}
-      <div className="bg-newBgColorInner border-b border-newTableBorder px-[20px] py-[20px]">
+      <div className="bg-transparent border-b border-newTableBorder px-[20px] py-[20px]">
         <div className="max-w-[900px] mx-auto">
           <Link href="/hub/crm" className="inline-flex items-center gap-[5px] text-[12px] font-[600] text-newTableText hover:text-newTextColor transition-colors mb-[16px]">
             <ArrowLeft size={13} /> Clientes

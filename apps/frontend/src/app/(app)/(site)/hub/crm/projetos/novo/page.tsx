@@ -20,8 +20,8 @@ export default function CrmNovoProjetoPage() {
   const clients = data?.items?.map((c) => ({ id: c.id, name: c.name })) ?? [];
 
   return (
-    <div className="flex flex-col flex-1 bg-newBgColor min-h-full">
-      <div className="bg-newBgColorInner border-b border-newTableBorder px-[20px] py-[20px]">
+    <div className="flex flex-col flex-1 bg-transparent min-h-full">
+      <div className="bg-transparent border-b border-newTableBorder px-[20px] py-[20px]">
         <div className="max-w-[700px] mx-auto">
           <Link href="/hub/crm/projetos" className="inline-flex items-center gap-[5px] text-[12px] font-[600] text-newTableText hover:text-newTextColor transition-colors mb-[16px]">
             <ArrowLeft size={13} /> Projetos

@@ -31,8 +31,8 @@ export function CrmProjectDetailClient({ id }: Props) {
 
   if (isLoading) {
     return (
-      <div className="flex flex-col flex-1 bg-newBgColor animate-pulse">
-        <div className="bg-newBgColorInner border-b border-newTableBorder px-[20px] py-[24px]">
+      <div className="flex flex-col flex-1 bg-transparent animate-pulse">
+        <div className="bg-transparent border-b border-newTableBorder px-[20px] py-[24px]">
           <div className="max-w-[900px] mx-auto space-y-[10px]">
             <div className="h-[14px] w-[100px] rounded-full bg-newBgColor" />
             <div className="h-[24px] w-[240px] rounded-full bg-newBgColor" />
@@ -44,7 +44,7 @@ export function CrmProjectDetailClient({ id }: Props) {
 
   if (!data) {
     return (
-      <div className="flex flex-col items-center justify-center py-[80px] bg-newBgColor flex-1">
+      <div className="flex flex-col items-center justify-center py-[80px] bg-transparent flex-1">
         <p className="text-[16px] text-newTableText">Projeto não encontrado.</p>
         <Link href="/hub/crm/projetos" className="mt-[16px] text-[13px] font-[700]" style={{ color: 'var(--voc-violet)' }}>
           ← Voltar
@@ -54,9 +54,9 @@ export function CrmProjectDetailClient({ id }: Props) {
   }
 
   return (
-    <div className="flex flex-col flex-1 bg-newBgColor min-h-full">
+    <div className="flex flex-col flex-1 bg-transparent min-h-full">
       {/* Header */}
-      <div className="bg-newBgColorInner border-b border-newTableBorder px-[20px] py-[20px]">
+      <div className="bg-transparent border-b border-newTableBorder px-[20px] py-[20px]">
         <div className="max-w-[900px] mx-auto">
           <Link href={`/hub/crm/${data.client.id}`} className="inline-flex items-center gap-[5px] text-[12px] font-[600] text-newTableText hover:text-newTextColor transition-colors mb-[16px]">
             <ArrowLeft size={13} /> {data.client.name}

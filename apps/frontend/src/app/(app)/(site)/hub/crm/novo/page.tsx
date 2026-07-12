@@ -11,8 +11,8 @@ export default function CrmNovoClientePage() {
   const { createClient } = useCrmMutations();
 
   return (
-    <div className="flex flex-col flex-1 bg-newBgColor min-h-full">
-      <div className="bg-newBgColorInner border-b border-newTableBorder px-[20px] py-[20px]">
+    <div className="flex flex-col flex-1 bg-transparent min-h-full">
+      <div className="bg-transparent border-b border-newTableBorder px-[20px] py-[20px]">
         <div className="max-w-[600px] mx-auto">
           <Link
             href="/hub/crm"
@@ -28,7 +28,7 @@ export default function CrmNovoClientePage() {
       </div>
 
       <div className="flex-1 max-w-[600px] w-full mx-auto px-[20px] py-[28px]">
-        <div className="bg-newBgColorInner rounded-[16px] border border-newTableBorder p-[24px]">
+        <div className="bg-transparent rounded-[16px] border border-newTableBorder p-[24px]">
           <ClientForm
             submitLabel="Criar cliente"
             onCancel={() => router.push('/hub/crm')}

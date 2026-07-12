@@ -228,8 +228,8 @@ export const DeveloperComponent: FC = () => {
             'After a user completes the OAuth2 flow, you receive a pos_ prefixed token that works everywhere an API Key does — API, MCP, and CLI.'
           )}
         </div>
-        <div className="bg-newBgColorInner rounded-[12px] border border-newBorder overflow-hidden">
-          <div className="bg-newBgColorInner px-[20px] py-[14px] border-b border-newBorder flex items-start justify-between gap-[12px]">
+        <div className="bg-transparent rounded-[12px] border border-newBorder overflow-hidden">
+          <div className="bg-transparent px-[20px] py-[14px] border-b border-newBorder flex items-start justify-between gap-[12px]">
             <div>
               <div className="text-[15px] font-[600]">
                 {t('oauth_application', 'OAuth Application')}
@@ -281,8 +281,8 @@ export const DeveloperComponent: FC = () => {
             'After a user completes the OAuth2 flow, you receive a pos_ prefixed token that works everywhere an API Key does — API, MCP, and CLI.'
           )}
         </div>
-        <div className="bg-newBgColorInner rounded-[12px] border border-newBorder overflow-hidden">
-          <div className="bg-newBgColorInner px-[20px] py-[14px] border-b border-newBorder">
+        <div className="bg-transparent rounded-[12px] border border-newBorder overflow-hidden">
+          <div className="bg-transparent px-[20px] py-[14px] border-b border-newBorder">
             <div className="text-[15px] font-[600]">
               {t('create_oauth_app', 'Create OAuth App')}
             </div>
@@ -391,8 +391,8 @@ export const DeveloperComponent: FC = () => {
         )}
       </div>
       {/* App details / edit */}
-      <div className="bg-newBgColorInner rounded-[12px] border border-newBorder overflow-hidden">
-        <div className="bg-newBgColorInner px-[20px] py-[14px] border-b border-newBorder flex items-start justify-between gap-[12px]">
+      <div className="bg-transparent rounded-[12px] border border-newBorder overflow-hidden">
+        <div className="bg-transparent px-[20px] py-[14px] border-b border-newBorder flex items-start justify-between gap-[12px]">
           <div>
             <div className="text-[15px] font-[600]">
               {t('oauth_application', 'OAuth Application')}
@@ -539,8 +539,8 @@ export const DeveloperComponent: FC = () => {
       </div>
 
       {/* Credentials */}
-      <div className="bg-newBgColorInner rounded-[12px] border border-newBorder overflow-hidden">
-        <div className="bg-newBgColorInner px-[20px] py-[14px] border-b border-newBorder">
+      <div className="bg-transparent rounded-[12px] border border-newBorder overflow-hidden">
+        <div className="bg-transparent px-[20px] py-[14px] border-b border-newBorder">
           <div className="text-[15px] font-[600]">
             {t('credentials', 'Credentials')}
           </div>

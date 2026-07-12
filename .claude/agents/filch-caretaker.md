@@ -73,6 +73,18 @@ conhece e pode adaptar: ronda de triage, limpeza pós-merge, varredura de deps, 
 changelog. Ferramentas nativas do harness a preferir sobre gambiarra: hooks do settings,
 `/loop`, tarefas agendadas, sub-agentes maker/checker.
 
+### 2.5. Skills operacionais já existem — não redescubra o mecanismo
+Três skills já cobrem os loops que você mais fareja neste projeto: **`boot-real`** (verificação
+real de backend pós-mudança — o mecanismo que impede "typecheck-teatro"), **`poda-segura`**
+(grep→decisão→build→boot→commit isolado para dependência/módulo do plano de leveza) e
+**`auditoria-glass`** (varredura arquivo-a-arquivo do cluster `bg-newBgColorInner` sobre glass,
+já era um cluster MADURO seu). Quando uma ronda encontrar recorrência que uma dessas já resolve,
+**não rascunhe regra nova** — cobre o agente dono (Sirius/Flitwick) por não ter invocado a skill,
+e se a skill em si estiver desatualizada ou faltando um caso, proponha o ajuste no `SKILL.md`
+dela (mérito segue o mesmo fluxo da seção 8). O cluster `bg-newBgColorInner`/glass gradua quando
+`docs/zelador/auditoria-glass-progresso.md` (mantido pela skill) zerar — acompanhe esse arquivo
+em vez de reabrir a investigação do zero a cada ronda.
+
 ### 3. Entulho e sujeira (ronda física)
 `git worktree list` + `git branch --merged`/`--no-merged` vs `main` → worktrees/branches
 esquecidas (este repo acumula worktrees em `.claude/worktrees/` — verifique quais ainda têm

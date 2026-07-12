@@ -192,14 +192,14 @@ export const ReligareProfile: FC<{ id: string }> = ({ id }) => {
 
   if (isLoading) {
     return (
-      <div className="flex flex-1 items-center justify-center bg-newBgColor">
+      <div className="flex flex-1 items-center justify-center bg-transparent">
         <Loader2 size={22} className="animate-spin text-newTextColor opacity-60" />
       </div>
     );
   }
   if (!profile) {
     return (
-      <div className="flex flex-1 items-center justify-center bg-newBgColor">
+      <div className="flex flex-1 items-center justify-center bg-transparent">
         <p className="text-[14px]" style={{ color: 'var(--new-table-text)' }}>
           Perfil não encontrado.
         </p>
@@ -212,7 +212,7 @@ export const ReligareProfile: FC<{ id: string }> = ({ id }) => {
     : null;
 
   return (
-    <div className="flex flex-col flex-1 bg-newBgColor min-h-full">
+    <div className="flex flex-col flex-1 bg-transparent min-h-full">
       <div className="max-w-[900px] w-full mx-auto px-[20px] py-[28px]">
         {/* header */}
         <div className="flex items-start justify-between gap-[16px] flex-wrap">
@@ -313,7 +313,7 @@ export const ReligareProfile: FC<{ id: string }> = ({ id }) => {
 };
 
 const Section: FC<{ title: string; children: React.ReactNode }> = ({ title, children }) => (
-  <div className="rounded-[16px] bg-newBgColorInner border border-newTableBorder p-[18px] mb-[14px]">
+  <div className="rounded-[16px] bg-transparent border border-newTableBorder p-[18px] mb-[14px]">
     <div className="text-[12px] font-[800] uppercase tracking-wide mb-[12px]" style={{ color: 'var(--new-table-text)' }}>
       {title}
     </div>
