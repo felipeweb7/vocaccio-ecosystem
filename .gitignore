@@ -100,3 +100,6 @@ docs/atelie/entregas/*
 
 # Graphify — grafo de conhecimento é saída gerada localmente (cache/AST/graph.json), não versionar
 graphify-out/
+
+# Vocaccio — vídeos de referência de benchmarking (pesados, não são código/conteúdo do produto)
+docs/referencias/*.webm
