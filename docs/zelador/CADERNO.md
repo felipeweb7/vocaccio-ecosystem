@@ -27,11 +27,44 @@ _(nenhum ainda — primeira ronda)_
   arquivo (não substituição global cega, já que `--new-bgColor*` também é usado em contextos
   que legitimamente precisam de opacidade, ex. popovers/dropdowns) e trocar por
   `bg-transparent`/token glass onde o container pai já é `.voc-glass-*` | status: MADURO,
-  correção pontual aplicada só na tela relatada — resto pendente de auditoria dedicada.
+  correção pontual aplicada só na tela relatada — resto pendente de auditoria dedicada. **2026-07-09:**
+  mecanismo formalizado como skill `auditoria-glass` (`.claude/skills/auditoria-glass/SKILL.md`) —
+  inventário vivo em `docs/zelador/auditoria-glass-progresso.md` (criado na primeira execução),
+  Flitwick invoca proativamente. Cluster gradua quando esse arquivo zerar os 44 pendentes.
+  **2026-07-11 (janela de exceção do Felipe, "colheita Fable 5"):** os 56 arquivos do
+  inventário (44 + 12 já mapeados) foram triados de ponta a ponta em duas sessões
+  (worktree compartilhado, commits intercalados) — `2d7e33a7`, `021e941a`, `b9e85ab0`,
+  `8e75c29c`, `cb27f0a4`, `3f0cf39a`, `146f48e9`, `dc560685`, `33a9328e`. ~27 tiveram troca
+  de código (painel grande/header/card de seção → `bg-transparent`); ~27 revisados e
+  mantidos intactos por serem controle pequeno ou modal/popover/tooltip flutuante
+  confirmado no JSX (`fixed`/`absolute`+`z-index`+`shadow`); 2 arquivos com ocorrências
+  ambíguas deixadas explicitamente como VERIFICAR-BROWSER (`time.table.tsx`, 2 `<pre>` em
+  `public.component.tsx`); `plugs.tsx`/`third-party.component.tsx` pulados (quarentena).
+  Detalhe completo em `docs/zelador/auditoria-glass-progresso.md`. **Status: candidato a
+  GRADUADO, não promovido ainda** — nenhuma tela foi confirmada em browser real
+  (`node_modules` ausente no worktree); promoção formal exige verificação visual no
+  checkout principal (`C:\dev\vocaccio`, dev server real), sobretudo `carousel-editor.component.tsx`
+  e os 2 pontos VERIFICAR-BROWSER.
 
 ## Clusters graduados (correção já aplicada)
 
 _(nenhum ainda)_
+
+## Decisões de avaliação de skill/metodologia externa (registro anti-re-avaliação)
+
+- **2026-07-11 | fontes: `TheColliny/FableClaudeMDForOpus` + `Sahir619/fable-method` + texto
+  viral "Fable 5 hacks"** | Auditoria de segurança (fetch): ambos os repos são metodologia de
+  prompt pura — sem chamada de rede, credencial ou pedido de desligar permissão. Veredito:
+  **SÓ INSPIRAR, não instalar** (Fase M congela o ecossistema; ~80% do conteúdo já existia
+  aqui — guardrails checáveis = CLAUDE.md seções 4/6, verifier de contexto frio = Moody,
+  transcript-artifact = boot-real). O que foi absorvido (commit desta data): briefing de
+  delegação GOAL/PRONTO/INSUMOS/REGRAS + calibragem de scaffolding por modelo + limites duros
+  anti-loop (3 verify falhos → devolve; 2 buscas vazias → para) no README dos agentes, e regra
+  "cole, não afirme" no CLAUDE.md. Claims do texto viral REJEITADOS como falsos/não
+  verificáveis: "'explain your reasoning' dispara classificador de recusa" (falso), "fallback
+  silencioso pra Opus 4.8" (sem evidência), "message 30 custa 31x" (ignora prompt caching),
+  "esvazie seus settings" (anti-padrão pro nosso setup), benchmarks numéricos (80.3%/3x/$10 —
+  inventados ou não verificáveis). Não re-avaliar essas fontes sem mudança material nelas.
 
 ## Clusters graduados (correção já aplicada)
 

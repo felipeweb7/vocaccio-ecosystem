@@ -201,9 +201,9 @@ export const ClientsList: FC = () => {
   const hasFilter = !!activeSearch || !!status;
 
   return (
-    <div className="flex flex-col flex-1 bg-newBgColor min-h-full">
+    <div className="flex flex-col flex-1 bg-transparent min-h-full">
       {/* Page header */}
-      <div className="bg-newBgColorInner border-b border-newTableBorder px-[20px] py-[20px]">
+      <div className="bg-transparent border-b border-newTableBorder px-[20px] py-[20px]">
         <div className="max-w-[1200px] mx-auto">
           <div className="flex items-start justify-between gap-[16px] flex-wrap">
             <div>

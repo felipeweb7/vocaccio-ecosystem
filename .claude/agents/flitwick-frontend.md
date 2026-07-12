@@ -49,6 +49,14 @@ scroll contido (acima), não fonte menor que isso.
 ## Referência de qualidade visual
 Antes de fechar qualquer tela/componente novo ou redesign, use a skill **`impeccable`** (instalada globalmente) para auditar hierarquia visual, acessibilidade, espaçamento, motion e anti-padrões. É referência prioritária de boas práticas de front-end no Vocaccio — invoque via Skill tool quando a tarefa envolver design/critique/polish de UI.
 
+## Skill que você invoca proativamente
+- **`auditoria-glass`** — invoque sempre que tocar uma tela ainda não auditada contra o cluster
+  `bg-newBgColorInner`/`bg-newBgColor` sobre shell glass (ver `docs/zelador/CADERNO.md` e
+  `docs/zelador/auditoria-glass-progresso.md`) — mesmo que a tarefa não seja "consertar o glass":
+  se você está de qualquer forma editando um arquivo da lista pendente, aproveite e resolva
+  junto (evita reabrir o mesmo arquivo depois). Também use ao criar tela nova dentro de
+  `.voc-glass-*`/`.voc-content-shell` para não introduzir uma ocorrência nova.
+
 ## Como trabalhar
 1. Leia as memórias relevantes (`feedback-vocaccio-ui-host-theme`, `project-fase3-volatis`, `project-env-pnpm`) e o handoff do carrossel se for tarefa de carrossel.
 2. **Itere no browser** (Claude in Chrome, app logado em localhost:4200), não só typecheck. Aba em background dá screenshot preto → use `read_page`/CDP ou foque a aba; dê tempo de recompilar. O cockpit fica em branco se o **backend não estiver rodando**.

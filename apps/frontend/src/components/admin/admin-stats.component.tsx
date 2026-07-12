@@ -98,7 +98,7 @@ const PerSocialTable: FC<{ title: string; block: StatsBlock }> = ({
   block,
 }) => (
   <div className="border border-newTableBorder rounded-[8px] overflow-hidden">
-    <div className="grid grid-cols-[1fr_120px] gap-[12px] px-[12px] py-[10px] bg-newBgColorInner text-[12px] uppercase opacity-70 border-b border-newTableBorder">
+    <div className="grid grid-cols-[1fr_120px] gap-[12px] px-[12px] py-[10px] bg-transparent text-[12px] uppercase opacity-70 border-b border-newTableBorder">
       <div>{title}</div>
       <div className="text-right">Count</div>
     </div>
@@ -177,7 +177,7 @@ export const AdminStatsComponent: FC = () => {
         })}
       </div>
 
-      <div className="flex flex-wrap gap-[12px] items-end bg-newBgColorInner border border-newTableBorder rounded-[8px] p-[12px]">
+      <div className="flex flex-wrap gap-[12px] items-end bg-transparent border border-newTableBorder rounded-[8px] p-[12px]">
         <div className="flex flex-col gap-[6px]">
           <div className="text-[12px] opacity-70">From</div>
           <input

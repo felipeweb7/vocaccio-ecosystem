@@ -176,7 +176,7 @@ export const CarouselGallery = () => {
   return (
     <div className="flex flex-col flex-1 min-h-0 overflow-hidden text-newTextColor">
       {/* Cabeçalho */}
-      <div className="flex items-center gap-[12px] px-[24px] h-[64px] shrink-0 bg-newBgColorInner border-b border-newBorder">
+      <div className="flex items-center gap-[12px] px-[24px] h-[64px] shrink-0 bg-transparent border-b border-newBorder">
         <span
           className="grid place-items-center w-[34px] h-[34px] rounded-[10px] text-white"
           style={{ background: 'var(--voc-aurora)' }}
@@ -212,7 +212,7 @@ export const CarouselGallery = () => {
       </div>
 
       {/* Abas de projeto (só clientes ativados — sem scroll horizontal, quebra linha) */}
-      <div className="flex items-start gap-[16px] px-[24px] py-[10px] shrink-0 border-b border-newBorder bg-newBgColor">
+      <div className="flex items-start gap-[16px] px-[24px] py-[10px] shrink-0 border-b border-newBorder bg-transparent">
         <span className="text-[11px] font-[700] uppercase tracking-[0.1em] text-textItemBlur mt-[9px] shrink-0">
           Marcas / Experts
         </span>
@@ -238,7 +238,7 @@ export const CarouselGallery = () => {
       </div>
 
       {/* Conteúdo */}
-      <div className="flex-1 min-h-0 overflow-y-auto p-[24px] bg-newBgColor">
+      <div className="flex-1 min-h-0 overflow-y-auto p-[24px] bg-transparent">
         <div className="flex items-center justify-between mb-[16px]">
           <h2 className="text-[14px] font-[800]">
             {projectName}
@@ -370,7 +370,7 @@ const CarouselCard = ({
   };
 
   return (
-    <div className="group flex flex-col rounded-[14px] bg-newBgColorInner border border-newBorder transition-colors hover:border-[var(--voc-rose)]">
+    <div className="group flex flex-col rounded-[14px] bg-transparent border border-newBorder transition-colors hover:border-[var(--voc-rose)]">
       {/* Thumbnail */}
       <button
         type="button"

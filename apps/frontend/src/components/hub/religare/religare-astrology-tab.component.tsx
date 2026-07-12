@@ -23,7 +23,7 @@ const ASPECT_PT: Record<string, string> = {
 };
 
 const Section: FC<{ title: string; children: React.ReactNode }> = ({ title, children }) => (
-  <div className="rounded-[16px] bg-newBgColorInner border border-newTableBorder p-[18px] mb-[14px]">
+  <div className="rounded-[16px] bg-transparent border border-newTableBorder p-[18px] mb-[14px]">
     <div
       className="text-[12px] font-[800] uppercase tracking-wide mb-[12px]"
       style={{ color: 'var(--new-table-text)' }}

@@ -100,8 +100,8 @@ export const ProjectsList: FC = () => {
   const totalPages = data ? Math.ceil(data.total / PAGE_SIZE) : 1;
 
   return (
-    <div className="flex flex-col flex-1 bg-newBgColor min-h-full">
-      <div className="bg-newBgColorInner border-b border-newTableBorder px-[20px] py-[20px]">
+    <div className="flex flex-col flex-1 bg-transparent min-h-full">
+      <div className="bg-transparent border-b border-newTableBorder px-[20px] py-[20px]">
         <div className="max-w-[1100px] mx-auto">
           <div className="flex items-start justify-between gap-[16px] flex-wrap">
             <div>
@@ -135,7 +135,7 @@ export const ProjectsList: FC = () => {
       </div>
 
       <div className="flex-1 max-w-[1100px] w-full mx-auto px-[20px] py-[20px]">
-        <div className="bg-newBgColorInner rounded-[14px] border border-newTableBorder overflow-hidden">
+        <div className="bg-transparent rounded-[14px] border border-newTableBorder overflow-hidden">
           <table className="w-full">
             <thead>
               <tr className="text-[11px] font-[800] uppercase tracking-[0.06em] text-newTableText border-b border-newTableBorder bg-newTableHeader">

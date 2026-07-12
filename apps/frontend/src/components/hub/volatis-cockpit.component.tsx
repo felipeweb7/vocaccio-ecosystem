@@ -24,7 +24,7 @@ export const VolatisCockpit = () => {
   return (
     <VolatisClientProvider>
       <div ref={root.ref} className="flex flex-col flex-1 min-h-0 overflow-hidden">
-        <div className="flex items-center gap-[12px] px-[20px] h-[52px] shrink-0 bg-newBgColorInner border-b border-newBorder">
+        <div className="flex items-center gap-[12px] px-[20px] h-[52px] shrink-0 bg-transparent border-b border-newBorder">
           <span className="text-[11px] font-[700] uppercase tracking-[0.1em] text-textItemBlur">
             Contexto
           </span>
