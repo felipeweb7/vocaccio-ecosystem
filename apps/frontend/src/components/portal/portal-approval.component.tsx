@@ -12,6 +12,8 @@ function portalFetch(path: string, init?: RequestInit) {
   });
 }
 import { CheckCircle2, AlertCircle, MessageSquare, FileText, Clock, Send } from 'lucide-react';
+import { Button } from '@gitroom/frontend/components/ui/button.component';
+import { Badge } from '@gitroom/frontend/components/ui/badge.component';
 
 interface PortalItem {
   id: string;
@@ -106,6 +108,11 @@ function ItemCard({ item, token, onAction }: { item: PortalItem; token: string; 
   const isPending = localStatus === 'PENDING_APPROVAL' || localStatus === 'ADJUSTMENT_REQUESTED';
 
   return (
+    // Bespoke intencional (não `Card` de ui/card.component.tsx): o Card compartilhado
+    // aplica `voc-glass-card` (tokens --voc-bg-surface/--voc-border-soft/--voc-shadow-glass),
+    // feito para o shell escuro do app host. Esta é a página pública do portal — paper claro
+    // (#fff + --voc-paper-raised), com borda condicional por status (aprovado vs pendente) que
+    // o Card não expõe como prop. Forçar o Card aqui trocaria a estética clara pretendida.
     <div
       className="rounded-[16px] p-[24px] mb-[16px]"
       style={{
@@ -118,12 +125,15 @@ function ItemCard({ item, token, onAction }: { item: PortalItem; token: string; 
         <h3 className="text-[18px] font-[700] leading-snug" style={{ color: 'var(--voc-ink)', fontFamily: '"Cormorant Garamond", Georgia, serif' }}>
           {item.title}
         </h3>
-        <span
-          className="text-[11px] font-[700] px-[10px] py-[4px] rounded-full whitespace-nowrap"
-          style={{ background: `${STATUS_COLORS[localStatus]}18`, color: STATUS_COLORS[localStatus] }}
+        <Badge
+          bg={`${STATUS_COLORS[localStatus]}18`}
+          color={STATUS_COLORS[localStatus]}
+          className="whitespace-nowrap"
+          // Badge padrão usa py-[3px]; original deste componente é py-[4px] — override pra manter paridade visual.
+          style={{ paddingTop: 4, paddingBottom: 4 }}
         >
           {STATUS_LABELS[localStatus] ?? localStatus}
-        </span>
+        </Badge>
       </div>
 
       {item.body && (
@@ -149,30 +159,39 @@ function ItemCard({ item, token, onAction }: { item: PortalItem; token: string; 
       {/* Actions */}
       {isPending && !requesting && !commenting && (
         <div className="flex flex-wrap gap-[10px]">
-          <button
+          {/*
+            variant="ghost" usado como base neutra (sem bg/opacity próprios do Button) — as
+            cores por ação (voc-blue/voc-rose/voc-violet) e o padding exato (18/9, diferente
+            dos presets sm/md do Button) vêm de `style` inline, que sempre vence sobre classes
+            Tailwind, garantindo paridade pixel-a-pixel com o bespoke anterior.
+          */}
+          <Button
             onClick={doApprove}
             disabled={loading}
-            className="flex items-center gap-[6px] px-[18px] py-[9px] rounded-full text-[13px] font-[700] transition-all disabled:opacity-50"
-            style={{ background: 'var(--voc-blue)', color: '#fff' }}
+            variant="ghost"
+            className="disabled:opacity-50"
+            style={{ background: 'var(--voc-blue)', color: '#fff', paddingLeft: 18, paddingRight: 18, paddingTop: 9, paddingBottom: 9, fontSize: 13, fontWeight: 700 }}
           >
             <CheckCircle2 size={15} /> Aprovar
-          </button>
-          <button
+          </Button>
+          <Button
             onClick={() => setRequesting(true)}
             disabled={loading}
-            className="flex items-center gap-[6px] px-[18px] py-[9px] rounded-full text-[13px] font-[700] transition-all disabled:opacity-50"
-            style={{ background: '#df548e18', color: 'var(--voc-rose)' }}
+            variant="ghost"
+            className="disabled:opacity-50"
+            style={{ background: '#df548e18', color: 'var(--voc-rose)', paddingLeft: 18, paddingRight: 18, paddingTop: 9, paddingBottom: 9, fontSize: 13, fontWeight: 700 }}
           >
             <AlertCircle size={15} /> Solicitar ajuste
-          </button>
-          <button
+          </Button>
+          <Button
             onClick={() => setCommenting(true)}
             disabled={loading}
-            className="flex items-center gap-[6px] px-[18px] py-[9px] rounded-full text-[13px] font-[700] transition-all disabled:opacity-50"
-            style={{ background: '#f5f3ff', color: 'var(--voc-violet)' }}
+            variant="ghost"
+            className="disabled:opacity-50"
+            style={{ background: '#f5f3ff', color: 'var(--voc-violet)', paddingLeft: 18, paddingRight: 18, paddingTop: 9, paddingBottom: 9, fontSize: 13, fontWeight: 700 }}
           >
             <MessageSquare size={15} /> Comentar
-          </button>
+          </Button>
         </div>
       )}
 
@@ -188,17 +207,22 @@ function ItemCard({ item, token, onAction }: { item: PortalItem; token: string; 
             style={{ border: '1px solid #e8e3de', color: 'var(--voc-ink)' }}
           />
           <div className="flex gap-[8px] mt-[8px]">
-            <button
+            <Button
               onClick={doRequestAdjustment}
               disabled={loading || !adjustmentText.trim()}
-              className="px-[16px] py-[7px] rounded-full text-[12px] font-[700] disabled:opacity-50"
-              style={{ background: 'var(--voc-rose)', color: '#fff' }}
+              variant="ghost"
+              className="disabled:opacity-50"
+              style={{ background: 'var(--voc-rose)', color: '#fff', paddingLeft: 16, paddingRight: 16, paddingTop: 7, paddingBottom: 7, fontSize: 12, fontWeight: 700 }}
             >
               Enviar
-            </button>
-            <button onClick={() => setRequesting(false)} className="px-[16px] py-[7px] rounded-full text-[12px] font-[600]" style={{ background: '#f0ece8', color: '#5a5550' }}>
+            </Button>
+            <Button
+              onClick={() => setRequesting(false)}
+              variant="ghost"
+              style={{ background: '#f0ece8', color: '#5a5550', paddingLeft: 16, paddingRight: 16, paddingTop: 7, paddingBottom: 7, fontSize: 12, fontWeight: 600 }}
+            >
               Cancelar
-            </button>
+            </Button>
           </div>
         </div>
       )}
@@ -215,17 +239,22 @@ function ItemCard({ item, token, onAction }: { item: PortalItem; token: string; 
             style={{ border: '1px solid #e8e3de', color: 'var(--voc-ink)' }}
           />
           <div className="flex gap-[8px] mt-[8px]">
-            <button
+            <Button
               onClick={doComment}
               disabled={loading || !commentText.trim()}
-              className="px-[16px] py-[7px] rounded-full text-[12px] font-[700] disabled:opacity-50"
-              style={{ background: 'var(--voc-violet)', color: '#fff' }}
+              variant="ghost"
+              className="disabled:opacity-50"
+              style={{ background: 'var(--voc-violet)', color: '#fff', paddingLeft: 16, paddingRight: 16, paddingTop: 7, paddingBottom: 7, fontSize: 12, fontWeight: 700 }}
             >
               Comentar
-            </button>
-            <button onClick={() => setCommenting(false)} className="px-[16px] py-[7px] rounded-full text-[12px] font-[600]" style={{ background: '#f0ece8', color: '#5a5550' }}>
+            </Button>
+            <Button
+              onClick={() => setCommenting(false)}
+              variant="ghost"
+              style={{ background: '#f0ece8', color: '#5a5550', paddingLeft: 16, paddingRight: 16, paddingTop: 7, paddingBottom: 7, fontSize: 12, fontWeight: 600 }}
+            >
               Cancelar
-            </button>
+            </Button>
           </div>
         </div>
       )}
@@ -296,6 +325,9 @@ export function PortalApprovalPage({ token }: { token: string }) {
             { icon: CheckCircle2, label: 'Aprovados', count: data.items.filter(i => i.status === 'APPROVED').length, color: 'var(--voc-blue)' },
             { icon: FileText, label: 'Total', count: data.items.length, color: 'var(--voc-violet)' },
           ].map(({ icon: Icon, label, count, color }) => (
+            // Bespoke intencional, mesma razão do card de item acima: `Card` (ui/card.component.tsx)
+            // aplica a classe `voc-glass-card` do shell escuro do host; esta é a página pública do
+            // portal (paper claro #fff/--voc-paper-raised), não o glass do app.
             <div key={label} className="flex items-center gap-[8px] px-[16px] py-[10px] rounded-[12px]" style={{ background: '#fff', border: '1px solid #e8e3de' }}>
               <Icon size={16} style={{ color }} />
               <div>
