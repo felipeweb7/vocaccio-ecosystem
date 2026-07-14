@@ -432,7 +432,7 @@ export const MediaBox: FC<{
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder={t('search_media_by_name', 'Search by file name')}
-              className="w-full h-[44px] px-[14px] rounded-[8px] bg-newBgColorInner border border-newColColor text-[14px] outline-none focus:border-[var(--new-btn-primary)]"
+              className="w-full h-[44px] px-[14px] rounded-[8px] bg-newBgColorInner border border-newColColor text-[14px] outline-none focus:border-[var(--voc-rose)]"
             />
           </div>
           <input
@@ -545,13 +545,13 @@ export const MediaBox: FC<{
                     className={clsx(
                       'w-full h-full rounded-[6px] border-[4px] relative',
                       !!selected.find((p) => p.id === media.id)
-                        ? 'border-[var(--new-btn-primary)]'
+                        ? 'border-[var(--voc-rose)]'
                         : 'border-transparent'
                     )}
                     onClick={addRemoveSelected(media)}
                   >
                     {!!selected.find((p: any) => p.id === media.id) ? (
-                      <div className="text-white flex z-[101] justify-center items-center text-[14px] font-[500] w-[24px] h-[24px] rounded-full bg-[var(--new-btn-primary)] absolute -bottom-[10px] -end-[10px]">
+                      <div className="text-white flex z-[101] justify-center items-center text-[14px] font-[500] w-[24px] h-[24px] rounded-full bg-[var(--voc-rose)] absolute -bottom-[10px] -end-[10px]">
                         {selected.findIndex((z: any) => z.id === media.id) + 1}
                       </div>
                     ) : (
@@ -617,7 +617,8 @@ export const MediaBox: FC<{
               <button
                 onClick={standalone ? () => {} : addMedia}
                 disabled={selected.length === 0}
-                className="cursor-pointer text-white disabled:opacity-80 disabled:cursor-not-allowed h-[52px] px-[20px] items-center justify-center bg-[var(--new-btn-primary)] flex rounded-[10px]"
+                className="cursor-pointer text-white disabled:opacity-80 disabled:cursor-not-allowed h-[52px] px-[20px] items-center justify-center flex rounded-[10px]"
+                style={{ background: 'var(--voc-aurora)' }}
               >
                 {t('add_selected_media', 'Add selected media')}
               </button>
@@ -988,7 +989,7 @@ export const MediaComponent: FC<{
       )}
       <div className="flex gap-[5px]">
         <Button onClick={showModal}>{t('select', 'Select')}</Button>
-        <Button onClick={showDesignModal} className="!bg-customColor45">
+        <Button onClick={showDesignModal} className="!bg-[var(--voc-rose)]">
           {t('editor', 'Editor')}
         </Button>
         <Button secondary={true} onClick={clearMedia}>
