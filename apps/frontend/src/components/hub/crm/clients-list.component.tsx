@@ -9,8 +9,8 @@ import { ClientStatusBadge } from '@gitroom/frontend/components/ui/badge.compone
 // ─── Avatar initials ───────────────────────────────────────────────────────────
 
 const GRADIENTS = [
-  'linear-gradient(135deg, #e89a7b, #cf6295)',
-  'linear-gradient(135deg, #cf6295, #7360aa)',
+  'linear-gradient(135deg, #e89a7b, var(--voc-rose))',
+  'linear-gradient(135deg, var(--voc-rose), #7360aa)',
   'linear-gradient(135deg, #7360aa, #2897bf)',
   'linear-gradient(135deg, #2897bf, #e89a7b)',
 ];

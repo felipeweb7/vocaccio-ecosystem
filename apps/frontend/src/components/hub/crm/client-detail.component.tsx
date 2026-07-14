@@ -16,8 +16,8 @@ import { Select } from '@gitroom/frontend/components/ui/select.component';
 // ─── Shared ────────────────────────────────────────────────────────────────────
 
 const GRADIENTS = [
-  'linear-gradient(135deg, #e89a7b, #cf6295)',
-  'linear-gradient(135deg, #cf6295, #7360aa)',
+  'linear-gradient(135deg, #e89a7b, var(--voc-rose))',
+  'linear-gradient(135deg, var(--voc-rose), #7360aa)',
   'linear-gradient(135deg, #7360aa, #2897bf)',
   'linear-gradient(135deg, #2897bf, #e89a7b)',
 ];
@@ -40,7 +40,7 @@ const PROJECT_STATUS_MAP: Record<string, { label: string; color: string }> = {
   ACTIVE:    { label: 'Ativo',     color: '#32d583' },
   PAUSED:    { label: 'Pausado',   color: '#e89a7b' },
   FINISHED:  { label: 'Concluído', color: '#9c9c9c' },
-  CANCELLED: { label: 'Cancelado', color: '#cf6295' },
+  CANCELLED: { label: 'Cancelado', color: 'var(--voc-rose)' },
 };
 
 const INTERACTION_TYPES: Record<string, { label: string }> = {
