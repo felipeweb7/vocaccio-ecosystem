@@ -1168,12 +1168,17 @@ ISR na LP · F6+: Vercel Analytics, Sentry free, alerta LCP > 3s.
 
 ---
 
-**Estado atual (2026-07-12):** Fases 0-1 ✅ · Fase 2 ✅ (portal `/aprovar/[token]`
+**Estado atual (2026-07-13):** Fases 0-1 ✅ · Fase 2 ✅ (portal `/aprovar/[token]`
 validado ponta a ponta com boot real: criar cliente/projeto/item → gerar link → aprovar
 sem login → status sincroniza no CRM; fluxos "solicitar ajuste"/"comentar" ainda não
-testados, mesma rota de código, risco baixo) · Fase 3 ~65% (falta Sincronário) · Fase 3.5
-ESCOPO CONGELADO (auditar Volatis/portal e fechar) · Religare (Fase 5) Fatias 1-6
-implementadas · Ateliê AT-0/1/2 ✅, AT-3 em espera · leveza executada (resíduos v2.0)
+testados, mesma rota de código, risco baixo) · Fase 3 ~65% (falta Sincronário, cálculo é
+território Codex/Edwiges) · Fase 3.5 ✅ fechada (roxo Postiz legado `#cf6295` removido de
+6 arquivos + `media.component.tsx`; `portal-approval.component.tsx` migrado pros
+primitivos `ui/*` Button/Badge — Card mantido bespoke de propósito, ver comentário no
+JSX; validação visual pixel-a-pixel no browser real ainda pendente, próxima sessão com
+boot disponível) · Religare (Fase 5) Fatias 1-6 implementadas, validação visual bloqueada
+por limite de RAM da máquina (17+ processos node concorrentes) — retomar depois de
+fechar outras IDEs · Ateliê AT-0/1/2 ✅, AT-3 em espera · leveza executada (resíduos v2.0)
 · back-office P0 fechado (11-07).
 **Fase M (Movimento Comercial) é PRIORIDADE Nº 1 desde 09-07 — porém 0 clientes pagantes
 até hoje e nenhum passo de execução comercial rodou.** Gate: Fase 4+ só com 3 pagantes.
