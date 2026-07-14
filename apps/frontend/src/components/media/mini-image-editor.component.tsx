@@ -159,10 +159,12 @@ export default function MiniImageEditor(props: {
                 y={crop.y}
                 width={crop.width}
                 height={crop.height}
-                stroke="#cf6295"
+                // Konva renders to canvas, not DOM — can't read CSS custom properties.
+                // #df548e = current value of the --voc-rose token.
+                stroke="#df548e"
                 strokeWidth={2}
                 dash={[6, 4]}
-                fill="rgba(207,98,149,0.12)"
+                fill="rgba(223,84,142,0.12)"
                 draggable
                 onClick={() => trRef.current?.nodes(cropRef.current ? [cropRef.current] : [])}
                 onTap={() => trRef.current?.nodes(cropRef.current ? [cropRef.current] : [])}

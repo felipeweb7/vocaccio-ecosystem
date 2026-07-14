@@ -18,7 +18,8 @@ import type { ReligareProfileDetail } from './use-religare-profiles.hook';
 // (jsPDF draws on a canvas-like surface — it can't read CSS variables).
 const VOC_INK = '#201f1d';
 const VOC_INK_SOFT = '#55536b';
-const VOC_ROSE = '#cf6295';
+// #df548e = current value of the --voc-rose token (jsPDF can't read CSS vars)
+const VOC_ROSE = '#df548e';
 const VOC_VIOLET = '#7360aa';
 const VOC_PAPER = '#f5f4f0';
 const VOC_LINE = '#d8d3e0';

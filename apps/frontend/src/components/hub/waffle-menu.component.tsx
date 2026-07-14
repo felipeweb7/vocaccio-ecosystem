@@ -136,12 +136,12 @@ const MODULES: Module[] = [
 ];
 
 const AURORA_ICONS = [
-  'linear-gradient(135deg, #e89a7b, #cf6295)',
-  'linear-gradient(135deg, #cf6295, #7360aa)',
+  'linear-gradient(135deg, #e89a7b, var(--voc-rose))',
+  'linear-gradient(135deg, var(--voc-rose), #7360aa)',
   'linear-gradient(135deg, #7360aa, #2897bf)',
   'linear-gradient(135deg, #e89a7b, #7360aa)',
-  'linear-gradient(135deg, #2897bf, #cf6295)',
-  'linear-gradient(135deg, #cf6295, #e89a7b)',
+  'linear-gradient(135deg, #2897bf, var(--voc-rose))',
+  'linear-gradient(135deg, var(--voc-rose), #e89a7b)',
 ];
 
 export const WaffleMenu: FC = () => {
