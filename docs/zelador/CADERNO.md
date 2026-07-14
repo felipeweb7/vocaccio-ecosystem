@@ -13,6 +13,30 @@ Formato de entrada: `AAAA-MM-DD | causa-raiz | incidente(s) | mecanismo proposto
 
 _(nenhum ainda — primeira ronda)_
 
+## Em observação (1 incidente, aguardando recorrência antes de virar regra)
+
+- **2026-07-12 | causa-raiz: convenção textual em doc lida 1x no início da sessão não é
+  reforçada em cada resposta/comando — depende da memória de execução do Dumbledore, sem
+  checagem mecânica | incidente: numa sessão de retomada, Dumbledore não usou o cabeçalho
+  "Time atual: ..." nem o rodapé "🔦 Filch: ..." em nenhuma resposta, e não prefixou NENHUM
+  comando Bash com `rtk`, apesar das três regras estarem **corretamente documentadas** em
+  `.claude/agents/README.md` (linhas 7-24 para cabeçalho/rodapé, linha 29 para `rtk`) — ou
+  seja, **não é gap de localização de doc** (a hipótese inicial de "a regra só vive em
+  memória/CLAUDE.md e não está no README que o Dumbledore lê" foi checada e refutada: está
+  no README, no lugar certo). O gap real é enforcement: nada intercepta a resposta/comando
+  pra cobrar a convenção antes dela sair | mecanismo proposto (ainda NÃO aplicado — só 1
+  incidente, aguardando 2º pra virar cluster): (a) curto prazo, sem tocar settings — Filch
+  ou o próprio Dumbledore fazem autocheck de fechamento: antes de encerrar qualquer resposta
+  de tarefa não-trivial, perguntar "cabeçalho? rodapé? rtk em todo Bash desta resposta?"; (b)
+  médio prazo, se recorrer — hook `PreToolUse` em Bash que barra/avisa comando git/tsc/lint/
+  test sem prefixo `rtk` (mecânico, não depende de lembrança), e hook `Stop`/`UserPromptSubmit`
+  como lembrete de cabeçalho/rodapé; ver skill `update-config` pra desenhar o hook quando for
+  hora. **Não persistir hook ainda** — 1 incidente é observação, não cluster (regra do
+  Filch: único → observação; ≥2 mesma causa-raiz → cluster; ≥3 → rascunho de correção) |
+  status: EM OBSERVAÇÃO — se o mesmo padrão (header/rodapé/rtk esquecidos por Dumbledore)
+  se repetir numa próxima sessão, promover a cluster e levar a proposta de hook ao
+  Dumbledore + Griphook (dono de `rtk`/economia) pra aprovação.
+
 ## Clusters maduros (≥3, correção rascunhada/pendente de aprovação)
 
 - **2026-07-04 | causa-raiz: painéis com `bg-newBgColorInner`/`bg-newBgColor` (Postiz,
