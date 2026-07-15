@@ -1168,18 +1168,25 @@ ISR na LP · F6+: Vercel Analytics, Sentry free, alerta LCP > 3s.
 
 ---
 
-**Estado atual (2026-07-13):** Fases 0-1 ✅ · Fase 2 ✅ (portal `/aprovar/[token]`
+**Estado atual (2026-07-15):** Fases 0-1 ✅ · Fase 2 ✅ (portal `/aprovar/[token]`
 validado ponta a ponta com boot real: criar cliente/projeto/item → gerar link → aprovar
 sem login → status sincroniza no CRM; fluxos "solicitar ajuste"/"comentar" ainda não
 testados, mesma rota de código, risco baixo) · Fase 3 ~65% (falta Sincronário, cálculo é
-território Codex/Edwiges) · Fase 3.5 ✅ fechada (roxo Postiz legado `#cf6295` removido de
-6 arquivos + `media.component.tsx`; `portal-approval.component.tsx` migrado pros
-primitivos `ui/*` Button/Badge — Card mantido bespoke de propósito, ver comentário no
-JSX; validação visual pixel-a-pixel no browser real ainda pendente, próxima sessão com
-boot disponível) · Religare (Fase 5) Fatias 1-6 implementadas, validação visual bloqueada
-por limite de RAM da máquina (17+ processos node concorrentes) — retomar depois de
-fechar outras IDEs · Ateliê AT-0/1/2 ✅, AT-3 em espera · leveza executada (resíduos v2.0)
-· back-office P0 fechado (11-07).
+território Codex/Edwiges — **Religare segue sendo desenvolvido separadamente pelo Codex,
+integração futura, não validar/mexer aqui**) · **Fase 3.5 ✅ fechada e validada
+visualmente** (roxo Postiz legado `#cf6295` removido de 6 arquivos + `media.component.tsx`;
+`portal-approval.component.tsx` migrado pros primitivos `ui/*` Button/Badge — Card mantido
+bespoke de propósito, ver comentário no JSX; validação pixel-a-pixel feita com boot real em
+15-07: `--voc-rose` resolvendo certo em waffle-menu/CRM/media, zero hex legado via
+computed-style, fluxo completo cliente→projeto→item→link→aprovação→sync no Kanban
+revalidado sem regressão) · Ateliê AT-0/1/2 ✅, AT-3 em espera · leveza executada (resíduos
+v2.0) · back-office P0 fechado (11-07).
+**Pendência de limpeza (15-07):** dados de teste da validação acima ficaram na base de
+produção — cliente "Cliente QA Visual" (id `de552fac-4357-4407-816c-05a159c44420`),
+projeto "Projeto QA Visual", item "Item QA Visual", conta `qa-visual-fase35@vocacc.io`.
+Classificador de segurança bloqueou o DELETE automático (ação destrutiva em produção não
+verificável por ele sozinho) — apagar manualmente ou autorizar explicitamente numa próxima
+sessão.
 **Fase M (Movimento Comercial) é PRIORIDADE Nº 1 desde 09-07 — porém 0 clientes pagantes
 até hoje e nenhum passo de execução comercial rodou.** Gate: Fase 4+ só com 3 pagantes.
 Próximo passo real = executar `docs/comercial/ROADMAP-MONETIZACAO.md`, não mais código de fase.
