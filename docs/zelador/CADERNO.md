@@ -39,6 +39,34 @@ _(nenhum ainda — primeira ronda)_
 
 ## Clusters maduros (≥3, correção rascunhada/pendente de aprovação)
 
+- **2026-07-16 | causa-raiz: `git worktree remove --force` falha silenciosamente no Windows
+  (long-path ou "Permission denied" por arquivo em uso) sem indicar que o registro git já foi
+  removido | incidentes: 3x na mesma sessão — `magical-allen-1f35af` ("Filename too long"),
+  `elegant-kirch-e09197` ("Permission denied", processo Next.js zumbi segurando o arquivo),
+  `agitated-williams-e8829c` (timeout de 2min) | mecanismo: **não insista no comando que já
+  falhou** (bate com a regra "Fim dos paliativos" §8) — na primeira falha, rode
+  `git worktree prune -v` (confirma que o git já soltou o registro, mesmo a pasta física
+  sobrevivendo) e então remova a pasta com `PowerShell Remove-Item -Recurse -Force`, não
+  repita `git worktree remove`. Se `Remove-Item` também falhar por "being used by another
+  process", **isso é sinal de processo vivo usando aquele worktree** — pare e investigue
+  processos (`Get-CimInstance Win32_Process | Where CommandLine -match <pasta>`) antes de
+  forçar, não assuma que é só lentidão de disco. | status: MADURO, mecanismo escrito aqui,
+  falta promover pro `.md` do Filch/Sirius se recorrer numa 4ª vez.
+
+- **2026-07-16 | causa-raiz: `gh pr merge --delete-branch` reporta erro só da parte LOCAL
+  (branch em uso por worktree) e isso foi lido como "delete falhou, mas deve ter feito a
+  parte remota" sem verificar | incidentes: 6 branches remotas (`backend-performance-review-
+  fa9c68`, `fase-p-leveza-2026-400ff0`, `vocaccio-hub-kickoff-457fec`, `magical-allen-1f35af`,
+  `nestjs-b2-conditional-controllers-b2f47d`, `vocaccio-backoffice-planning-9f4f90`) ficaram
+  vivas no GitHub — 3 delas com a história sensível que a purga do histórico (mesma sessão)
+  deveria ter eliminado, quase anulando o trabalho | mecanismo: **toda alegação de "branch
+  deletada" cita a evidência** (`gh api repos/<owner>/<repo>/branches --jq '.[].name'` ou
+  `git ls-remote`), nunca confia no exit code/mensagem de uma única chamada de conveniência
+  (`--delete-branch`) quando ela reportou erro em qualquer parte da operação — é a mesma
+  regra "cole, não afirme" do CLAUDE.md, agora nomeada pro caso específico de deleção de
+  branch remota. | status: MADURO, sem correção automática ainda — verificação manual
+  obrigatória até virar checklist formal.
+
 - **2026-07-04 | causa-raiz: painéis com `bg-newBgColorInner`/`bg-newBgColor` (Postiz,
   `#1a1919`/`#0e0e0e`, 100% opaco) pintados por cima de containers já migrados pra glass
   (`.voc-content-shell`/`.voc-glass-shell`), anulando a transparência do pai não importa o
@@ -145,6 +173,38 @@ _(nenhum ainda)_
   (`6fede5b3`, sem esses arquivos). Não é erro — é trabalho em andamento neste worktree — mas
   vale acompanhar: se esta branch demorar a mergear, o resto do time (rodando a partir de
   `main` ou de outro worktree) não vê Filch/Hagrid ainda. Observação única, não cluster.
+
+- **2026-07-16** — Processos de dev-server (`next dev`, `nest start --watch`) ficaram
+  rodando em background muito além do fim da tarefa que os iniciou: um grupo de 6 (bash +
+  5 node) de uma sessão de 15/07 que já tinha encerrado (o worktree que os originou já
+  nem existia mais), e outro grupo de 4 do backend que o próprio Dumbledore desta sessão
+  achou ter matado (`taskkill` de 1 PID) mas na verdade só matou um processo da árvore,
+  deixando os filhos vivos por ~1h40. Isso foi confundido com "sessão paralela ativa" por
+  boa parte da sessão. **Padrão a repetir se recorrer:** depois de `taskkill`/`Stop-Process`
+  num processo pai, confirme com `Get-NetTCPConnection -LocalPort <porta>` ou
+  `Get-CimInstance Win32_Process | Where CommandLine -match <pasta>` que a árvore inteira
+  morreu — não assuma pelo exit code do kill do PID isolado.
+
+- **2026-07-16** — Dumbledore (esta sessão, bem longa) esqueceu o cabeçalho "Time atual"
+  em TODAS as respostas, do início ao fim — convenção já documentada em
+  `.claude/agents/README.md` desde 2026-07-03, nunca aplicada aqui. Causa provável: sessão
+  rodou majoritariamente sem invocar sub-agentes explicitamente (Dumbledore sozinho fazendo
+  git/gh/pwsh direto), então não havia um Filch de fato rodando como watchdog externo — só
+  o Felipe notou, no fim da sessão. **Risco:** sessão solo longa não tem quem cobre o
+  Dumbledore além do próprio Dumbledore, que é exatamente o ponto cego. Sem mecanismo
+  automático ainda (hook de lint de resposta seria over-engineering) — registrado como
+  lembrete: sessões longas e solo merecem uma auto-checagem periódica (a cada handoff de
+  fase, não só no fechamento).
+
+- **2026-07-16** — Conteúdo comercial/de segurança sensível ficou pushado num repo
+  PÚBLICO por ~6 semanas (desde a criação do repo em 2026-06-05) sem que nenhuma regra
+  existente pedisse checar visibilidade do repo antes de commitar. Ninguém verificou isso
+  até o classificador de permissão do harness bloquear um push e mencionar "repo público"
+  de passagem. **Mecanismo agora existe** (`CLAUDE.md` §"Repo privado", `vocaccio-docs-
+  privado` criado) — mas o gatilho que teria pego isso mais cedo (checar visibilidade do
+  remote na primeira sessão que commita `docs/` sensível) não está em nenhum `.md` de
+  agente ainda. Candidato a virar regra explícita se algum outro repo do ecossistema for
+  criado no futuro.
 
 - **2026-07-16** — `docs/referencias/actus-kit/.env` (migrado pro repo privado
   `vocaccio-docs-privado/handoff-nicolas/actus-kit/`) tem `GROQ_API_KEY` real em texto

@@ -189,6 +189,20 @@ notar que as duas tinham `git status` sujo — quase virou perda de trabalho):
    julgamento, a **execução da exclusão em si pede confirmação do Felipe** por instância (limite
    de plataforma, não escolha do Filch). Chegue com a decisão do time pronta e o diff (se houver)
    já resumido — só falta o "pode" dele.
+6. **`git worktree remove --force` no Windows falha silencioso** (long-path ou "Permission
+   denied" sem avisar que o registro git já foi solto) — incidente recorrente, 2026-07-16.
+   Na primeira falha, **não insista no mesmo comando** (regra "Fim dos paliativos" §8): rode
+   `git worktree prune -v` (confirma que o git já soltou o registro) e remova a pasta física
+   via PowerShell `Remove-Item -Recurse -Force`. Se isso também falhar com "being used by
+   another process", é sinal de **processo vivo** usando aquele worktree — investigue com
+   `Get-CimInstance Win32_Process | Where CommandLine -match <pasta>` antes de forçar.
+7. **Deleção de branch remota exige verificação, nunca confiança no exit code** — incidente
+   recorrente, 2026-07-16 (`gh pr merge --delete-branch` reportou erro só da parte local, e
+   isso foi lido como "deve ter apagado o remoto também", deixando 6 branches vivas no
+   GitHub com histórico que deveria ter sumido). Depois de qualquer deleção de branch
+   remota, confirme com `gh api repos/<owner>/<repo>/branches --jq '.[].name'` ou
+   `git ls-remote` — nunca declare "branch remota apagada" sem essa evidência citável (regra
+   "cole, não afirme" do `CLAUDE.md`, aplicada a este caso específico).
 
 ### 5. `/goal` (comando NATIVO do harness) — o fim das babás
 `/goal` **já existe nativamente** no Claude Code — "Set a goal — keep working until the
