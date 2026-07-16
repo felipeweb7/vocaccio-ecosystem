@@ -146,6 +146,17 @@ _(nenhum ainda)_
   vale acompanhar: se esta branch demorar a mergear, o resto do time (rodando a partir de
   `main` ou de outro worktree) não vê Filch/Hagrid ainda. Observação única, não cluster.
 
+- **2026-07-16** — `docs/referencias/actus-kit/.env` (migrado pro repo privado
+  `vocaccio-docs-privado/handoff-nicolas/actus-kit/`) tem `GROQ_API_KEY` real em texto
+  claro. Achado pelo agente Explore na auditoria de docs sensíveis. A pasta nunca foi
+  rastreada pelo git (sempre no `.gitignore`), e o `.gitignore` local do próprio kit
+  também barrou o `.env` de entrar no repo privado — a chave nunca esteve em nenhum
+  histórico git, público ou privado. **Decisão do Felipe (2026-07-16): NÃO rotacionar
+  por enquanto.** Registrado aqui pra não perder o rastro — reavaliar se: (a) a pasta
+  `actus-kit` for compartilhada de novo com alguém fora do Nicolas, (b) surgir qualquer
+  sinal de uso indevido da chave, ou (c) o Felipe decidir rotacionar por rotina de
+  higiene de segredo, independente de incidente.
+
 ---
 
 ## Ronda 2026-07-03 — primeira ronda (calibração/teste)
