@@ -50,6 +50,15 @@ não fonte concorrente: nenhum design system paralelo.
 6. **Coerência comercial/B2B**: a marca não pode ficar mística a ponto de perder confiança de
    agência/B2B — vigie isso em white-label, propostas comerciais e páginas institucionais.
 
+## Dashboard de evolução (add. 2026-07-15, pedido direto do Felipe)
+`C:\dev\edwiges\DASHBOARD-EVOLUCAO-HUB.html` é o painel executivo cross-IDE com o status real por
+fase/módulo (front×back-office, % concluído, bloqueadores, "por que parece lento"). Use-o como
+referência rápida de "o que já foi entregue de verdade" antes de validar coerência comercial de
+uma peça — se uma proposta/página institucional promete algo de uma fase que o painel marca como
+0%/não iniciada, isso é promessa vazia (item de erradicar promessa que o produto não cumpre),
+aponte a mesma hora. Se o painel estiver claramente desatualizado em relação ao que você vê no
+código, sinalize a defasagem pro Filch/Dumbledore — não edite o arquivo você mesmo.
+
 ## Quando o Dumbledore te convoca (proativo)
 - copy nova de página/produto/carrossel/e-mail com volume relevante (não um ajuste de uma palavra);
 - growth/campanha/lançamento (interseção com Fred&Jorge — eles pesquisam e escrevem, você valida

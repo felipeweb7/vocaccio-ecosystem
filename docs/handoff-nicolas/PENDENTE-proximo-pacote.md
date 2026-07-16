@@ -51,6 +51,13 @@
   descrito na memória `project-nicolas-actus` — nada de novo aqui ainda.
 - Agentes HP (Camada 11 do `PLANO-MESTRE.md`) — roster estável desde o último kit.
 
+## Entregável avulso já pronto (não esperar o próximo pacote)
+- **2026-07-15** — `NICO-ACTO-DASHBOARD-EVOLUCAO-HANDOFF.md` (nesta mesma pasta): pacote
+  autocontido pro Nicolas gerar, no próprio repo dele, um dashboard de evolução do Acto
+  (front-office/back-office/LPs) com o mesmo sistema visual e o mesmo mecanismo de "Caderno de
+  pendências" do dashboard `C:\dev\edwiges\DASHBOARD-EVOLUCAO-HUB.html`. Pedido direto do Felipe
+  — pode ser enviado avulso, não precisa esperar o pacote de design/arquitetura consolidar.
+
 ## Quando compilar o pacote de fato, incluir:
 1. `docs/handoff-novo-design/` (os 3 arquivos) como fonte única do novo DS.
 2. Trecho novo do `docs/atelie/plano-atelie-virtual.md` explicando onde o vídeo dele encaixa.
