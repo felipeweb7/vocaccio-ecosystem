@@ -28,6 +28,11 @@ com o registrado no `README.md` do Codex):
 | `docs/Aprimoramento-Religare.md` | `4CB01845DA1CFF5FA9C214E895B692FA72A3D170E531DF226204D4EBA4705367` | ✅ |
 | `docs/BUSINESS-PLAN.md` | `5D4CF02C1202ACDB8F3797884982795495570EB3886D495213894EB619083732` | ✅ |
 
+> **Nota (2026-07-16):** os dois arquivos acima migraram do `vocaccio-ecosystem` (público)
+> para o repo privado `vocaccio-docs-privado` (`religare/Aprimoramento-Religare.md` e
+> `marca/BUSINESS-PLAN.md`) — continham dado real de cliente (Bárbara) e brand strategy.
+> Os hashes acima continuam válidos para o conteúdo em si, só o caminho/repo mudou.
+
 ### 1.2 Sessão em worktree (onde este doc foi produzido)
 
 - Este trabalho rodou em `C:\dev\vocaccio\.claude\worktrees\kind-haslett-28b375`,

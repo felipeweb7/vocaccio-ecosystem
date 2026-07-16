@@ -254,7 +254,7 @@ completa das labels existentes.
 └── /tarefas             → pendências internas
 ```
 
-**Dummy data (seed):** Camila Caeron, PlanGroup, Nanda Biolchini, Plan10,
+**Dummy data (seed):** Camila Caeron, PlanGroup, Sabrina Marques, Plan10,
 Gigantes pela própria natureza, Vocaccio (interno) — cada um com 3 rascunhos,
 2 aguardando aprovação, 1 aprovado, briefing, redes fictícias, kanban, métricas
 simuladas, oráculo do dia.
@@ -719,7 +719,7 @@ Ruflo  → swarm_init (paralelo) · agent_spawn (delegar) · memory_store/search
 ## CAMADA 12 — AGENTES EXTERNOS (ChatGPT) E INTERNOS
 
 Cedrico opera **internamente** (Sonnet + cache + system prompt v4 em
-`volatis-content/system-prompt-maquina-carrosseis-v4.md`). ChatGPT externo =
+`vocaccio-docs-privado/produto-ip/volatis/system-prompt-maquina-carrosseis-v4.md`, repo privado). ChatGPT externo =
 fallback manual + geração de imagens.
 
 **Internos:** Cedrico (JSON carrossel) · Hermione (copy) · Fred & George (cronograma)
@@ -838,7 +838,7 @@ Fase 3.5 — Revisão geral de FE / coerência visual    EM ANDAMENTO (5 primiti
           ⚠️ ESCOPO CONGELADO 2026-07-09: fecha com o escopo já escrito; nada novo entra
 Fase M  — MOVIMENTO COMERCIAL (Oferta Âncora + pipeline + retainers)   INICIA AGORA,
           em paralelo ao fechamento de F2/F3.5 — ver Camada 17.5 e
-          docs/comercial/ROADMAP-MONETIZACAO.md. NÃO é fase de código.
+          vocaccio-docs-privado/comercial/ROADMAP-MONETIZACAO.md (repo privado). NÃO é fase de código.
 Fase 4  — Memória por projeto + aprendizado com revisões               não iniciada
           🔒 GATE DE MONETIZAÇÃO (2026-07-09): Fase 4 e TODA fase adiante só iniciam
           com 3 clientes pagantes ativos (leitura ou retainer) — ver Camada 17.5
@@ -889,21 +889,15 @@ Princípio-guia (ver [[feedback-vocaccio-ui-host-theme]] na memória):
 > **Origem:** auditoria de consultoria 2026-07-09 — o projeto tem produto demais para a
 > demanda comprovada (query B3 em produção: `Integration` total=0) e receita zero. O ativo
 > mais vendável hoje é o **serviço produtizado entregue com a plataforma**, não o SaaS
-> (Fase H, última). Documento executável completo (jogadas ranqueadas, prompts prontos
-> para modelo menos capaz, critérios de pronto): **`docs/comercial/ROADMAP-MONETIZACAO.md`**.
+> (Fase H, última). Estratégia comercial completa (jogadas ranqueadas, precificação,
+> pipeline, prompts prontos para modelo menos capaz, critérios de pronto): **repo privado
+> `vocaccio-docs-privado/comercial/ROADMAP-MONETIZACAO.md`** — conteúdo estratégico/preços
+> não fica no repo público.
 
 **Momento de execução (decidido, não re-discutir):** inicia AGORA, em paralelo ao
 fechamento de F2 (10% finais — o portal é parte da entrega do retainer) e de F3.5
-(escopo congelado). Não espera fase nenhuma fechar: as Jogadas 1/4/6 são escrita e
-handoff, não código.
-
-**Sequência resumida:**
-1. Jogada 1 — Oferta Âncora (Leitura Religare produtizada, R$497/R$1.497-hipótese)
-2. Jogada 4 — destravar pacote do Nicolas (paralelo)
-3. Jogada 6 — escada de precificação escrita (paralelo, marcada como hipótese)
-4. Jogada 2 — pipeline 20 nomes → 10 conversas → 3 vendas
-5. Após 3 vendas: Jogada 3 (landing com copy provada) + Jogada 5 (retainers
-   Presença/Presença+Growth com clientes da agência, operando DENTRO do Vocaccio)
+(escopo congelado). Não espera fase nenhuma fechar — sequência completa das jogadas
+está no roadmap privado.
 
 **🔒 Gate de monetização (regra dura):** Fase 4 em diante, aprofundamentos do Religare
 (Sibila-LLM, MBTI, Eneagrama, astrologia natal), Kanban-bot e Comunidade das Comunidades
@@ -1089,7 +1083,7 @@ para evitar migração dolorosa. Ordenado por risco.
 | Tenancy white-label | ✅ 3 níveis: Vocaccio → Agência → CrmClient (tenant c/ login) → leads |
 | Marca white-label | ✅ Marca da AGÊNCIA + rodapé "powered by Vocaccio" (não da Vocaccio) |
 | Orquestração | ✅ Ruflo + Dumbledore |
-| Dummy data | ✅ Camila, PlanGroup, Nanda, Plan10, Gigantes, Vocaccio |
+| Dummy data | ✅ Camila, PlanGroup, Sabrina, Plan10, Gigantes, Vocaccio |
 | LP referências | ✅ academypass.ai + circle.so/br |
 
 ---
@@ -1133,9 +1127,9 @@ para evitar migração dolorosa. Ordenado por risco.
   tokens, botões, formulários, hero orbital, motion, checklist de implementação.
 
 **Volatis/carrosséis:**
-`docs/referencias/volatis-content/system-prompt-maquina-carrosseis-v4.md` (+ design-system,
+`vocaccio-docs-privado/produto-ip/volatis/system-prompt-maquina-carrosseis-v4.md` (repo privado) (+ design-system,
 principios-design, banco-de-headlines, filtro-editorial, manual-de-qualidade, referencias)
-· `docs/referencias/analise-completa-maquina-de-carrosseis.txt`
+· `vocaccio-docs-privado/comercial/benchmarking/analise-completa-maquina-de-carrosseis.txt` (repo privado)
 · `docs/referencias/analise-tecnica-maquina-de-carrosseis.md`
 · `docs/referencias/Exemplo-de-criador-de-carrosseis-em-browser.png`
 · `docs/referencias/Assets/` (logos + favicon Vocaccio)
@@ -1189,7 +1183,7 @@ verificável por ele sozinho) — apagar manualmente ou autorizar explicitamente
 sessão.
 **Fase M (Movimento Comercial) é PRIORIDADE Nº 1 desde 09-07 — porém 0 clientes pagantes
 até hoje e nenhum passo de execução comercial rodou.** Gate: Fase 4+ só com 3 pagantes.
-Próximo passo real = executar `docs/comercial/ROADMAP-MONETIZACAO.md`, não mais código de fase.
+Próximo passo real = executar `vocaccio-docs-privado/comercial/ROADMAP-MONETIZACAO.md (repo privado)`, não mais código de fase.
 Cada sessão: ler `/phases/checkpoint-faseN.md` mais recente antes de qualquer coisa —
 o mais recente é `phases/checkpoint-fase2-fase3.5-retomada.md` (também desatualizado,
 02-04/07 — ver PR aberto em `claude/vocaccio-hub-kickoff-457fec` pro estado real de 12/07).

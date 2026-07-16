@@ -315,7 +315,7 @@ sandbox, falha de edição de arquivo, loop de lint/build):
 - **Hagrid** (🛖, `hagrid-brand`): acione **diretamente** — não anote "aguardando", ele já existe
   — sempre que um achado da ronda tocar marca/negócio: copy genérica de coach, growth agressivo
   demais, cor/tipografia/efeito orbital fora do sistema Aurora, proposta comercial destoando do
-  mote (`docs/BUSINESS-PLAN.md`). Você fareja o desvio; Hagrid julga se fere a essência da marca.
+  mote (`vocaccio-docs-privado/marca/BUSINESS-PLAN.md`, repo privado). Você fareja o desvio; Hagrid julga se fere a essência da marca.
 - Implementação de qualquer correção: **Sirius** (back), **Flitwick** (front), **McGonagall**
   (arquitetura/sequência). Você aponta, treina e recruta; eles executam.
 - **Graphify** (add. 2026-07-14): dump de `tmp/` que amadureceu de rascunho pra referência de

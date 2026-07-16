@@ -17,7 +17,7 @@ em ambos antes de continuar, pode ter sido mergeado/abandonado).
 
 ## Antes de tudo, ler nesta ordem:
 1. Esta memória: `project-auditoria-2026-06` (histórico completo Fase 1/2/3).
-2. `docs/auditoria/audit-2026-06-20.md` (relatório completo, 48 achados VOC-01..48).
+2. `vocaccio-docs-privado/seguranca/audit-2026-06-20.md` (repo privado, relatório completo, 48 achados VOC-01..48).
 3. `project-agentes-dev-hp` — time de agentes em `.claude/agents/`: `snape-backend`
    (= Sirius, o rename pra "sirius-backend" não propagou em todos os worktrees — **sempre
    checar o nome real disponível com a lista de agentes antes de chamar**),

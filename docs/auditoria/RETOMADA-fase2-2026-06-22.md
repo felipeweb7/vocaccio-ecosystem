@@ -13,7 +13,7 @@ escopo de cada achado de segurança.
 1. Memória `project-auditoria-2026-06` — histórico completo de Fase 1 e Fase 2, incluindo
    a armadilha de `git commit -- <path>` arrastando WIP não-relacionado (lição registrada,
    não repetir).
-2. `docs/auditoria/audit-2026-06-20.md` (agora versionado no repo) — relatório completo.
+2. `vocaccio-docs-privado/seguranca/audit-2026-06-20.md` (repo privado, agora versionado no repo) — relatório completo.
 3. `project-agentes-dev-hp` — time de sub-agentes em `.claude/agents/`: `sirius-backend`
    (back-end, renomeado de "Snape" em 2026-06-22), `flitwick-frontend`, `mcgonagall-planner`,
    `moody-revisor`, `severus-security`, `griphook-economy`. Todos já comitados.

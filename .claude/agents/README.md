@@ -46,7 +46,7 @@ recomendação de modelo cabível), só ele aparece.
 | **Griphook** (`griphook-economy`) | Guardião de economia de tokens/custo + roteamento de modelo (read-only) | Haiku | Avaliar abordagem enxuta (anti-gambiarra, dep pesada, memória) e recomendar o modelo mais barato |
 | **Fred e Jorge** (`weasley-growth`) | Growth + produção de conteúdo (read-only + pesquisa) | Sonnet | Conteúdo (posts/carrossel/copy), estratégia de growth/marketing, trend research, lançamento, SEO, posicionamento |
 | **Filch** (`filch-caretaker`) | Auditor + Treinador + Recrutador do ecossistema de agentes/skills/memória (Write/Edit só em `.md`/`.toml` de agente e no Caderno — nunca código) | Sonnet | Trabalho duplicado (worktree/branch fantasma), erro recorrente (edita o `.md` do agente infrator), paliativo de sandbox, handoff incompleto, commit pendente, cobrança de modelo+esforço, rastreabilidade cross-IDE, auditoria conjunta de skill nova |
-| **Hagrid** (`hagrid-brand`) | Guardião da marca/negócio (read-only) | Sonnet | Copy/growth/UI/proposta comercial que puder distorcer mote, tom de voz, arquétipos ou sistema visual da Vocaccio — fonte de verdade: `docs/BUSINESS-PLAN.md` |
+| **Hagrid** (`hagrid-brand`) | Guardião da marca/negócio (read-only) | Sonnet | Copy/growth/UI/proposta comercial que puder distorcer mote, tom de voz, arquétipos ou sistema visual da Vocaccio — fonte de verdade: `vocaccio-docs-privado/marca/BUSINESS-PLAN.md` (repo privado) |
 
 > **Sirius vs Severus** — agentes distintos, sem sobreposição de nome: **Sirius** implementa back-end (controllers/services/repos/schema); **Severus** ensina Defesa Contra as Artes das Trevas (segurança/perf/limpeza, read-only, não implementa). Sirius escreve; Severus vigia e aponta. (Nome "Potter" reservado para um agente futuro — não usar ainda.)
 
@@ -155,7 +155,7 @@ ações destrutivas (push, exclusão) continuam pedindo confirmação do Felipe 
 ## Protocolo de marca/negócio (Hagrid) — regra global
 O Dumbledore **convoca o Hagrid** sempre que copy/growth/UI/proposta comercial tocar mote, tom de
 voz, arquétipos, sistema visual (Aurora, aura, glass, orbital) ou coerência B2B da marca — ver
-`docs/BUSINESS-PLAN.md` como fonte de verdade. Interseção com **Fred e Jorge** (eles escrevem
+`vocaccio-docs-privado/marca/BUSINESS-PLAN.md` (repo privado) como fonte de verdade. Interseção com **Fred e Jorge** (eles escrevem
 copy/growth, Hagrid valida aderência antes de publicar) e com **Flitwick** (UI usa cor/tipografia/
 aura do sistema, Hagrid aponta desvio, Flitwick corrige). O **Filch**, ao encontrar na ronda dele
 algo que exige julgamento de marca/negócio, **aciona o Hagrid diretamente** — não silencia nem

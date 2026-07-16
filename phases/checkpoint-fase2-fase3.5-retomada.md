@@ -53,7 +53,7 @@ boot pronto, só de compile pronto.
 
 ## Próximas frentes (não iniciadas nesta sessão, ver PLANO-MESTRE.md §"Estado atual")
 
-- **Fase M (comercial)**: `docs/comercial/oferta-ancora.md` e `pipeline-playbook.md`
+- **Fase M (comercial)**: `vocaccio-docs-privado/comercial/oferta-ancora.md` (repo privado) e `vocaccio-docs-privado/comercial/pipeline-playbook.md` (repo privado)
   prontos desde 12-07, zero execução real (0 clientes pagantes). Próximo passo é do
   Felipe (contatos reais, ligações) — não é código.
 - **Religare / Fase 3 restante ("Sincronário")**: território Codex/Edwiges — Religare

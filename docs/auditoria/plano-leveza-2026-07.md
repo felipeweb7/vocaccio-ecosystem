@@ -2,7 +2,7 @@
 
 **Objetivo:** reduzir peso, instabilidade e engessamento herdados do Postiz com **mínimo esforço e máxima eficiência** — sem rewrite, sem APIs pagas, sem quebrar produção.
 **Executores-alvo:** Opus 4.8 (decisões/migrações), Sonnet (implementação), Haiku (triviais/revisão).
-**Complementa (não substitui):** `docs/auditoria/audit-2026-06-20.md` (48 achados VOC-01..48). Itens de segurança/dados continuam mapeados lá; este plano cobre o eixo **peso/estabilidade/DX**.
+**Complementa (não substitui):** `vocaccio-docs-privado/seguranca/audit-2026-06-20.md` (repo privado, 48 achados VOC-01..48). Itens de segurança/dados continuam mapeados lá; este plano cobre o eixo **peso/estabilidade/DX**.
 **Fronteira com o Codex (Edwiges):** motores de cálculo Religare são do Codex (viram canônicos ao `VALIDATED`). Este plano **não toca** na camada de cálculo Religare. Infra, UI host, Postiz-core e billing são do lado Claude.
 
 ---

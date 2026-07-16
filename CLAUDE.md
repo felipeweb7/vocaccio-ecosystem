@@ -18,10 +18,19 @@ continuam no produto — são o substrato.
 Fontes de verdade, em ordem:
 1. `PLANO-MESTRE.md` — visão, fases, decisões de arquitetura (Camada 18 é imutável)
 2. `docs/auditoria/plano-leveza-2026-07.md` — plano ativo de emagrecimento do núcleo Postiz
-3. `docs/auditoria/audit-2026-06-20.md` — 48 achados de segurança (VOC-01..48)
-4. `docs/BUSINESS-PLAN.md` — marca, tom, posicionamento
+3. `vocaccio-docs-privado/seguranca/audit-2026-06-20.md` (repo privado, clonado em
+   `C:\dev\vocaccio-docs-privado`) — 48 achados de segurança (VOC-01..48); não fica no
+   repo público por listar vulnerabilidades com localização exata no código
+4. `vocaccio-docs-privado/marca/BUSINESS-PLAN.md` (repo privado) — marca, tom, posicionamento
 5. `phases/checkpoint-fase*.md` — estado real de cada fase (leia o mais recente ao retomar)
 6. `docs/zelador/CADERNO.md` — incidentes recorrentes e regras que nasceram deles
+
+**Repo privado (`vocaccio-docs-privado`)**: conteúdo comercial/de cliente/parceiro e IP de
+produto (system prompts do Volatis, achados de segurança, brand strategy) vive num repo
+GitHub **privado** separado, clonado localmente em `C:\dev\vocaccio-docs-privado` — o
+`vocaccio-ecosystem` é público. Nunca commite dado de cliente real, preço, ou vulnerabilidade
+específica no repo público; se um doc novo se encaixar nessa categoria, crie-o direto no
+repo privado (ou mova + deixe só um ponteiro de uma linha aqui).
 
 ## 2. Estrutura do monorepo (pnpm workspaces, SEM Turbo/NX)
 

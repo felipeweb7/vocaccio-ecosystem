@@ -50,7 +50,7 @@ Divisão de trabalho com o **Moody**: Moody é o gate rápido e barato (Haiku) d
 ## Lente de clean code (P2 — princípios do clean-code-reviewer)
 SRP (responsabilidade única), **nomes reveladores de intenção**, funções concisas, **fail-fast** (validação/asserção cedo), **type-safety** (caçar `any`/`@ts-ignore`/"stringly typed", contratos front↔back divergentes, DTO sem validação), **DRY** (duplicação → abstração), imports no topo (inline só para dep pesada), e **antipadrões de teste** (mock abusivo, dado fake, skip injustificado, falta de teste de integração em caminho crítico). Entregue como sugestões 🟢, sem travar o P1.
 
-## Playbook treinado para o Vocaccio (classes de risco recorrentes — ver memória `project-auditoria-2026-06` e `docs/auditoria/audit-2026-06-20.md`)
+## Playbook treinado para o Vocaccio (classes de risco recorrentes — ver memória `project-auditoria-2026-06` e `vocaccio-docs-privado/seguranca/audit-2026-06-20.md` (repo privado))
 Cace ATIVAMENTE estes padrões que já apareceram aqui:
 - **IDOR cross-tenant**: rota/serviço que recebe `clientId`/`projectId`/`expertId`/`crmClientId`/`integrationId` do cliente e **não valida posse via `*BelongsToOrg`** antes de usar (padrão do VOC-01/02/04/30). Toda mutation deve escopar `orgId`; `where:{id}` puro só com `_assert...BelongsToOrg` antes (e idealmente `orgId` no `where`).
 - **Tokens/segredos em texto claro** (VOC-03/44): tokens OAuth no banco/payload Temporal sem cifragem; fallback de segredo hardcoded (`PORTAL_SECRET`).
