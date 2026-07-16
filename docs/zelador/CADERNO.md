@@ -103,6 +103,40 @@ _(nenhum ainda)_
   resuma, não classifique como lixo | status: GRADUADO — regra já escrita no `.md`, poda das
   duas worktrees continua pausada até o Felipe decidir o que fazer com o diff de cada uma.**
 
+## Decisões de skill/dependência (mérito avaliado, inclusive rejeições)
+
+- **2026-07-15 | lytenyte (`1771-Technologies/lytenyte`, LyteNyte Grid — data-grid React de alta
+  performance) | avaliado a pedido do Felipe (queria checar integração com o Graphify) | decisão:
+  NÃO instalar agora.** Motivo: (1) sem relação nenhuma com o Graphify — são projetos de domínios
+  diferentes (grafo de conhecimento vs. tabela de UI), a pergunta partia de uma premissa errada;
+  (2) contraria a regra herdada do Postiz (`CLAUDE.md`: "Never install frontend components from
+  npmjs") — ver origem em `docs/zelador/CADERNO.md` mesmo, commit `9a7d9dea` do Postiz upstream,
+  não é regra inventada pelo Vocaccio; (3) mérito real ausente hoje — nenhuma tela do produto
+  (CRM, fila do Ateliê, admin-stats) lida com volume de linhas que justifique virtualização
+  pesada; seria o mesmo padrão de escopo elástico já apontado como causa de lentidão do projeto.
+  Núcleo é Apache-2.0, mas os recursos PRO são licença comercial — custo adicional sem
+  necessidade comprovada. **Reavaliar quando**: alguma tela (provável candidata: relatórios do
+  Augeo, Fase 6, ainda não construída) tiver de fato milhares de linhas com sort/filter/group
+  travando a UI nativa — só então vale reabrir com os 3 eixos de mérito do Griphook (segurança →
+  desempenho → economia de tokens/contexto).
+
+- **2026-07-15 | `selmakcby/loop-engineering` (skill) + arxiv:2607.00038 ("Stop Hand-Holding
+  Your Coding Agent") + `obra/superpowers` | avaliados a pedido do Felipe, buscando maior
+  fluidez de sessão sem reduzir verificação | decisão: FUNDIR os dois primeiros na doutrina do
+  Filch, NÃO instalar `obra/superpowers`.** Motivo `selmakcby/loop-engineering`: skill leve, sem
+  código de terceiro/rede/segredo — mérito real (Honesty Test + "o Portão": nunca a IA valida o
+  próprio "terminei") mas sobrepõe o que o Filch já cobre (L1/L2/L3, `/goal` nativo) — fundido
+  direto em `filch-caretaker.md` §5 em vez de virar skill separada (evita duplicar mecanismo, ver
+  §3.5). Motivo arxiv:2607.00038: puramente conceitual (nada pra instalar) — a "especificação de
+  loop" em 5 partes (gatilho/objetivo/verificação/regra-de-parada/memória) virou checklist na
+  mesma seção. Motivo `obra/superpowers` (**só inspirar**, rejeitado): metodologia completa
+  (design→plano→TDD→revisão em 2 estágios→worktrees) que duplica o time HP já construído sob
+  medida pro Vocaccio (Moody+Severus já fazem revisão em 2 estágios); além disso ele próprio
+  exige aprovação humana explícita no design antes de implementar — não resolve o objetivo do
+  Felipe (menos fricção de aprovação), só reorganiza onde ela acontece. **Reavaliar quando**: o
+  time HP sentir necessidade real de TDD estruturado que Moody/Severus não cubram, ou o Felipe
+  pedir explicitamente uma metodologia mais rígida de planejamento por tarefa.
+
 ## Em observação (incidente único — aguardando recorrência)
 
 - **2026-07-03** — Fusão Filch/Hagrid pendente no `main`. Os agentes `filch-caretaker.md` e
