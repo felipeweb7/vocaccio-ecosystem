@@ -61,12 +61,12 @@ código. O texto carrega o contexto necessário para agir sobre o repositório.
 > 4. **Glassmorphism:** atualize o componente base de `Card` para o padrão
 >    B2B: fundo semi-translúcido (`backdrop-filter: blur(48px)`), borda
 >    extremamente sutil (0.08 opacidade) e sombreamento glass.
-> 5. **(LP) Vídeo/imagem de fundo e scroll motion:** para landing pages, use
->    os assets e princípios da derivação Religare/LP
->    (`C:\dev\vocaccio-codex\docs\RELIGARE-LP-DIRETRIZES-VISUAIS-2026-07-20.md`)
->    — câmera travada entre cenas, movimento contemplativo, scroll motion como
->    primitiva de composição (implementação técnica é território da skill
->    `luna-gamedev`).
+> 5. **(Home/LP de vendas) Vídeo/imagem de fundo e scroll motion:** use a
+>    seção 3.1 do consolidado — câmera travada entre cenas, movimento
+>    contemplativo, scroll motion como primitiva de composição (implementação
+>    técnica é território da skill `luna-gamedev`). Só se aplica ao hero
+>    cinematográfico de Home e LPs de vendas; demais LPs/páginas institucionais
+>    usam hero simples, sem essa camada.
 > 6. **(Opcional) Orbital Effect:** para LPs, prepare o Efeito Orbital com
 >    `display: none` em Light Mode, nunca renderizado nas áreas internas de
 >    SaaS.
