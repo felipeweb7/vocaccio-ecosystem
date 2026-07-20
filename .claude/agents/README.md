@@ -117,6 +117,14 @@ Filch deixou de ser somente um zelador — é **zelador, bibliotecário, auditor
   a decisão de instalar/corrigir-e-instalar/fundir/só-inspirar é do **Dumbledore**, ponderando
   segurança + desempenho + economia de tokens (nesta ordem) antes de critérios secundários.
 
+**Time inteiro ciente do loop de auto-melhoria** (add. 2026-07-19, a pedido do Felipe): não é só
+o Filch que aprende com erro recorrente — qualquer agente que perceber a mesma causa-raiz se
+repetir (mesmo fora da própria ronda dele) aponta pro Filch em vez de silenciar ou corrigir na
+mão toda vez. A régua de "o que é pronto" (o que um vídeo externo chamaria de
+`verification-standard.md`) já existe e não precisa de arquivo novo: é o **`CLAUDE.md` §6
+"Régua de qualidade por entregável"** — Hagrid/Moody/especialistas verificam contra ela; achado
+que revela critério faltando na §6 é candidato a linha nova lá, não regra solta em outro lugar.
+
 **Protocolo Fênix (cross-IDE, D-08 em `C:\dev\edwiges\MEMORIA-COMPARTILHADA.md`)**: quando o
 Filch traz um item `FX-*` pendente (evolução/agente/skill aplicável a mais de uma IDE), o
 **Dumbledore decide** ADAPTAR/ADOTAR/ADIAR/REJEITAR/NÃO APLICÁVEL para o lado Claude — nunca

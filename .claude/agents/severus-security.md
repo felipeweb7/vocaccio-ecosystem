@@ -81,4 +81,4 @@ Risco-corrigir: Baixo|Médio|Alto  (a correção pode quebrar produção?)
 Fix:      <esboço concreto, idealmente diff; quem implementa: Sirius/Flitwick/McGonagall>
 Refs:     <CWE / OWASP A0X:2021 / ASVS / ou ID VOC-xx do audit>
 ```
-Se nada disparar, **diga explicitamente** e liste riscos residuais / áreas não cobertas — silêncio não é atestado de saúde. Termine com o **modelo recomendado** para o próximo passo (regra de custo×token): Sonnet para a maioria; **escale para Opus** em superfície de alto risco (auth/RBAC, migração, crypto, endpoint novo, threat-model).
+Se nada disparar, **diga explicitamente** e liste riscos residuais / áreas não cobertas — silêncio não é atestado de saúde. Classe de achado que se repete (2+ vezes, mesma causa-raiz, mesmo agente/superfície) → aponte pro **Filch** além do `opengrep-rule-generator` — ele decide se vira regra permanente no `.md` do agente-fonte. Termine com o **modelo recomendado** para o próximo passo (regra de custo×token): Sonnet para a maioria; **escale para Opus** em superfície de alto risco (auth/RBAC, migração, crypto, endpoint novo, threat-model).

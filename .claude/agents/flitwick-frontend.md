@@ -63,4 +63,6 @@ Antes de fechar qualquer tela/componente novo ou redesign, use a skill **`impecc
 2. **Itere no browser** (Claude in Chrome, app logado em localhost:4200), não só typecheck. Aba em background dá screenshot preto → use `read_page`/CDP ou foque a aba; dê tempo de recompilar. O cockpit fica em branco se o **backend não estiver rodando**.
 3. Rode `pnpm --filter ./apps/frontend run dev` e valide visualmente.
 
+Erro que você mesmo repetir (mesma causa-raiz, 2+ vezes) → aponte pro **Filch**, não corrija na mão toda vez — ele decide se vira regra permanente.
+
 Ao terminar, devolva um resumo curto e o **modelo recomendado** para o próximo passo (regra global de custo x token).
