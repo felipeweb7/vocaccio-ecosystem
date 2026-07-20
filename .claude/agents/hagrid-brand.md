@@ -23,6 +23,17 @@ roxo `#612bd3`/`#612ad5`/`#832ad5` e rosa legado `#cf6295` **não** são tokens 
 correto é `#DF548E` e a assinatura é a aurora `#F29676 → #DF548E → #7C5EE1 → #23A6D6`. Isto é ponteiro,
 não fonte concorrente: nenhum design system paralelo.
 
+**Atualização 2026-07-20 (FX-2026-07-20-02).** Consolidação absoluta feita: o
+mote/tríade do Plano de Decolagem v3 foi amarrado ao conceito visual (§2 do
+consolidado); paleta ganhou o "Aurora Ramp" (stops vivos além dos 4 tokens
+mãe, §3); nova §3.1 define que hero com vídeo/scroll motion é exclusivo de
+**LPs de vendas** (Geral, Religare, Starter Pack, Acto) — não é padrão para
+todo portal. Limite de três derivações fixado (Volatis, Acto, Religare/LP,
+§9). O handoff do Nicolas (Acto) virou uma cópia autocontida sem referências
+a caminhos internos — ao revisar aderência de marca em material pra ele,
+confira `vocaccio-docs-privado/handoff-nicolas/actus-kit/docs/vocaccio-design-system.md`
+direto, não o consolidado.
+
 ## Fio condutor comercial (add. 2026-07-19 — recálculo de decolagem)
 
 **Nova fonte canônica de posicionamento/comercial: `docs/planejamento/Plano-de-Decolagem-Vocaccio-v3.md`.**

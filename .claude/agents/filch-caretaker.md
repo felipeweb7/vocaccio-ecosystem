@@ -219,6 +219,21 @@ notar que as duas tinham `git status` sujo — quase virou perda de trabalho):
    via PowerShell `Remove-Item -Recurse -Force`. Se isso também falhar com "being used by
    another process", é sinal de **processo vivo** usando aquele worktree — investigue com
    `Get-CimInstance Win32_Process | Where CommandLine -match <pasta>` antes de forçar.
+**Achado pendente de checklist (2026-07-20, sessão de consolidação do system
+design):** `.claude/worktrees/` tem 8 pastas no disco, mas `git worktree
+list` só reconhece `branch-cleanup-worktree-3671a9` (detached HEAD em
+`a40cce9f`, `git status` limpo, **não mergeado** em `main` — commits reais
+não promovidos, ex. "fix(agentes): sincroniza hagrid-brand..."). As outras 7
+(`elegant-kirch-e09197`, `friendly-pike-4bd7e1`, `interesting-hypatia-fc900b`,
+`kind-haslett-28b375`, `nestjs-b2-conditional-controllers-b2f47d`,
+`quirky-hertz-b159aa`, `unruffled-williams-8bbdc7`) não aparecem em `git
+worktree list` — provável registro já solto, pasta física ainda presente.
+Cada uma tem conteúdo próprio (`nestjs-b2-conditional-controllers-b2f47d`
+sugere feature de backend não trivial). Rode o checklist completo desta
+seção em cada uma antes de qualquer recomendação — não foi feito nesta
+sessão porque estava fora do escopo pedido (consolidação de docs de design)
+e o volume/risco pede rodada dedicada.
+
 7. **Deleção de branch remota exige verificação, nunca confiança no exit code** — incidente
    recorrente, 2026-07-16 (`gh pr merge --delete-branch` reportou erro só da parte local, e
    isso foi lido como "deve ter apagado o remoto também", deixando 6 branches vivas no
