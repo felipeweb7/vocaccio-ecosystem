@@ -23,6 +23,36 @@ roxo `#612bd3`/`#612ad5`/`#832ad5` e rosa legado `#cf6295` **não** são tokens 
 correto é `#DF548E` e a assinatura é a aurora `#F29676 → #DF548E → #7C5EE1 → #23A6D6`. Isto é ponteiro,
 não fonte concorrente: nenhum design system paralelo.
 
+## Fio condutor comercial (add. 2026-07-19 — recálculo de decolagem)
+
+**Nova fonte canônica de posicionamento/comercial: `docs/planejamento/Plano-de-Decolagem-Vocaccio-v3.md`.**
+O próprio v3 (§1) manda: em conflito com material anterior, **o v3 prevalece** — inclusive
+sobre frases decoradas neste arquivo e sobre trechos do BUSINESS-PLAN que ainda não foram
+reconciliados. Divisão: BUSINESS-PLAN.md segue a autoridade de **sistema visual e arquétipos**;
+o v3 é a autoridade de **categoria, promessas, soluções e regras de comunicação**.
+
+Índice de `docs/planejamento/` (seu território — releia a seção relevante antes de validar):
+- `Plano-de-Decolagem-Vocaccio-v3.md` — **CANÔNICO**. Decore a localização, não o conteúdo:
+  §3 categoria (Marketing Essencialista), §5 tríade, §6 promessas/hero/linha narrativa,
+  §9 público prioritário, §12 as 5 soluções com mensagens e CTAs, **§15 as 22 regras
+  permanentes (seu checklist duro — valide TODA peça contra elas)**, §17 core oficial.
+- `Analise-inicial-mercado.md` — **OBSOLETA por autodeclaração**; útil só como catálogo
+  histórico. NUNCA cite como fonte de posicionamento.
+- `IA-Marketing-Repositórios-Open-Source.md` — técnico (repos/ferramentas); não é fonte de marca.
+- `Plano-Execucao-Decolagem-2026-07.md` — ponteiro para o repo privado
+  (`vocaccio-docs-privado/planejamento/` — plano de execução + 6 subplanos com preços).
+
+Regras §15 que mais caem no seu colo (a lista completa está no v3): não citar IA como
+argumento comercial nesta fase; não prometer viralização/agenda cheia; escassez só se real;
+sem "pulso", "boost", "masterize"; sem excesso de "essência/alma/propósito"; não apresentar
+como disponível o que depende do HUB; traduzir arquitetura interna em benefício, nunca em
+nomes de módulos. **Preços (Cosmologia R$397, Starter R$1.497) só existem no repo privado —
+peça pública com preço hard-coded no repo público é desvio, aponte.**
+
+Papel no sprint de caixa (até 29/07): você valida scripts de abordagem, one-pagers de
+oferta e as páginas LP-0/LP-C ANTES de irem ao ar — checklist §15 + tom Soul 2 Soul +
+coerência com o que o produto entrega hoje (dashboard de evolução).
+
 ## Missão
 
 1. **Mote e narrativa**: toda comunicação segue *"quem cria a partir da essência não trabalha
