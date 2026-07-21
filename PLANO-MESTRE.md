@@ -1147,12 +1147,18 @@ para evitar migração dolorosa. Ordenado por risco.
 
 ## SPECS/ASSETS QUE EXISTEM (não recriar — agora em `docs/referencias/` no repo)
 
-**Design System (2 documentos complementares):**
-- `docs/referencias/vocaccio-design-system.md` ← **PRINCIPAL** (2026-06-10): marca,
-  essência, paleta, tipografia, fotografia, diretrizes UI/UX, tom de voz.
-  Direciona TODA a parte visual do projeto.
-- `docs/referencias/vocaccio-design-system-ui-tokens.md` ← complemento técnico:
-  tokens, botões, formulários, hero orbital, motion, checklist de implementação.
+**Design System (atualizado 2026-07-20 — consolidação cross-IDE, ver
+`docs/handoff-novo-design/prompt-migracao.md` para o prompt de execução):**
+- Fonte única e absoluta: `C:\dev\edwiges\SYSTEM-DESIGN-CONSOLIDADO-VOCACCIO.md`
+  (conceito, tokens, Aurora Ramp, Ambient Glows/smooth radial motion, hero e
+  scroll motion por tipo de página, restrições anti-legado, botão glass
+  circular). Os dois `docs/referencias/vocaccio-design-system*.md` antigos
+  foram **excluídos** — conteúdo já incorporado lá.
+- Protótipo de referência visual: `C:\dev\edwiges\prototype-referencia.html`
+  (também saiu de `docs/handoff-novo-design/`, mora só em Edwiges agora).
+- Só duas derivações de módulo permitidas: Volatis
+  (`vocaccio-docs-privado/produto-ip/volatis/volatis-design-system.md`) e Acto
+  (`vocaccio-codex/docs/DIRETRIZES-VISUAIS-ECOSSISTEMA-2026-07-07.md`).
 
 **Volatis/carrosséis:**
 `vocaccio-docs-privado/produto-ip/volatis/system-prompt-maquina-carrosseis-v4.md` (repo privado) (+ design-system,
