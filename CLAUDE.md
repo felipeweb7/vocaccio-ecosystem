@@ -15,6 +15,15 @@ entregáveis), canais por cliente e multi-tenant org/RBAC. As features nativas
 do Postiz (agendar posts, calendário, analytics, times, media library)
 continuam no produto — são o substrato.
 
+**Mapa completo do HUB (Anexo 1 do Plano de Decolagem,
+`docs/planejamento/Plano-de-Decolagem-Vocaccio-v4.md`):** Religare (alma do
+negócio) e Augeo (automação e growth) no topo; Volatis, Acto, Base (biblioteca
+de casos e vitórias), CRM e **Tribali** (comunidades) como módulos. Nem todo
+módulo do mapa está construído — confira `PLANO-MESTRE.md` para o status real
+de cada fase antes de assumir que algo já existe. Tribali é marca-filha com
+**repo próprio** (`C:\dev\tribali`, trava AGPL) — conectado ao ecossistema,
+não faz parte deste monorepo.
+
 Fontes de verdade, em ordem:
 1. `PLANO-MESTRE.md` — visão, fases, decisões de arquitetura (Camada 18 é imutável)
 2. `docs/auditoria/plano-leveza-2026-07.md` — plano ativo de emagrecimento do núcleo Postiz
@@ -227,7 +236,9 @@ Orquestração completa em `.claude/agents/README.md`. Resumo: Dumbledore
 (sessão principal) delega — Flitwick (front), Sirius (back), McGonagall
 (plano/arquitetura, Opus), Moody (revisão de diff, Haiku, antes de todo
 commit), Severus (segurança, proativo em superfície sensível), Griphook
-(economia/modelo, Haiku), Fred e Jorge (growth/conteúdo), Hagrid (marca,
+(economia/modelo, Haiku), Weasley (growth/conteúdo), Hagrid (marca,
 fonte: BUSINESS-PLAN.md), Filch (zelador/sentinela de commit), Edwiges
-(fronteira Codex/Religare). Tarefa pequena: faça inline — sub-agente custa
-cold start. Iniciar tarefas com a linha "Time atual: …" quando for barato.
+(fronteira Codex/Religare), Draco (benchmark de dependência/skill nova,
+read-only), Luna (jogos/gamificação/LP cinematográfica e scroll motion,
+global). Tarefa pequena: faça inline — sub-agente custa cold start.
+Iniciar tarefas com a linha "Time atual: …" quando for barato.
