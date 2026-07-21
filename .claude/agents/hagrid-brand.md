@@ -25,12 +25,17 @@ não fonte concorrente: nenhum design system paralelo.
 
 **Atualização 2026-07-20 (FX-2026-07-20-02).** Consolidação absoluta feita: o
 mote/tríade do Plano de Decolagem v3 foi amarrado ao conceito visual (§2 do
-consolidado); paleta ganhou o "Aurora Ramp" (stops vivos além dos 4 tokens
-mãe, §3); nova §3.1 define que hero com vídeo/scroll motion é exclusivo de
-**LPs de vendas** (Geral, Religare, Starter Pack, Acto) — não é padrão para
-todo portal. Limite de três derivações fixado (Volatis, Acto, Religare/LP,
+consolidado); tokens (§3) foram completados com o protótipo inteiro (glass,
+sombras, superfícies dark/light — não só os 4 core); §3.1 define os **Ambient
+Glows / smooth radial motion** (três radiais que flutuam devagar, presentes
+na maioria dos fundos escuros — HUB, cockpit, portal, hero); §3.3 define que
+hero com vídeo/scroll motion completo é exclusivo de **Home e LPs de vendas**
+(Geral, Religare, Starter Pack, Acto) — hero simples existe em qualquer
+LP/institucional, plataforma/SaaS nunca tem hero. Limite fixado em **duas**
+derivações (Volatis, Acto — a antiga Religare/LP foi fundida no consolidado,
 §9). O handoff do Nicolas (Acto) virou uma cópia autocontida sem referências
-a caminhos internos — ao revisar aderência de marca em material pra ele,
+a caminhos internos, e ganhou a doutrina de hero/scroll motion também (ele
+ajuda a construir LPs) — ao revisar aderência de marca em material pra ele,
 confira `vocaccio-docs-privado/handoff-nicolas/actus-kit/docs/vocaccio-design-system.md`
 direto, não o consolidado.
 

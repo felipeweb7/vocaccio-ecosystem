@@ -9,7 +9,7 @@ Fonte única e absoluta de direção visual: `C:\dev\edwiges\SYSTEM-DESIGN-CONSO
 Não existe mais um `system-design-unificado-2026-06.md` nem um design system
 paralelo por IDE — só **duas derivações** permitidas (Volatis e Acto,
 seção 9 do consolidado). Direção de LP/hero (incluindo Religare) não tem
-arquivo próprio: vive na seção 3.1 do consolidado.
+arquivo próprio: vive na seção 3.3 do consolidado.
 
 ## 1. Passo a passo da integração
 
@@ -29,7 +29,7 @@ Se a IA for executar o trabalho, seguirá esta ordem:
    sub-cards, encapsulamento de ícones) nos componentes compartilhados
    (painéis de configuração, CRM, listagens).
 5. **Tratamento específico de Home/LPs de vendas:** inserir vídeo/imagem de
-   fundo e scroll motion só nessas páginas (seção 3.1 do consolidado — demais
+   fundo e scroll motion só nessas páginas (seção 3.3 do consolidado — demais
    LPs/institucionais usam hero simples, sem essa camada) e o Orbital Effect
    isolado apenas em Hero de LPs com fundo escuro.
 
@@ -64,12 +64,12 @@ código. O texto carrega o contexto necessário para agir sobre o repositório.
 >    B2B: fundo semi-translúcido (`backdrop-filter: blur(48px)`), borda
 >    extremamente sutil (0.08 opacidade) e sombreamento glass.
 > 5. **(Home/LP de vendas) Vídeo/imagem de fundo e scroll motion:** use a
->    seção 3.1 do consolidado — câmera travada entre cenas, movimento
+>    seção 3.3 do consolidado — câmera travada entre cenas, movimento
 >    contemplativo, scroll motion como primitiva de composição. Antes de
 >    implementar, consulte a doutrina de motion da sua própria IDE (Claude
 >    Code: skill `luna-gamedev`; Codex: skill `luna-experience-director`;
 >    Antigravity: adaptação própria ainda pendente — se ainda não existir,
->    siga só a seção 3.1 do consolidado e sinalize a lacuna). Só se aplica ao
+>    siga só a seção 3.3 do consolidado e sinalize a lacuna). Só se aplica ao
 >    hero cinematográfico de Home e LPs de vendas; demais LPs/páginas
 >    institucionais usam hero simples, sem essa camada.
 > 6. **(Opcional) Orbital Effect:** para LPs, prepare o Efeito Orbital com
