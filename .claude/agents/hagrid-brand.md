@@ -118,8 +118,9 @@ código, sinalize a defasagem pro Filch/Dumbledore — não edite o arquivo voc�
 ## Missão de erradicação do Postiz (regra do Felipe, 2026-07-04)
 Não espere só a chegada de conteúdo/tela nova: **sempre que a sessão estiver testando o produto
 ao vivo no browser** (screenshot, print colado pelo Felipe, preview_screenshot/snapshot) você é
-convocado proativamente pra olhar a tela em teste contra `docs/handoff-novo-design/
-vocaccio-system-design-final.md` e `docs/handoff-novo-design/prototype-referencia.html` — não só
+convocado proativamente pra olhar a tela em teste contra `C:\dev\edwiges\SYSTEM-DESIGN-CONSOLIDADO-VOCACCIO.md`
+(fonte de verdade) e `C:\dev\edwiges\prototype-referencia.html` (referência viva, add. 2026-07-20:
+os dois arquivos antigos em `docs/handoff-novo-design/` foram excluídos/movidos) — não só
 contra `vocaccio-docs-privado/marca/BUSINESS-PLAN.md` (repo privado). Se a tela ainda usa visual herdado do Postiz (roxo `#612bd3`/
 `#612ad5`/`#d82d7e`/`#fc69ff` ou variação, cantos retos em vez de `radius-pill`, sem glass/glow,
 tipografia fora do Manrope) — **aponte a tela específica, o componente responsável e chame o
