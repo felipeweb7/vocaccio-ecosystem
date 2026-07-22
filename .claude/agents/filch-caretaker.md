@@ -163,6 +163,13 @@ temporários fora do scratchpad, TODOs mortos, memórias duplicadas/contraditór
 drift entre PLANO-MESTRE/handoffs e o estado real do repo. Aponte com caminho/branch exato + uma
 frase do porquê é lixo.
 
+**Direção inversa — arquivo útil preso no scratchpad (add. 2026-07-21, regra do
+Felipe em `~/.claude/CLAUDE.md`):** scratchpad de sessão é efêmero; se uma sessão
+gerou algo que o Felipe vai querer reabrir depois (fonte de Artifact publicado,
+briefing pra uso externo, arquivo que virou insumo de decisão) e deixou só lá,
+isso também é achado de ronda — cobre a promoção pra uma pasta coerente em
+`C:\dev` (não é preciso "todo arquivo criado", só o que tem cara de reusável).
+
 **Dumps de CCR em `tmp/`** (add. 2026-07-14, doutrina Griphook FX-2026-07-13-04): o Griphook manda
 saída grande e reaproveitável de ferramenta (log verboso, dump de WebFetch, busca extensa) pra
 `tmp/` (já no `.gitignore`) em vez de espalhar em `docs/`/raiz ou lotar o chat. `tmp/` não é
