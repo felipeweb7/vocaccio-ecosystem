@@ -25,6 +25,7 @@ model Organization {
   clients             Client[]
   experts             Expert[]
   religareProfiles    ReligareProfile[]
+  religareLeads       ReligareLead[]
   Comments            Comments[]
   credits             Credits[]
   customers           Customer[]
@@ -118,6 +119,8 @@ model User {
   agencies              SocialMediaAgency?
   picture               Media?               @relation(fields: [pictureId], references: [id])
   organizations         UserOrganization[]
+  religareLeads         ReligareLead[]
+  religareProfiles      ReligareProfile[]
 
   @@unique([email, providerName])
   @@index([lastReadNotifications])
@@ -788,65 +791,187 @@ model Client {
  * Guarda a VOZ/DNA (o visual fica na marca). Ligação via ClientExpert.
  */
 model Expert {
-  id           String         @id @default(uuid())
-  orgId        String
-  name         String
-  role         String?
-  avatarUrl    String?
-  handle       String?
-  bio          String?
-  toneOfVoice  String?
-  audience     String?
-  keywords     String?
-  dna          String?
-  createdAt    DateTime       @default(now())
-  updatedAt    DateTime       @updatedAt
-  deletedAt    DateTime?
-  organization Organization     @relation(fields: [orgId], references: [id])
-  clients      ClientExpert[]
+  id              String           @id @default(uuid())
+  orgId           String
+  name            String
+  role            String?
+  avatarUrl       String?
+  handle          String?
+  bio             String?
+  toneOfVoice     String?
+  audience        String?
+  keywords        String?
+  dna             String?
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+  deletedAt       DateTime?
+  organization    Organization     @relation(fields: [orgId], references: [id])
+  clients         ClientExpert[]
   religareProfile ReligareProfile?
 
   @@index([orgId])
   @@index([deletedAt])
 }
 
-/** Religare — leitura vocacional/cosmológica. 1:1 com Expert (um Religare por expert). */
+/**
+ * Religare — leitura vocacional/cosmológica. 1:1 com Expert (um Religare por expert).
+ */
 model ReligareProfile {
-  id                String        @id @default(uuid())
-  orgId             String
-  expertId          String?       @unique
-  name              String
-  birthDate         DateTime?
-  birthTime         String?
-  birthPlace        String?
-  birthLat          Float?
-  birthLng          Float?
-  birthTz           String?
-  answers           Json?
-  kinNatal          Int?
-  kinData           Json?
-  archetypePrimary  String?
+  id                 String         @id @default(uuid())
+  orgId              String
+  userId             String?
+  expertId           String?        @unique
+  name               String
+  birthDate          DateTime?
+  birthTime          String?
+  birthPlace         String?
+  birthLat           Float?
+  birthLng           Float?
+  birthTz            String?
+  answers            Json?
+  kinNatal           Int?
+  kinData            Json?
+  archetypePrimary   String?
   archetypeSecondary String?
-  archetypeScores   Json?
-  vocational        Json?
-  synthesis         String?
-  astrology         Json?
-  dna               Json?
-  humanDesign       Json?
-  brandProfile      Json?
-  status            String        @default("DRAFT")
-  shareToken        String?       @unique
-  createdAt         DateTime      @default(now())
-  updatedAt         DateTime      @updatedAt
-  deletedAt         DateTime?
-  organization      Organization  @relation(fields: [orgId], references: [id])
-  expert            Expert?       @relation(fields: [expertId], references: [id])
+  archetypeScores    Json?
+  vocational         Json?
+  synthesis          String?
+  astrology          Json?
+  dna                Json?
+  humanDesign        Json?
+  brandProfile       Json?
+  status             String         @default("DRAFT")
+  shareToken         String?        @unique
+  createdAt          DateTime       @default(now())
+  updatedAt          DateTime       @updatedAt
+  deletedAt          DateTime?
+  organization       Organization   @relation(fields: [orgId], references: [id])
+  user               User?          @relation(fields: [userId], references: [id])
+  expert             Expert?        @relation(fields: [expertId], references: [id])
+  religareLeads      ReligareLead[]
 
   @@index([orgId])
+  @@index([userId])
   @@index([deletedAt])
 }
 
-/** Junção N:N entre Client (marca) e Expert. */
+enum ReligareLeadStatus {
+  DRAFT
+  NEW
+  QUALIFIED
+  CHECKOUT_STARTED
+  CONVERTED
+  LOST
+}
+
+enum ReligareCheckoutStatus {
+  PENDING
+  PROCESSING
+  PAID
+  FAILED
+  EXPIRED
+  REFUNDED
+}
+
+/**
+ * Lead capturado no funil público do Religare, em 2 passos (rota pública do
+ * NestJS, fora do middleware de auth — ver ReligareFunnelController). orgId
+ * nunca vem do navegador — sempre a org de produção configurada no servidor
+ * (e o backend falha fechado se essa env var não estiver setada, ver
+ * ReligareFunnelService.prodOrgId).
+ *
+ * Passo 1 (sem leadId no request): persiste birthDate/birthTime/birthPlace +
+ * consentVersion/consentedAt, SEM exigir email/whatsapp — status DRAFT, `id`
+ * retornado ao cliente funciona como o "token seguro" do passo 2 (UUID v4,
+ * 122 bits de entropia — mesmo padrão de session id/order id usado por
+ * gateways de pagamento; ver docs/religare/funil-fundacao.md).
+ *
+ * Passo 2 (leadId no request): busca SEMPRE por (id = leadId, orgId =
+ * servidor) — nunca por email/whatsapp (não há mais dedup por contato,
+ * cada passo 1 gera um lead novo). Completa o mesmo lead com email/whatsapp
+ * e dispara a criação de ReligareProfile/checkout quando aplicável.
+ *
+ * profileId só é preenchido depois que os campos mínimos (fullName +
+ * nascimento) estão completos e um ReligareProfile é criado.
+ */
+model ReligareLead {
+  id             String             @id @default(uuid())
+  orgId          String
+  userId         String?
+  profileId      String?
+  fullName       String?
+  email          String?
+  whatsapp       String?
+  birthDate      DateTime?
+  birthTime      String?
+  birthPlace     String?
+  consentVersion String
+  consentedAt    DateTime
+  source         String?
+  status         ReligareLeadStatus @default(DRAFT)
+  createdAt      DateTime           @default(now())
+  updatedAt      DateTime           @updatedAt
+  organization   Organization       @relation(fields: [orgId], references: [id])
+  user           User?              @relation(fields: [userId], references: [id])
+  profile        ReligareProfile?   @relation(fields: [profileId], references: [id])
+  checkouts      ReligareCheckout[]
+
+  @@index([orgId])
+  @@index([userId])
+  @@index([email])
+  @@index([status])
+}
+
+/**
+ * Checkout do funil Religare. Não é o mesmo domínio do model `Orders`
+ * (marketplace buyer/seller herdado do Postiz) — nunca reaproveitar aquele.
+ * Nunca armazena dado de cartão; provider é o nome do gateway (ex. "infinitepay").
+ * providerReference é o order_nsu — GERADO POR NÓS (ReligareFunnelService)
+ * antes de chamar a InfinitePay, por isso é obrigatório e único desde a
+ * criação (é a chave que o webhook usa pra localizar o checkout, nunca um
+ * id vindo do payload do provider).
+ */
+model ReligareCheckout {
+  id                String                  @id @default(uuid())
+  leadId            String
+  provider          String
+  providerReference String                  @unique
+  amountCents       Int
+  installments      Int                     @default(1)
+  status            ReligareCheckoutStatus  @default(PENDING)
+  checkoutUrl       String?
+  paidAt            DateTime?
+  createdAt         DateTime                @default(now())
+  updatedAt         DateTime                @updatedAt
+  lead              ReligareLead            @relation(fields: [leadId], references: [id])
+  events            ReligareCheckoutEvent[]
+
+  @@index([leadId])
+  @@index([status])
+}
+
+/**
+ * Log de eventos de webhook de pagamento — gravado ANTES de processar
+ * (garante idempotência por providerEventId mesmo se o processamento falhar
+ * no meio do caminho). checkoutId fica nulo se o evento não bater com
+ * nenhum checkout conhecido (nunca descartar o evento silenciosamente).
+ */
+model ReligareCheckoutEvent {
+  id              String            @id @default(uuid())
+  checkoutId      String?
+  providerEventId String            @unique
+  eventType       String
+  payload         Json
+  receivedAt      DateTime          @default(now())
+  processedAt     DateTime?
+  checkout        ReligareCheckout? @relation(fields: [checkoutId], references: [id])
+
+  @@index([checkoutId])
+}
+
+/**
+ * Junção N:N entre Client (marca) e Expert.
+ */
 model ClientExpert {
   id        String   @id @default(uuid())
   clientId  String

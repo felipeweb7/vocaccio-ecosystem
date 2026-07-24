@@ -56,6 +56,9 @@ import { ProjectAccessLinkRepository } from '@gitroom/nestjs-libraries/database/
 import { ServiceOfferingRepository } from '@gitroom/nestjs-libraries/database/prisma/atelie/service-offering.repository';
 import { ServiceRequestRepository } from '@gitroom/nestjs-libraries/database/prisma/atelie/service-request.repository';
 import { ServiceRequestService } from '@gitroom/nestjs-libraries/database/prisma/atelie/service-request.service';
+import { ReligareFunnelRepository } from '@gitroom/nestjs-libraries/database/prisma/religare/religare-funnel.repository';
+import { ReligareFunnelService } from '@gitroom/nestjs-libraries/database/prisma/religare/religare-funnel.service';
+import { InfinitePayService } from '@gitroom/nestjs-libraries/services/infinitepay.service';
 
 @Global()
 @Module({
@@ -113,6 +116,9 @@ import { ServiceRequestService } from '@gitroom/nestjs-libraries/database/prisma
     CrmService,
     ReligareRepository,
     ReligareService,
+    ReligareFunnelRepository,
+    ReligareFunnelService,
+    InfinitePayService,
     ProjectRepository,
     ProjectService,
     ContentRepository,
