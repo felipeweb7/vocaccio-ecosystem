@@ -692,29 +692,36 @@ resultado dele. **9/9 PASS** (`jest --config <ad-hoc>.js` sobre esse arquivo,
 mesmo gap de `@nx/jest` já documentado na seção 8 — config ad-hoc no
 scratchpad da sessão, não commitado).
 
-**Ainda NÃO verificado — isso é sobre TRANSPORTE HTTP + middleware, não sobre
-a lógica do gate (já coberta acima):** um `curl` fim-a-fim com sessão real de
-superadmin contra o servidor rodando (cookie `auth` válido) continua
-pendente — exigiria forjar/criar uma sessão real, ação bloqueada pelo
-classificador de permissões do Claude Code (forjar autenticação de conta) e
-pela lista de ações proibidas (criação de conta), mesmo com autorização do
-dono do projeto. Evidência indireta que reduz o risco desse gap residual: o
-gate é cópia literal do já usado em produção por `AdminController`
-(`/admin/errors`, `/admin/stats`), mesmo decorator, mesma posição relativa ao
-`AuthMiddleware` (rotas em `authenticatedController`, boot log confirma DI
-resolvida sem erro).
+**Transporte HTTP fim-a-fim com sessão real — FECHADO em 2026-07-25** (rodada
+de verificação pós-6ª, feita com o Felipe): o assistente não pode logar/criar
+sessão (regra de permissão, mesmo com autorização — ver acima), então o
+Felipe logou no HUB (`admin@vocacc.io`) no browser aberto pelo assistente,
+copiou o cookie `auth` do DevTools e rodou os `curl` ele mesmo:
 
-**Como fechar este item** (precisa de credencial real, fora do alcance desta
-sessão): logar no HUB com um usuário existente, copiar o cookie `auth` do
-DevTools, e rodar:
-```bash
-curl -i http://localhost:3000/admin/religare/leads -H "Cookie: auth=<cookie copiado>"
-```
-uma vez com um usuário sem `isSuperAdmin` (espera `400 {"message":"Unauthorized"}`)
-e uma vez com um superadmin real (espera `200` + payload paginado).
+| Cenário | Resultado real |
+|---|---|
+| Sessão real, sem `isSuperAdmin` | `400` (confirmado antes da flag ser ligada) |
+| Sessão real, com `isSuperAdmin: true` | `200` em `listLeads` e `listCheckouts` |
 
-Nenhum dado real tocado, nenhum secret impresso. Servidor de dev finalizado
-(`taskkill`) ao final da rodada, porta 3000 liberada.
+Dois achados reais no caminho, ambos corrigidos nesta verificação (não fazem
+parte do código commitado, são config/dado de ambiente):
+1. **Gap real de config, não bug de código**: `.env` local não tinha
+   `RELIGARE_PROD_ORG_ID` (só existia em `.env.example` como placeholder) —
+   `listLeads`/`listCheckouts` chamam `prodOrgId()` (mesmo guard fail-closed
+   do funil público) e isso derrubava com `500 religare_funnel_misconfigured`
+   antes mesmo de chegar no gate de superadmin. Corrigido adicionando
+   `RELIGARE_PROD_ORG_ID="vocaccio-org-seed"` (org real já existente,
+   "Vocaccio | Soul 2 Soul") no `.env` local — não é código, não precisa
+   commit; production real ainda depende do item 6 abaixo.
+2. `admin@vocacc.io` não tinha `isSuperAdmin` ligado no banco de dev — o
+   Felipe autorizou explicitamente ligar a flag (permanente, não só pro
+   teste) via um script Prisma pontual (`user.update`, id específico,
+   deletado depois de rodar).
+
+Nenhum secret impresso no chat (cookie ficou só no terminal do Felipe).
+Servidores de dev (`dev:backend`/`dev:frontend`) ficaram rodando ao final
+desta rodada — não finalizados via `taskkill` como nas rodadas anteriores,
+porque a sessão seguia em uso.
 
 ## 9. Antes de aplicar em produção (não fazer sem registrar aqui)
 
@@ -757,9 +764,9 @@ Nenhum dado real tocado, nenhum secret impresso. Servidor de dev finalizado
    e os 2 botões (`verify-payment`, `mark-paid`). **Pendente real**: preencher
    `EMAIL_HOST`/`EMAIL_PORT`/`EMAIL_SECURE`/`EMAIL_USER`/`EMAIL_PASS`/
    `EMAIL_PROVIDER` com credencial real da Hostinger no `.env` de produção (só
-   placeholders comentados no `.env.example`). Lógica do gate `assertSuperAdmin`
-   já coberta por teste de controller (seção 8.4, "cobertura fechada") — falta
-   só o `curl` fim-a-fim com sessão real de superadmin contra o servidor
-   rodando (seção 8.4, "Ainda NÃO verificado"), que é sobre transporte
-   HTTP/middleware, não sobre a lógica em si; o assistente não pôde forjar
-   nem criar essa sessão por regra de segurança da própria sessão.
+   placeholders comentados no `.env.example`). Gate `assertSuperAdmin` e
+   transporte HTTP fim-a-fim **ambos verificados** (seção 8.4, teste de
+   controller 9/9 PASS + `curl` real do Felipe com sessão de superadmin,
+   `200` confirmado). Também achado nessa verificação: `RELIGARE_PROD_ORG_ID`
+   precisa estar setado em qualquer `.env` (dev ou produção) pras rotas admin
+   funcionarem — mesmo guard fail-closed do funil público, não é bug novo.
