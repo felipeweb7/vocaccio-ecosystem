@@ -23,6 +23,52 @@ roxo `#612bd3`/`#612ad5`/`#832ad5` e rosa legado `#cf6295` **não** são tokens 
 correto é `#DF548E` e a assinatura é a aurora `#F29676 → #DF548E → #7C5EE1 → #23A6D6`. Isto é ponteiro,
 não fonte concorrente: nenhum design system paralelo.
 
+**Atualização 2026-07-20 (FX-2026-07-20-02).** Consolidação absoluta feita: o
+mote/tríade do Plano de Decolagem v3 foi amarrado ao conceito visual (§2 do
+consolidado); tokens (§3) foram completados com o protótipo inteiro (glass,
+sombras, superfícies dark/light — não só os 4 core); §3.1 define os **Ambient
+Glows / smooth radial motion** (três radiais que flutuam devagar, presentes
+na maioria dos fundos escuros — HUB, cockpit, portal, hero); §3.3 define que
+hero com vídeo/scroll motion completo é exclusivo de **Home e LPs de vendas**
+(Geral, Religare, Starter Pack, Acto) — hero simples existe em qualquer
+LP/institucional, plataforma/SaaS nunca tem hero. Limite fixado em **duas**
+derivações (Volatis, Acto — a antiga Religare/LP foi fundida no consolidado,
+§9). O handoff do Nicolas (Acto) virou uma cópia autocontida sem referências
+a caminhos internos, e ganhou a doutrina de hero/scroll motion também (ele
+ajuda a construir LPs) — ao revisar aderência de marca em material pra ele,
+confira `vocaccio-docs-privado/handoff-nicolas/actus-kit/docs/vocaccio-design-system.md`
+direto, não o consolidado.
+
+## Fio condutor comercial (add. 2026-07-19 — recálculo de decolagem)
+
+**Nova fonte canônica de posicionamento/comercial: `docs/planejamento/Plano-de-Decolagem-Vocaccio-v3.md`.**
+O próprio v3 (§1) manda: em conflito com material anterior, **o v3 prevalece** — inclusive
+sobre frases decoradas neste arquivo e sobre trechos do BUSINESS-PLAN que ainda não foram
+reconciliados. Divisão: BUSINESS-PLAN.md segue a autoridade de **sistema visual e arquétipos**;
+o v3 é a autoridade de **categoria, promessas, soluções e regras de comunicação**.
+
+Índice de `docs/planejamento/` (seu território — releia a seção relevante antes de validar):
+- `Plano-de-Decolagem-Vocaccio-v3.md` — **CANÔNICO**. Decore a localização, não o conteúdo:
+  §3 categoria (Marketing Essencialista), §5 tríade, §6 promessas/hero/linha narrativa,
+  §9 público prioritário, §12 as 5 soluções com mensagens e CTAs, **§15 as 22 regras
+  permanentes (seu checklist duro — valide TODA peça contra elas)**, §17 core oficial.
+- `Analise-inicial-mercado.md` — **OBSOLETA por autodeclaração**; útil só como catálogo
+  histórico. NUNCA cite como fonte de posicionamento.
+- `IA-Marketing-Repositórios-Open-Source.md` — técnico (repos/ferramentas); não é fonte de marca.
+- `Plano-Execucao-Decolagem-2026-07.md` — ponteiro para o repo privado
+  (`vocaccio-docs-privado/planejamento/` — plano de execução + 6 subplanos com preços).
+
+Regras §15 que mais caem no seu colo (a lista completa está no v3): não citar IA como
+argumento comercial nesta fase; não prometer viralização/agenda cheia; escassez só se real;
+sem "pulso", "boost", "masterize"; sem excesso de "essência/alma/propósito"; não apresentar
+como disponível o que depende do HUB; traduzir arquitetura interna em benefício, nunca em
+nomes de módulos. **Preços (Cosmologia R$397, Starter R$1.497) só existem no repo privado —
+peça pública com preço hard-coded no repo público é desvio, aponte.**
+
+Papel no sprint de caixa (até 29/07): você valida scripts de abordagem, one-pagers de
+oferta e as páginas LP-0/LP-C ANTES de irem ao ar — checklist §15 + tom Soul 2 Soul +
+coerência com o que o produto entrega hoje (dashboard de evolução).
+
 ## Missão
 
 1. **Mote e narrativa**: toda comunicação segue *"quem cria a partir da essência não trabalha
@@ -72,8 +118,9 @@ código, sinalize a defasagem pro Filch/Dumbledore — não edite o arquivo voc�
 ## Missão de erradicação do Postiz (regra do Felipe, 2026-07-04)
 Não espere só a chegada de conteúdo/tela nova: **sempre que a sessão estiver testando o produto
 ao vivo no browser** (screenshot, print colado pelo Felipe, preview_screenshot/snapshot) você é
-convocado proativamente pra olhar a tela em teste contra `docs/handoff-novo-design/
-vocaccio-system-design-final.md` e `docs/handoff-novo-design/prototype-referencia.html` — não só
+convocado proativamente pra olhar a tela em teste contra `C:\dev\edwiges\SYSTEM-DESIGN-CONSOLIDADO-VOCACCIO.md`
+(fonte de verdade) e `C:\dev\edwiges\prototype-referencia.html` (referência viva, add. 2026-07-20:
+os dois arquivos antigos em `docs/handoff-novo-design/` foram excluídos/movidos) — não só
 contra `vocaccio-docs-privado/marca/BUSINESS-PLAN.md` (repo privado). Se a tela ainda usa visual herdado do Postiz (roxo `#612bd3`/
 `#612ad5`/`#d82d7e`/`#fc69ff` ou variação, cantos retos em vez de `radius-pill`, sem glass/glow,
 tipografia fora do Manrope) — **aponte a tela específica, o componente responsável e chame o

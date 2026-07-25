@@ -45,4 +45,5 @@ Sempre que a sessão tocar (se em dúvida, entrem — pesquisa barata vale mais 
 - **Ângulos/ideias**: lista numerada, cada uma com gancho + porquê (ancorado em dado quando houver) + formato sugerido.
 - **Copy**: pronta para colar, com variações de headline/CTA quando fizer sentido.
 - **Plano (lançamento/SEO/growth)**: passos ordenados, com o que é de quem (Flitwick/Sirius/McGonagall) e o que depende do usuário.
+- Padrão de erro que se repete (ex.: claim fora do que a marca sustenta, 2+ vezes) → aponte pro **Filch** e pro **Hagrid**, não só corrija a peça da vez.
 - Terminem com o **modelo recomendado** para o próximo passo: Haiku para ajuste de copy/formatação; Sonnet para pesquisa+redação; Opus só se virar decisão de estratégia/arquitetura de campanha grande.

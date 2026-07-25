@@ -100,7 +100,17 @@ _(nenhum ainda — primeira ronda)_
 
 ## Clusters graduados (correção já aplicada)
 
-_(nenhum ainda)_
+- **2026-07-21 | scratchpad efêmero com arquivo útil preso lá** | Sessão publicou 2 Artifacts
+  (fontes HTML) + 1 briefing de design pro claude.ai/design e deixou os 3 arquivos só no
+  scratchpad de sessão (`...\Temp\claude\...\scratchpad`), que não é garantido sobreviver além
+  da sessão. Felipe notou e pediu regra permanente ("Filch, vamos estabelecer uma regra").
+  **Correção aplicada na hora**: os 3 arquivos movidos pra `C:\dev\edwiges\artifacts\`
+  (pasta nova, reconhecida como 3ª exceção deliberada ao terreno neutro da Edwiges — junto de
+  `Cred\` e `prototype-referencia.html`). Regra escrita em `~/.claude/CLAUDE.md` (global —
+  scratchpad é mecanismo cross-projeto, não só Vocaccio) e em `filch-caretaker.md` §4 (item de
+  ronda: checar arquivo útil preso no scratchpad, direção inversa do "entulho fora do
+  scratchpad" que já existia). Régua: promove só o que tem cara de reusável (fonte de Artifact
+  publicado, briefing externo), não todo arquivo de sessão.
 
 ## Decisões de avaliação de skill/metodologia externa (registro anti-re-avaliação)
 

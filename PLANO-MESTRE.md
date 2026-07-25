@@ -28,6 +28,34 @@
 > trabalho (PR aberto, aguardando revisão do Felipe). Back-office agêntico P0 FECHADO
 > (2026-07-11, `docs/backoffice/`, 18 ADRs). Plano de leveza executado até ondas B/C/D/E;
 > resíduos marcados v2.0, sem item bloqueante. Nenhuma decisão da Camada 18 alterada.
+>
+> **v6.4 (2026-07-19) — recálculo de rota (decolagem comercial):** sem fluxo de caixa,
+> o Felipe pediu replanejamento total (Fable 5). Nasce a cadeia de documentos abaixo
+> (seção "Fio condutor") com sprint de caixa até 29/07, migração para a org GitHub
+> `vocaccio` (plataforma → repo privado `vocaccio/hub`), 4 LPs scroll-oriented, InfinitePay
+> como gateway do sprint e agente novo `draco-benchmark`. Nenhuma decisão da Camada 18
+> alterada — este plano segue sendo a autoridade de arquitetura técnica.
+
+---
+
+## 🧭 FIO CONDUTOR (v6.4 — leia antes de qualquer sessão de execução)
+
+Quatro documentos, quatro papéis. Quando houver conflito, vale o de cima na sua coluna:
+
+| Documento | Papel | Autoridade sobre |
+|---|---|---|
+| `PLANO-MESTRE.md` (este) | Visão e arquitetura **técnica** | Stack, camadas, fases, Camada 18 (imutável) |
+| `docs/planejamento/Plano-de-Decolagem-Vocaccio-v3.md` | Estratégia e **marca/comercial** | Posicionamento, promessas, soluções, regras §15, core §17 |
+| `vocaccio-docs-privado/planejamento/PLANO-EXECUCAO-DECOLAGEM-2026-07.md` | **Operacional** (o que fazer agora) | Sequência, trilhas Caixa/Fundação, decisões datadas |
+| `vocaccio-docs-privado/planejamento/SUBPLANO-*.md` (6) | **Execução** (job briefs) | Sprint-caixa, org-github, LPs, time-hp, arquitetura-integração, backoffice |
+
+Regras do fio:
+1. **Toda sessão de execução declara qual subplano está executando** (1 linha no início).
+   Sessão trabalhando fora do fio = desvio; Filch aponta na hora.
+2. Restrição vigente: **sprint de caixa até 2026-07-29** — nada de fundação canibaliza
+   hora de venda do Felipe.
+3. Recálculos futuros entram como v6.x aqui (1 parágrafo) + detalhe no plano de execução —
+   nunca como documento solto sem ponteiro neste arquivo.
 
 ---
 
@@ -1119,12 +1147,18 @@ para evitar migração dolorosa. Ordenado por risco.
 
 ## SPECS/ASSETS QUE EXISTEM (não recriar — agora em `docs/referencias/` no repo)
 
-**Design System (2 documentos complementares):**
-- `docs/referencias/vocaccio-design-system.md` ← **PRINCIPAL** (2026-06-10): marca,
-  essência, paleta, tipografia, fotografia, diretrizes UI/UX, tom de voz.
-  Direciona TODA a parte visual do projeto.
-- `docs/referencias/vocaccio-design-system-ui-tokens.md` ← complemento técnico:
-  tokens, botões, formulários, hero orbital, motion, checklist de implementação.
+**Design System (atualizado 2026-07-20 — consolidação cross-IDE, ver
+`docs/handoff-novo-design/prompt-migracao.md` para o prompt de execução):**
+- Fonte única e absoluta: `C:\dev\edwiges\SYSTEM-DESIGN-CONSOLIDADO-VOCACCIO.md`
+  (conceito, tokens, Aurora Ramp, Ambient Glows/smooth radial motion, hero e
+  scroll motion por tipo de página, restrições anti-legado, botão glass
+  circular). Os dois `docs/referencias/vocaccio-design-system*.md` antigos
+  foram **excluídos** — conteúdo já incorporado lá.
+- Protótipo de referência visual: `C:\dev\edwiges\prototype-referencia.html`
+  (também saiu de `docs/handoff-novo-design/`, mora só em Edwiges agora).
+- Só duas derivações de módulo permitidas: Volatis
+  (`vocaccio-docs-privado/produto-ip/volatis/volatis-design-system.md`) e Acto
+  (`vocaccio-codex/docs/DIRETRIZES-VISUAIS-ECOSSISTEMA-2026-07-07.md`).
 
 **Volatis/carrosséis:**
 `vocaccio-docs-privado/produto-ip/volatis/system-prompt-maquina-carrosseis-v4.md` (repo privado) (+ design-system,

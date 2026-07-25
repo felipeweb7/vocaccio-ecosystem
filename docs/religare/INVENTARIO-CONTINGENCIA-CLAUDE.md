@@ -11,6 +11,32 @@ Contraparte: Codex (`C:\dev\vocaccio-codex\docs\religare\*`, somente leitura)
 
 ---
 
+## 0. Atualização 2026-07-25 — funil comercial já existe e já está em produção
+
+O conteúdo abaixo (baseline `6621201c`, 2026-07-02) é **histórico** — preservado
+como registro, não reflete mais o estado real. Desde então:
+
+- Implementado e testado (15 casos): `ReligareLead`, `ReligareCheckout`,
+  `ReligareCheckoutEvent`, `InfinitePayService`, captura pública em 2 passos
+  (`POST /religare/lead`), webhook hardened. Detalhe completo em
+  [`docs/religare/funil-fundacao.md`](funil-fundacao.md).
+- Migration `20260723_religare_funnel_foundation` **aplicada em produção**
+  (Supabase `vocaccio-ecosystem`) em 2026-07-24, confirmada `Database schema is
+  up to date!` via `prisma migrate status`.
+- `main` local mesclado de volta em `claude/sprint-caixa-d1-d2-ac37e5` em
+  2026-07-25 (commit `ab261f3f`) para que o checkout primário `C:\dev\vocaccio`
+  reflita esse estado — antes disso, uma sessão externa (Codex) que lesse
+  `C:\dev\vocaccio` sem trocar de branch via `main` não veria esses modelos,
+  apesar de já estarem em produção. Reconciliação completa, com a divergência
+  real entre o schema shipped e o desenho mais rico proposto no ADR do Codex
+  (`ADR-MVP-COMERCIAL-RELIGARE-FUNIL-CHECKOUT-2026-07-25.md`), registrada em
+  `C:\dev\edwiges\MEMORIA-COMPARTILHADA.md` **D-22**.
+- Baseline real agora: `C:\dev\vocaccio`, branch `claude/sprint-caixa-d1-d2-ac37e5`,
+  commit `ab261f3f` (ver Edwiges §1 para o estado sempre atualizado — não
+  duplicar aqui a cada mudança).
+
+---
+
 ## 1. Baseline e estado
 
 ### 1.1 Repositório principal (fonte de verdade do lado Claude)

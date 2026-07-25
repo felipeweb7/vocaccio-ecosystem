@@ -1,0 +1,72 @@
+[EXEMPLO DE EMPRESA FULL STACK AI]
+
+42 skills.
+7 departments.
+1 Claude instance.
+
+Every department is real.
+Every skill is installable.
+
+Developers
+
+Superpowers
+→ https://github.com/obra/superpowers
+
+Context7
+→ https://github.com/upstash/context7
+
+Skill Creator
+→ https://github.com/anthropics/skills
+
+MCP Builder
+→ https://github.com/anthropics/skills
+
+Webapp Testing
+→ https://github.com/anthropics/skills
+
+Claude-Mem
+→ https://github.com/thedotmack/claude-mem
+
+Designers
+
+UI UX Pro Max
+→ https://github.com/nextlevelbuilder/ui-ux-pro-max-skill
+
+Taste
+→ https://github.com/Leonxlnx/taste-skill
+
+Frontend Design
+→ https://github.com/Leonxlnx/taste-skill
+
+Transitions
+→ https://github.com/Jakubantalik/transitions.dev
+
+Marketing
+
+45 skills for copywriting, SEO, and campaigns
+
+→ https://github.com/coreyhaines31/marketingskills
+
+Social Media
+
+17 skills for content, Reels, and thumbnails
+
+→ https://github.com/charlie947/social-media-skills
+
+Finance
+
+8 skills for statements and audits
+
+→ https://claude.com/plugins/finance
+
+Small Business
+
+31 skills for operations and automation
+
+→ https://claude.com/plugins/small-business
+
+Legal
+
+9 skills for contracts and compliance
+
+→ https://claude.com/plugins/legal

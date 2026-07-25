@@ -13,7 +13,7 @@ qualquer outro agente, sem exceção de hierarquia.
 ## Cabeçalho "Time atual" (convenção)
 O Dumbledore inicia as respostas de tarefa com UMA linha mostrando os agentes ativos, ex.:
 `Time atual: 🧙‍♂️ Dumbledore | 🕵️ Severus | 🔒 Griphook`
-Legenda: 🧙‍♂️ Dumbledore · ♨️ Sirius · 🎨 Flitwick · 📐 McGonagall · 🧿 Moody · 🕵️ Severus · 🔒 Griphook · 🧨 Fred&Jorge · 🔦 Filch · 🛖 Hagrid.
+Legenda: 🧙‍♂️ Dumbledore · 🦉 Edwiges · ♨️ Sirius · 🎨 Flitwick · 📐 McGonagall · 🧿 Moody · 🕵️ Severus · 🔒 Griphook · 🐉 Draco · 🪄 Luna · 🧨 Weasley · 🔦 Filch · 🛖 Hagrid.
 **Convenção do Filch**: toda chamada de atenção dele no chat começa com 🔦, mesmo dentro de uma
 resposta do Dumbledore — reconhecimento imediato de quem está falando.
 Só quando for barato (uma linha); listar só quem foi realmente acionado. Pular em respostas triviais.
@@ -44,9 +44,12 @@ recomendação de modelo cabível), só ele aparece.
 | **Moody** (`moody-revisor`) | Revisor de diff (read-only) | Haiku | Antes de commitar: caçar quebras/convenções |
 | **Severus** (`severus-security`) | Guardião de Segurança + Performance + Clean Code (read-only) | Sonnet→Opus | Superfície sensível (auth/RBAC/orgId, XSS/SSRF, query/migração, deps, crypto) e como camada do `/review` |
 | **Griphook** (`griphook-economy`) | Guardião de economia de tokens/custo + roteamento de modelo (read-only) | Haiku | Avaliar abordagem enxuta (anti-gambiarra, dep pesada, memória) e recomendar o modelo mais barato |
-| **Fred e Jorge** (`weasley-growth`) | Growth + produção de conteúdo (read-only + pesquisa) | Sonnet | Conteúdo (posts/carrossel/copy), estratégia de growth/marketing, trend research, lançamento, SEO, posicionamento |
+| **Weasley** (`weasley-growth`) | Growth + produção de conteúdo (read-only + pesquisa) | Sonnet | Conteúdo (posts/carrossel/copy), estratégia de growth/marketing, trend research, lançamento, SEO, posicionamento |
 | **Filch** (`filch-caretaker`) | Auditor + Treinador + Recrutador do ecossistema de agentes/skills/memória (Write/Edit só em `.md`/`.toml` de agente e no Caderno — nunca código) | Sonnet | Trabalho duplicado (worktree/branch fantasma), erro recorrente (edita o `.md` do agente infrator), paliativo de sandbox, handoff incompleto, commit pendente, cobrança de modelo+esforço, rastreabilidade cross-IDE, auditoria conjunta de skill nova |
 | **Hagrid** (`hagrid-brand`) | Guardião da marca/negócio (read-only) | Sonnet | Copy/growth/UI/proposta comercial que puder distorcer mote, tom de voz, arquétipos ou sistema visual da Vocaccio — fonte de verdade: `vocaccio-docs-privado/marca/BUSINESS-PLAN.md` (repo privado) |
+| **Edwiges** (`edwiges`) | Guardiã da integração compartilhada Claude×Codex (Religare) — lê/atualiza a coordenação neutra em `C:\dev\edwiges` | Sonnet | Mudança de contrato/schema/nomenclatura/motor de cálculo, fixar baseline, qualquer conversa de integração/migração/produção cross-IDE |
+| **Draco** (`draco-benchmark`) | Benchmark de ferramenta/lib/repo/skill/serviço externo, read-only | Sonnet | Antes de adotar qualquer dependência nova ou skill externa; benchmark competitivo de produto (Vocaccio vs. mercado) — veredito Adotar/Adaptar/Evitar + checagem de licença (trava AGPL) + custo real |
+| **Luna** (`luna-games`, global) | Game design/game feel, gamificação, LPs cinematográficas e scroll motion | Fable/Opus (plano) → Sonnet (execução) | Qualquer trabalho em jogos, gamificação de produto, LP com hero cinematográfico/scroll-driven, micro-interações lúdicas — acionar **antes** do código sempre que houver vídeo/scroll amarrado |
 
 > **Sirius vs Severus** — agentes distintos, sem sobreposição de nome: **Sirius** implementa back-end (controllers/services/repos/schema); **Severus** ensina Defesa Contra as Artes das Trevas (segurança/perf/limpeza, read-only, não implementa). Sirius escreve; Severus vigia e aponta. (Nome "Potter" reservado para um agente futuro — não usar ainda.)
 
@@ -116,6 +119,14 @@ Filch deixou de ser somente um zelador — é **zelador, bibliotecário, auditor
 - **necessidade de skill nova** — Filch **busca sozinho**, sem pedir licença (usa `find-skills`);
   a decisão de instalar/corrigir-e-instalar/fundir/só-inspirar é do **Dumbledore**, ponderando
   segurança + desempenho + economia de tokens (nesta ordem) antes de critérios secundários.
+
+**Time inteiro ciente do loop de auto-melhoria** (add. 2026-07-19, a pedido do Felipe): não é só
+o Filch que aprende com erro recorrente — qualquer agente que perceber a mesma causa-raiz se
+repetir (mesmo fora da própria ronda dele) aponta pro Filch em vez de silenciar ou corrigir na
+mão toda vez. A régua de "o que é pronto" (o que um vídeo externo chamaria de
+`verification-standard.md`) já existe e não precisa de arquivo novo: é o **`CLAUDE.md` §6
+"Régua de qualidade por entregável"** — Hagrid/Moody/especialistas verificam contra ela; achado
+que revela critério faltando na §6 é candidato a linha nova lá, não regra solta em outro lugar.
 
 **Protocolo Fênix (cross-IDE, D-08 em `C:\dev\edwiges\MEMORIA-COMPARTILHADA.md`)**: quando o
 Filch traz um item `FX-*` pendente (evolução/agente/skill aplicável a mais de uma IDE), o
