@@ -6,6 +6,7 @@ import { ReligareRepository } from './religare.repository';
 import { RELIGARE_MAPA_PRODUCT } from './religare-funnel-pricing';
 import { CreateReligareLeadDto } from '@gitroom/nestjs-libraries/dtos/religare/funnel.dto';
 import { InfinitePayService } from '@gitroom/nestjs-libraries/services/infinitepay.service';
+import { EmailService } from '@gitroom/nestjs-libraries/services/email.service';
 
 const RATE_LIMIT_WINDOW_MS = 60_000;
 const RATE_LIMIT_MAX = 30;
@@ -58,7 +59,8 @@ export class ReligareFunnelService {
   constructor(
     private _repo: ReligareFunnelRepository,
     private _religareRepository: ReligareRepository,
-    private _infinitePay: InfinitePayService
+    private _infinitePay: InfinitePayService,
+    private _emailService: EmailService
   ) {}
 
   /**
@@ -340,7 +342,7 @@ export class ReligareFunnelService {
       }
 
       // 3) Confirmado pela própria InfinitePay — só agora marca como pago.
-      await this._repo.markCheckoutPaid(checkout.id);
+      await this.confirmCheckoutPaid(checkout.id, { manual: false });
       await this._repo.markEventProcessed(event.id);
 
       // TODO(religare-funil): criar ServiceRequest aqui após status PAID
@@ -355,5 +357,159 @@ export class ReligareFunnelService {
       );
       return { success: false, message: 'server_error' };
     }
+  }
+
+  /**
+   * Ponto ÚNICO de confirmação de pagamento — compartilhado pelos 3 gatilhos
+   * possíveis: webhook automático, verificação manual de admin confirmada
+   * pela InfinitePay (`verifyCheckoutPayment`), e admin confiando sem
+   * reconciliar (`markCheckoutPaidManually`). `manual: false` sempre que a
+   * própria InfinitePay confirmou (usa `paidAt`); `manual: true` só quando o
+   * admin está confiando por conta própria (usa `manualPaidAt`/
+   * `manualPaidByUserId` — ver comentário do campo em schema.prisma).
+   * Dispara o e-mail de confirmação em TODOS os casos, um só lugar.
+   */
+  private async confirmCheckoutPaid(
+    checkoutId: string,
+    options: { manual: false } | { manual: true; adminUserId: string }
+  ) {
+    const checkout = options.manual
+      ? await this._repo.markCheckoutManuallyPaid(checkoutId, options.adminUserId)
+      : await this._repo.markCheckoutPaid(checkoutId);
+
+    await this.sendPaidConfirmationEmail(checkout);
+    return checkout;
+  }
+
+  /**
+   * `sendEmailSync` já faz o skip gracioso se EMAIL_FROM_ADDRESS/EMAIL_FROM_NAME
+   * (ou EMAIL_PROVIDER) não estiverem configurados — não duplicamos essa
+   * checagem aqui. O único caso que tratamos localmente é lead sem e-mail
+   * (passo 2 aceita email OU whatsapp; se só tem whatsapp, não há pra quem
+   * mandar e-mail — log e segue, nunca lança erro que derrubaria a
+   * confirmação de pagamento).
+   */
+  private async sendPaidConfirmationEmail(checkout: {
+    id: string;
+    lead?: { email: string | null; fullName: string | null } | null;
+  }) {
+    const email = checkout.lead?.email;
+    if (!email) {
+      this.logger.log(`religare_checkout_paid_no_email checkoutId=${checkout.id}`);
+      return;
+    }
+
+    const greeting = checkout.lead?.fullName ? `Olá, ${checkout.lead.fullName}!` : 'Olá!';
+    await this._emailService.sendEmailSync(
+      email,
+      'Seu pagamento do Mapa Religare foi confirmado',
+      `<p>${greeting}</p><p>Recebemos a confirmação do seu pagamento do <strong>${RELIGARE_MAPA_PRODUCT.name}</strong>. Nossa equipe já foi avisada e vai iniciar a preparação do seu material em breve.</p>`
+    );
+  }
+
+  /** Admin: lista leads da org de produção, paginado. */
+  async listLeads(params: {
+    page?: number;
+    limit?: number;
+    status?: string;
+    email?: string;
+  }) {
+    const orgId = this.prodOrgId();
+    if (params.status && !Object.values(ReligareLeadStatus).includes(params.status as ReligareLeadStatus)) {
+      throw new BadRequestException('invalid_status');
+    }
+    return this._repo.listLeadsPaginated(orgId, {
+      page: params.page,
+      limit: params.limit,
+      status: params.status as ReligareLeadStatus | undefined,
+      email: params.email,
+    });
+  }
+
+  /** Admin: lista checkouts da org de produção (com contato do lead embutido), paginado. */
+  async listCheckouts(params: { page?: number; limit?: number; status?: string }) {
+    const orgId = this.prodOrgId();
+    if (
+      params.status &&
+      !Object.values(ReligareCheckoutStatus).includes(params.status as ReligareCheckoutStatus)
+    ) {
+      throw new BadRequestException('invalid_status');
+    }
+    return this._repo.listCheckoutsPaginated(orgId, {
+      page: params.page,
+      limit: params.limit,
+      status: params.status as ReligareCheckoutStatus | undefined,
+    });
+  }
+
+  /**
+   * Admin: aciona a reconciliação real (`payment_check`) contra a InfinitePay
+   * pra um checkout específico. GAP CONHECIDO (documentado em
+   * docs/religare/funil-fundacao.md): `transaction_nsu`/`invoice_slug` só
+   * existem se algum `ReligareCheckoutEvent` já chegou pra esse checkout —
+   * se o webhook nunca chegou, não há como reconciliar e este método recusa
+   * explicitamente em vez de inventar/adivinhar esses valores.
+   */
+  async verifyCheckoutPayment(checkoutId: string) {
+    const orgId = this.prodOrgId();
+    const checkout = await this._repo.findCheckoutById(checkoutId, orgId);
+    if (!checkout) {
+      throw new BadRequestException('checkout_not_found');
+    }
+    if (checkout.status === ReligareCheckoutStatus.PAID) {
+      return { status: 'already_paid' as const, checkout };
+    }
+
+    const event = await this._repo.findLatestEventForCheckout(checkoutId);
+    const payload = (event?.payload ?? null) as Record<string, unknown> | null;
+    const transactionNsu =
+      typeof payload?.transaction_nsu === 'string' ? payload.transaction_nsu : null;
+    if (!transactionNsu) {
+      throw new BadRequestException('no_webhook_event_to_reconcile');
+    }
+    const invoiceSlug = typeof payload?.invoice_slug === 'string' ? payload.invoice_slug : null;
+
+    const check = await this._infinitePay.checkPayment({
+      orderNsu: checkout.providerReference,
+      transactionNsu,
+      invoiceSlug,
+    });
+
+    if (!check.paid) {
+      return { status: 'not_paid' as const, checkout };
+    }
+    if (check.paidAmountCents !== checkout.amountCents) {
+      this.logger.error(
+        `religare_admin_verify_amount_mismatch checkoutId=${checkout.id} expected=${checkout.amountCents} got=${check.paidAmountCents}`
+      );
+      return {
+        status: 'amount_mismatch' as const,
+        checkout,
+        expectedCents: checkout.amountCents,
+        receivedCents: check.paidAmountCents,
+      };
+    }
+
+    const updated = await this.confirmCheckoutPaid(checkoutId, { manual: false });
+    return { status: 'paid' as const, checkout: updated };
+  }
+
+  /**
+   * Admin marca como pago SEM reconciliar contra a InfinitePay — confiança
+   * humana explícita (ex.: comprovante conferido fora do fluxo, PIX avulso).
+   * Nunca chama a InfinitePay; usa manualPaidAt/manualPaidByUserId.
+   * Idempotente: checkout já PAID retorna como está, sem reprocessar/reenviar
+   * e-mail.
+   */
+  async markCheckoutPaidManually(checkoutId: string, adminUserId: string) {
+    const orgId = this.prodOrgId();
+    const checkout = await this._repo.findCheckoutById(checkoutId, orgId);
+    if (!checkout) {
+      throw new BadRequestException('checkout_not_found');
+    }
+    if (checkout.status === ReligareCheckoutStatus.PAID) {
+      return checkout;
+    }
+    return this.confirmCheckoutPaid(checkoutId, { manual: true, adminUserId });
   }
 }

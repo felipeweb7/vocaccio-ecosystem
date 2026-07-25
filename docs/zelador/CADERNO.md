@@ -128,7 +128,10 @@ _(nenhum ainda — primeira ronda)_
   "esvazie seus settings" (anti-padrão pro nosso setup), benchmarks numéricos (80.3%/3x/$10 —
   inventados ou não verificáveis). Não re-avaliar essas fontes sem mudança material nelas.
 
-## Clusters graduados (correção já aplicada)
+## Clusters graduados (correção já aplicada) — continuação
+_(nota de organização, 2026-07-25: este bloco e o de cima são a mesma categoria, só
+inseridos fora de ordem em rondas diferentes — mantidos como dois blocos pra não mexer
+em histórico já escrito; próxima reorganização de fundo do Caderno deve fundir os dois.)_
 
 - **2026-07-03 | causa-raiz: checklist de poda incompleto (só `--merged`, sem `git status` por
   worktree) | incidente: `interesting-hypatia-fc900b` e `magical-allen-1f35af` foram marcadas
@@ -175,7 +178,62 @@ _(nenhum ainda — primeira ronda)_
   time HP sentir necessidade real de TDD estruturado que Moody/Severus não cubram, ou o Felipe
   pedir explicitamente uma metodologia mais rígida de planejamento por tarefa.
 
-## Em observação (incidente único — aguardando recorrência)
+## Em observação (incidente único — aguardando recorrência) — continuação
+_(mesma categoria da seção "Em observação" acima, este bloco reúne incidentes de
+sessão/infra em vez do padrão de convenção textual; nota de organização igual à de
+"Clusters graduados" acima.)_
+
+- **2026-07-25 | causa-raiz: sessão nasce PINADA (pinned) num worktree pelo lançador do
+  harness, sem checagem automática de que o local/branch pinado bate com o que o usuário
+  pede na 1ª mensagem** | incidente: sessão do Claude Code foi lançada já fixada em
+  `C:\dev\vocaccio\.claude\worktrees\religare-smtp-admin-routes-6bd311`, branch
+  `claude/religare-smtp-admin-routes-6bd311`, HEAD `3e8022ea` — mas a 1ª mensagem do Felipe
+  pedia explicitamente pra continuar no **checkout canônico** `C:\dev\vocaccio`, branch
+  `claude/sprint-caixa-d1-d2-ac37e5`, HEAD `93a7a15a`. O worktree pinado estava **4 commits
+  atrás** do canônico (faltavam `880e4144`, `529fdd7d`, `e6e6b16f`, `93a7a15a`) e numa branch
+  histórica diferente — se a sessão tivesse editado código sem notar, o resultado seria
+  trabalho feito no lugar errado (conflito ou trabalho perdido ao tentar reconciliar depois),
+  igual ao risco que a regra 9 do `CLAUDE.md` ("Órfão-de-worktree") já nomeia, só que na ponta
+  de **abertura** de sessão em vez de fechamento. A sessão desta vez percebeu a divergência
+  rodando `git worktree list` + `git log --oneline` nos dois lugares **antes** de tocar em
+  qualquer arquivo, e desviou o trabalho pro lugar certo prefixando `cd` + caminhos absolutos
+  em toda chamada — mas isso foi disciplina da instância, não um mecanismo que force a
+  checagem. Ferramentas do harness não ajudaram a resolver: `EnterWorktree` recusou apontar
+  pro checkout principal ("is the main working tree, not a linked worktree"), e `ExitWorktree`
+  é no-op porque esta sessão não criou o worktree via `EnterWorktree` — ele já veio pinado no
+  lançamento. **Teste de recorrência: 1º incidente deste tipo específico no Caderno** (não há
+  precedente — a entrada de 2026-07-03 sobre "Fusão Filch/Hagrid pendente" é sobre branch
+  desatualizada quanto a *conteúdo de agente*, não sobre a sessão nascer no lugar errado; não
+  vira cluster/regra ainda) — mas o risco (edição no branch errado) é alto o bastante pra
+  documentar o mecanismo pronto pra promover no 2º incidente, em vez de só anotar e esquecer.
+  **Mecanismo proposto (rascunhado, NÃO aplicado — falha o critério 1 do portão de dois
+  aprovadores do Filch, "recorrência genuína ≥2x", então não editar `.claude/agents/README.md`
+  ainda):** no início de toda sessão, antes de qualquer edição de código, comparar
+  `git rev-parse --abbrev-ref HEAD` + `git rev-parse HEAD` do cwd pinado contra qualquer
+  caminho/branch/commit citado explicitamente pelo usuário na 1ª mensagem; se divergir, parar
+  e confirmar o local antes de continuar (nunca assumir que o pin do harness é o lugar certo).
+  Candidato natural: uma linha nova na seção "Como o Dumbledore orquestra" do
+  `.claude/agents/README.md`, ou item do checklist de abertura de sessão — decidir isso é do
+  Dumbledore quando (e se) houver um 2º incidente igual. Não é automatizável como hook hoje
+  (não há gatilho `UserPromptSubmit` padrão neste repo que leia a 1ª mensagem contra `git
+  status` do cwd) — se recorrer, é candidato a proposta L1 (relatório) na doutrina de loop do
+  Filch, não L2/L3 direto. | status: **EM OBSERVAÇÃO** — nenhum estrago ocorreu desta vez
+  (a sessão pegou sozinha antes de editar), registrado só pra não perder o padrão se
+  repetir.
+  **Achado correlato desta investigação (não é o mesmo incidente, é limpeza física):** os 3
+  worktrees linkados listados por `git worktree list` a partir do canônico —
+  `religare-funnel-foundation-13e6d1` (branch `claude/religare-funnel-foundation-13e6d1`,
+  HEAD `880e4144`), `religare-main-integration` (branch `main`, HEAD `3e8022ea`) e
+  `religare-smtp-admin-routes-6bd311` (branch `claude/religare-smtp-admin-routes-6bd311`,
+  HEAD `3e8022ea`, o worktree onde esta sessão nasceu) — foram checados com `git status
+  --short` dentro de cada um: **as três estão limpas, nenhum diff pendente.**
+  `git merge-base --is-ancestor` confirma que os HEADs dos três (`880e4144` e `3e8022ea`) já
+  são ancestrais do HEAD canônico atual (`93a7a15a`) — ou seja, **as três já estão totalmente
+  incorporadas ao canônico** (consistente com `docs/religare/funil-fundacao.md` §8.3, que
+  registra os 2 merges de `main`/`880e4144` em `claude/sprint-caixa-d1-d2-ac37e5` nesta mesma
+  data). São candidatas reais a `git worktree remove` pelos critérios do checklist do Filch
+  (merged + limpas), mas **Filch não executa** — poda de worktree é destrutivo e escala pro
+  Felipe (Regra de autonomia, item "execução, não decisão"). Falta só o "pode" dele.
 
 - **2026-07-03** — Fusão Filch/Hagrid pendente no `main`. Os agentes `filch-caretaker.md` e
   `hagrid-brand.md` (+ README atualizado com tabela/legenda dos dois) existem no worktree
