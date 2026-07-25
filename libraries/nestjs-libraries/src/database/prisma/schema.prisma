@@ -82,45 +82,46 @@ model TagsPosts {
 }
 
 model User {
-  id                    String               @id @default(uuid())
-  email                 String
-  password              String?
-  providerName          Provider
-  name                  String?
-  lastName              String?
-  isSuperAdmin          Boolean              @default(false)
-  bio                   String?
-  audience              Int                  @default(0)
-  pictureId             String?
-  providerId            String?
-  timezone              Int
-  createdAt             DateTime             @default(now())
-  updatedAt             DateTime             @updatedAt
-  lastReadNotifications DateTime             @default(now())
-  inviteId              String?
-  activated             Boolean              @default(true)
-  account               String?
-  connectedAccount      Boolean              @default(false)
-  lastOnline            DateTime             @default(now())
-  ip                    String?
-  agent                 String?
-  mustChangePassword    Boolean              @default(false)
-  sendSuccessEmails     Boolean              @default(true)
-  sendFailureEmails     Boolean              @default(true)
-  sendStreakEmails      Boolean              @default(true)
-  comments              Comments[]
-  items                 ItemUser[]
-  groupBuyer            MessagesGroup[]      @relation("groupBuyer")
-  groupSeller           MessagesGroup[]      @relation("groupSeller")
-  oauthAuthorizations   OAuthAuthorization[]
-  orderBuyer            Orders[]             @relation("orderBuyer")
-  orderSeller           Orders[]             @relation("orderSeller")
-  payoutProblems        PayoutProblems[]
-  agencies              SocialMediaAgency?
-  picture               Media?               @relation(fields: [pictureId], references: [id])
-  organizations         UserOrganization[]
-  religareLeads         ReligareLead[]
-  religareProfiles      ReligareProfile[]
+  id                          String               @id @default(uuid())
+  email                       String
+  password                    String?
+  providerName                Provider
+  name                        String?
+  lastName                    String?
+  isSuperAdmin                Boolean              @default(false)
+  bio                         String?
+  audience                    Int                  @default(0)
+  pictureId                   String?
+  providerId                  String?
+  timezone                    Int
+  createdAt                   DateTime             @default(now())
+  updatedAt                   DateTime             @updatedAt
+  lastReadNotifications       DateTime             @default(now())
+  inviteId                    String?
+  activated                   Boolean              @default(true)
+  account                     String?
+  connectedAccount            Boolean              @default(false)
+  lastOnline                  DateTime             @default(now())
+  ip                          String?
+  agent                       String?
+  mustChangePassword          Boolean              @default(false)
+  sendSuccessEmails           Boolean              @default(true)
+  sendFailureEmails           Boolean              @default(true)
+  sendStreakEmails            Boolean              @default(true)
+  comments                    Comments[]
+  items                       ItemUser[]
+  groupBuyer                  MessagesGroup[]      @relation("groupBuyer")
+  groupSeller                 MessagesGroup[]      @relation("groupSeller")
+  oauthAuthorizations         OAuthAuthorization[]
+  orderBuyer                  Orders[]             @relation("orderBuyer")
+  orderSeller                 Orders[]             @relation("orderSeller")
+  payoutProblems              PayoutProblems[]
+  agencies                    SocialMediaAgency?
+  picture                     Media?               @relation(fields: [pictureId], references: [id])
+  organizations               UserOrganization[]
+  religareLeads               ReligareLead[]
+  religareProfiles            ReligareProfile[]
+  religareManualPaidCheckouts ReligareCheckout[]
 
   @@unique([email, providerName])
   @@index([lastReadNotifications])
@@ -879,18 +880,15 @@ enum ReligareCheckoutStatus {
  * nunca vem do navegador — sempre a org de produção configurada no servidor
  * (e o backend falha fechado se essa env var não estiver setada, ver
  * ReligareFunnelService.prodOrgId).
- *
  * Passo 1 (sem leadId no request): persiste birthDate/birthTime/birthPlace +
  * consentVersion/consentedAt, SEM exigir email/whatsapp — status DRAFT, `id`
  * retornado ao cliente funciona como o "token seguro" do passo 2 (UUID v4,
  * 122 bits de entropia — mesmo padrão de session id/order id usado por
  * gateways de pagamento; ver docs/religare/funil-fundacao.md).
- *
  * Passo 2 (leadId no request): busca SEMPRE por (id = leadId, orgId =
  * servidor) — nunca por email/whatsapp (não há mais dedup por contato,
  * cada passo 1 gera um lead novo). Completa o mesmo lead com email/whatsapp
  * e dispara a criação de ReligareProfile/checkout quando aplicável.
- *
  * profileId só é preenchido depois que os campos mínimos (fullName +
  * nascimento) estão completos e um ReligareProfile é criado.
  */
@@ -932,22 +930,30 @@ model ReligareLead {
  * id vindo do payload do provider).
  */
 model ReligareCheckout {
-  id                String                  @id @default(uuid())
-  leadId            String
-  provider          String
-  providerReference String                  @unique
-  amountCents       Int
-  installments      Int                     @default(1)
-  status            ReligareCheckoutStatus  @default(PENDING)
-  checkoutUrl       String?
-  paidAt            DateTime?
-  createdAt         DateTime                @default(now())
-  updatedAt         DateTime                @updatedAt
-  lead              ReligareLead            @relation(fields: [leadId], references: [id])
-  events            ReligareCheckoutEvent[]
+  id                 String                  @id @default(uuid())
+  leadId             String
+  provider           String
+  providerReference  String                  @unique
+  amountCents        Int
+  installments       Int                     @default(1)
+  status             ReligareCheckoutStatus  @default(PENDING)
+  checkoutUrl        String?
+  paidAt             DateTime?
+  /// Confirmação manual pelo admin (payment_check fora do fluxo automático de
+  /// webhook, ou reconciliação humana) — nunca preenchido pelo próprio código
+  /// de webhook, que sempre usa `paidAt`. Ver docs/religare/funil-fundacao.md
+  /// seção 6 (gap: PAID != pedido em produção).
+  manualPaidAt       DateTime?
+  manualPaidByUserId String?
+  createdAt          DateTime                @default(now())
+  updatedAt          DateTime                @updatedAt
+  lead               ReligareLead            @relation(fields: [leadId], references: [id])
+  manualPaidByUser   User?                   @relation(fields: [manualPaidByUserId], references: [id])
+  events             ReligareCheckoutEvent[]
 
   @@index([leadId])
   @@index([status])
+  @@index([manualPaidByUserId])
 }
 
 /**
