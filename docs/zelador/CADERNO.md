@@ -9,6 +9,45 @@ Formato de entrada: `AAAA-MM-DD | causa-raiz | incidente(s) | mecanismo proposto
 
 ---
 
+## Pendências de revisão de processo (gate — checar ANTES de módulo novo ou retomada do HUB)
+
+- **2026-07-25 | pedido direto do Felipe, não incidente de causa-raiz do time** | Depois de
+  ~2 dias trabalhando no que devia ser um "funil de venda simples" do módulo Religare
+  (captura de lead + checkout InfinitePay + SMTP + admin mínimo), o Felipe expressou
+  frustração real e explícita: sentiu que o processo foi muito mais complicado do que
+  deveria ser pra algo com poucas etapas, e não conseguia ver progresso claro em direção à
+  conclusão apesar do esforço. Pedido textual: *"Para os próximos módulos e para HUB
+  gostaria de repensar nossa estrutura para garantir uma maior fluidez futuramente. Anota
+  no Filch para vermos isso assim que finalizarmos aqui e antes de começar qualquer outro
+  módulo ou retomar o HUB."* Motivação adicional citada: vai integrar em breve o "Actus
+  Clip" (projeto do Nicolas, sócio dele) e não quer repetir esse nível de fricção
+  estrutural nessa integração.
+  **Gate formal:** antes de iniciar qualquer módulo novo (Religare ou não) ou retomar
+  trabalho no HUB, a sessão (Dumbledore ou Filch) **puxa esta pendência primeiro** e
+  conduz, com o Felipe, uma revisão de propósito da estrutura/fluxo de trabalho — não é
+  opcional esperar ele lembrar de pedir de novo.
+  **Pontos de partida pra quando a revisão acontecer** (citados aqui só como contexto —
+  **NÃO analisados agora**; a análise em si é da sessão dedicada, depois que o trabalho
+  atual do Religare fechar):
+  (a) o incidente de worktree órfão registrado nesta mesma sessão/data, mais acima em "Em
+  observação — continuação" ("sessão nasce PINADA num worktree desatualizado, 4 commits
+  atrás do canônico") — possível sintoma de fragilidade na abertura de sessão/gestão de
+  worktrees que a estrutura atual não blinda;
+  (b) um gap de configuração local (`.env` sem `RELIGARE_PROD_ORG_ID`) só foi descoberto na
+  hora de um teste manual tardio — sinal de que o processo de "boot real"/skill
+  `boot-real` pode não estar cobrindo o cenário de rotas admin/superadmin;
+  (c) o custo de fricção humana do fluxo "verificar sessão real de superadmin" (o usuário
+  precisa logar manualmente, extrair cookie do DevTools, rodar curl) — correto do ponto de
+  vista de segurança, mas repetitivo a cada rodada de verificação; candidato a alguma
+  automação L1/L2 que reduza o passo manual sem abrir mão da verificação real.
+  **Status: PENDENTE — gate ativo, não teste de recorrência normal.** Não se aplica o
+  "1 incidente = observação, ≥2 = cluster" aqui: não é erro repetido do time, é pedido
+  deliberado do dono do produto — vale gate desde a 1ª menção. Só sai do estado
+  "pendente" quando a sessão de revisão de estrutura acontecer de fato e produzir uma
+  decisão/plano registrado (aqui ou em documento próprio, ex. `docs/planejamento/`).
+
+---
+
 ## Clusters ativos (≥2 incidentes, mesma causa-raiz)
 
 _(nenhum ainda — primeira ronda)_
