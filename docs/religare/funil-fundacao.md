@@ -545,16 +545,70 @@ schema pronta pra um fluxo de vínculo futuro, não uma feature ativa.
 `.env` copiado (mesmo padrão das rodadas anteriores) foi apagado ao final;
 nada de secret foi impresso ou commitado nesta rodada.
 
+## 8.3 Rodada de 2026-07-25 (5ª — consolidação no checkout primário + reconciliação com o ADR do Codex + 2ª migration)
+
+Contexto: uma sessão Codex (`C:\dev\vocaccio-codex`) leu `C:\dev\vocaccio` no
+branch `claude/sprint-caixa-d1-d2-ac37e5` (que nunca teve `main` mesclado) e
+concluiu que `ReligareLead`/`ReligareCheckout`/`ReligareCheckoutEvent` "não
+existem" — achado desatualizado, não um bug real: esses modelos já estavam
+migrados em produção desde a rodada anterior (seção 8.2), só não estavam
+visíveis nesse branch específico. Reconciliação completa registrada em
+`C:\dev\edwiges\MEMORIA-COMPARTILHADA.md` **D-22**.
+
+**Ações desta rodada:**
+
+1. **Consolidação**: `main` (commit `880e4144`) mesclado em
+   `claude/sprint-caixa-d1-d2-ac37e5` — 2 merges sem conflito (zero overlap de
+   arquivo entre os branches), WIP pré-existente do Felipe preservado intacto.
+   `C:\dev\vocaccio` (checkout primário, não mais só o worktree) agora reflete
+   o estado real.
+2. **Hardening InfinitePay**: `AbortController`/timeout (`INFINITEPAY_TIMEOUT_MS`,
+   default 10s) em `createPaymentLink`/`checkPayment`, com erro distinto pra
+   timeout vs falha de rede + 4 testes novos (commit `3e8022ea`).
+3. **Decisão de schema** (pergunta feita ao Felipe: extensão aditiva mínima vs
+   reshape completo seguindo o ADR do Codex `ADR-MVP-COMERCIAL-RELIGARE-FUNIL-CHECKOUT-2026-07-25.md`
+   §5, que propõe `publicTokenHash`, `emailLookup` HMAC, `offerId`/`offerVersion`
+   etc.): Felipe escolheu **extensão aditiva mínima**. Hagrid (agente guardião
+   de marca/negócio) revisado e confirmou: coerente com `BUSINESS-PLAN.md`,
+   sem nova abstração — "Religare + futuras LPs de venda avulsa" fica como
+   **convenção documentada** (mesmo padrão de camadas), não uma abstração de
+   código/schema compartilhada agora (regra dos três: só extrair quando
+   existir um segundo consumidor real).
+4. **2ª migration aplicada**: `20260725_religare_checkout_manual_paid` —
+   `ReligareCheckout.manualPaidAt`/`manualPaidByUserId` (nullable, FK opcional
+   `ON DELETE SET NULL` pra `User`), cobrindo o gap "admin confirma pagamento
+   manualmente" sem tocar `paidAt` (exclusivo do fluxo automático via
+   webhook). Commit `e6e6b16f`, aplicada com `pnpm run prisma-migrate-deploy`
+   a partir de `C:\dev\vocaccio` (não mais um worktree separado).
+
+**PASS (evidência real):**
+
+| # | Item | Comando | Resultado |
+|---|---|---|---|
+| 1 | `prisma validate`/`generate`/`migrate status` pós-merge, a partir do checkout primário | `prisma validate`/`generate`/`migrate status --schema=schema.prisma` | válido; client gerado; `Database schema is up to date!` antes da 2ª migration |
+| 2 | Testes do funil + InfinitePay | jest (config ad-hoc) | **15/15 PASS** (11 funil + 4 timeout/rede) |
+| 3 | `git diff --check` | nos arquivos da 2ª migration | exit 0 |
+| 4 | `prisma migrate diff` read-only pré-aplicação | `--from-schema-datasource` | 2 colunas + 1 índice + 1 FK, exatamente o migration.sql escrito à mão |
+| 5 | `pnpm run prisma-migrate-deploy` (2ª migration) | — | `All migrations have been successfully applied.` |
+| 6 | Boot real do backend no checkout primário | `pnpm run dev:backend` | `Nest application successfully started`, porta 3000 |
+| 7 | Round-trip das colunas novas | script sintético (`religareCheckout.create`→`update({manualPaidAt})`→`findUnique`→`delete`) contra o Supabase real | `manualPaidAtRoundTrips: true`, `manualPaidByUserIdIsNullByDefault: true`, dado de teste limpo ao final |
+| 8 | Integridade de tabelas não relacionadas | contagem antes/depois | `ServiceRequest=0`, `ServiceOffering=8`, `Subscription=0` inalterados; `ReligareLead/Checkout/Event=0`, `ReligareProfile=2` (baseline exato) |
+
+Nenhum dado real tocado, nenhum secret impresso, `.env` copiado (mesmo padrão
+das rodadas anteriores) apagado ao final. `docs/religare/INVENTARIO-CONTINGENCIA-CLAUDE.md`
+atualizado (commit `529fdd7d`) apontando pra este estado.
+
 ## 9. Antes de aplicar em produção (não fazer sem registrar aqui)
 
-1. `pnpm run prisma-migrate-deploy` (aditiva, baixo risco) — **ainda não
-   feito nesta sessão**, por instrução explícita. `prisma migrate diff` já
-   confirmou (seção 8) que o diff bate exatamente com a migration escrita à
-   mão.
+1. ~~`pnpm run prisma-migrate-deploy`~~ — **feito** (seção 8.2: migration
+   `20260723_religare_funnel_foundation` em 2026-07-24; seção 8.3: migration
+   `20260725_religare_checkout_manual_paid` em 2026-07-25). Rollback de cada
+   uma documentada no cabeçalho do respectivo `migration.sql`; não exercido
+   (não foi necessário).
 2. Repetir os testes de `curl` da seção 8 (captura válida, reenvio,
-   order_nsu inexistente, valor incorreto via webhook, replay) — agora
-   devem sair do estado "500 tabela ausente" e exercitar a lógica de
-   verdade contra banco real.
+   order_nsu inexistente, valor incorreto via webhook, replay) — **feito**
+   nas rodadas anteriores contra banco real; itens 3-5 abaixo continuam
+   pendentes (credenciais/domínio reais, sandbox InfinitePay, LP).
 3. Preencher no `.env` real (não este de teste, que já foi apagado):
    `INFINITEPAY_HANDLE` de verdade, `INFINITEPAY_WEBHOOK_TOKEN` (gerar com
    `node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"`),
@@ -565,13 +619,22 @@ nada de secret foi impresso ou commitado nesta rodada.
    Felipe foi `https://vocacc.io/api/religare/webhook`; o código hoje monta
    `.../religare/infinitepay-webhook` sem `/api` — se o proxy real usa esse
    prefixo, ajustar `NEXT_PUBLIC_BACKEND_URL` pra já incluir `/api`, não o
-   código).
+   código). **Domínio público real do backend (Railway) ainda não confirmado**
+   — `.env` local aponta pra `localhost`, sem CLI Railway linkado nesta
+   máquina; `MAIN_URL` já documentado em `.env.example` como forma de liberar
+   CORS pra `https://vocacc.io` sem reaproveitar `FRONTEND_URL` (que também
+   serve o HUB), mas não aplicado em nenhum ambiente real ainda.
 4. Testar a chamada real a `POST /links` num ambiente de sandbox da
    InfinitePay (se existir) pra confirmar os nomes de campo da resposta —
    ajustar `infinitepay.service.ts` se divergir do assumido (`url`/
    `checkout_url`/`link`, código defensivo tentando os três).
-5. Conectar a LP ao endpoint (`POST /religare/lead`) — segue fora do escopo
-   desta fundação; próximo trabalho é no Codex (modal + loading/erro/
-   checkout/redirect).
-6. Registrar aqui: nome da migration aplicada, diff exato, hash do commit, e
-   confirmação de rollback testado (ou motivo de não ter sido).
+5. Conectar a LP ao endpoint (`POST /religare/lead`) — fonte da LP é
+   `C:\dev\vocaccio-codex` (entrypoint `src/ReligareCosmologyApp.tsx`), fora
+   do território de escrita do lado Claude. Handoff pro Codex, não implementar
+   aqui.
+6. **Pendências novas desta rodada, não implementadas ainda**: SMTP Hostinger
+   (nodemailer, `EmailService.sendEmail` hoje depende de Temporal — investigar
+   se cabe `sendEmailSync` ou adapter dedicado) e rotas de admin mínimo
+   (listar leads/checkouts, botão "verificar pagamento" chamando
+   `payment_check`, botão "marcar como pago manualmente" usando os campos
+   `manualPaidAt`/`manualPaidByUserId` já prontos desde a seção 8.3).
