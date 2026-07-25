@@ -40,6 +40,7 @@ import { AnnouncementsController } from '@gitroom/backend/api/routes/announcemen
 import { AdminController } from '@gitroom/backend/api/routes/admin.controller';
 import { CrmController } from '@gitroom/backend/api/routes/crm.controller';
 import { ReligareController } from '@gitroom/backend/api/routes/religare.controller';
+import { ReligareFunnelController } from '@gitroom/backend/api/routes/religare-funnel.controller';
 import { ProjectController } from '@gitroom/backend/api/routes/project.controller';
 import { ContentController } from '@gitroom/backend/api/routes/content.controller';
 import { AtelieController } from '@gitroom/backend/api/routes/atelie.controller';
@@ -95,6 +96,7 @@ const authenticatedController = [
     NoAuthIntegrationsController,
     OAuthController,
     PortalController,
+    ReligareFunnelController,
     ...authenticatedController,
   ],
   providers: [
