@@ -5,6 +5,16 @@ import { ReligareFunnelService } from './religare-funnel.service';
  * heap ampliado + isolatedModules — ver docs/religare/funil-fundacao.md,
  * seção 8, pra evidência da última rodada e o comando exato).
  */
+
+/**
+ * Stub de EmailService pros testes que não exercitam o caminho de
+ * confirmação de pagamento (e por isso nunca chamam sendEmailSync) — evita
+ * repetir `{ sendEmailSync: jest.fn() }` em todo `makeService` que não
+ * precisa dele. Testes que PRECISAM inspecionar a chamada de e-mail montam
+ * o próprio mock (ver `handleInfinitePayWebhook`/`confirmCheckoutPaid`
+ * abaixo).
+ */
+const EMAIL_SERVICE_STUB = { sendEmailSync: jest.fn().mockResolvedValue(undefined) };
 describe('ReligareFunnelService.handleInfinitePayWebhook', () => {
   const CHECKOUT_ID = 'checkout-1';
   const EVENT_ID = 'event-1';
@@ -29,6 +39,8 @@ describe('ReligareFunnelService.handleInfinitePayWebhook', () => {
     };
   }
 
+  const LEAD_EMAIL = 'lead@example.com';
+
   function makeService(overrides: {
     insertCheckoutEventIfNew?: jest.Mock;
     findCheckoutByProviderReference?: jest.Mock;
@@ -43,23 +55,28 @@ describe('ReligareFunnelService.handleInfinitePayWebhook', () => {
         jest.fn().mockResolvedValue(makeCheckout()),
       linkEventToCheckout: jest.fn().mockResolvedValue(undefined),
       markEventProcessed: jest.fn().mockResolvedValue(undefined),
-      markCheckoutPaid: jest.fn().mockResolvedValue(undefined),
+      markCheckoutPaid: jest.fn().mockResolvedValue({
+        id: CHECKOUT_ID,
+        lead: { email: LEAD_EMAIL, fullName: 'Lead Teste' },
+      }),
     };
     const infinitePay = {
       checkPayment:
         overrides.checkPayment ??
         jest.fn().mockResolvedValue({ paid: true, paidAmountCents: AMOUNT_CENTS }),
     };
+    const emailService = { sendEmailSync: jest.fn().mockResolvedValue(undefined) };
     const service = new ReligareFunnelService(
       repo as any,
       {} as any,
-      infinitePay as any
+      infinitePay as any,
+      emailService as any
     );
-    return { service, repo, infinitePay };
+    return { service, repo, infinitePay, emailService };
   }
 
-  it('sucesso: valor confere -> marca PAID e responde success:true', async () => {
-    const { service, repo, infinitePay } = makeService({});
+  it('sucesso: valor confere -> marca PAID, dispara e-mail e responde success:true', async () => {
+    const { service, repo, infinitePay, emailService } = makeService({});
 
     const result = await service.handleInfinitePayWebhook({
       order_nsu: ORDER_NSU,
@@ -74,6 +91,13 @@ describe('ReligareFunnelService.handleInfinitePayWebhook', () => {
     });
     expect(repo.markCheckoutPaid).toHaveBeenCalledWith(CHECKOUT_ID);
     expect(repo.markEventProcessed).toHaveBeenCalledWith(EVENT_ID);
+    // Ponto único de disparo (confirmCheckoutPaid) -- webhook automático
+    // também dispara o e-mail de confirmação, igual ao caminho manual.
+    expect(emailService.sendEmailSync).toHaveBeenCalledWith(
+      LEAD_EMAIL,
+      expect.any(String),
+      expect.any(String)
+    );
     expect(result).toEqual({ success: true, message: null });
   });
 
@@ -154,7 +178,12 @@ describe('ReligareFunnelService.captureLead — passo 1 (startLead, DRAFT)', () 
       }),
       ...repoOverrides,
     };
-    const service = new ReligareFunnelService(repo as any, {} as any, {} as any);
+    const service = new ReligareFunnelService(
+      repo as any,
+      {} as any,
+      {} as any,
+      EMAIL_SERVICE_STUB as any
+    );
     return { service, repo };
   }
 
@@ -229,7 +258,12 @@ describe('ReligareFunnelService.captureLead — passo 2 (completeLead, por leadI
         installments: 12,
       }),
     };
-    const service = new ReligareFunnelService(repo as any, {} as any, {} as any);
+    const service = new ReligareFunnelService(
+      repo as any,
+      {} as any,
+      {} as any,
+      EMAIL_SERVICE_STUB as any
+    );
 
     const result = await service.captureLead({
       leadId: 'lead-1',
@@ -245,7 +279,12 @@ describe('ReligareFunnelService.captureLead — passo 2 (completeLead, por leadI
 
   it('leadId que não pertence à org do servidor (ou não existe) -> erro genérico, sem vazar detalhe', async () => {
     const repo = { findLeadById: jest.fn().mockResolvedValue(null) };
-    const service = new ReligareFunnelService(repo as any, {} as any, {} as any);
+    const service = new ReligareFunnelService(
+      repo as any,
+      {} as any,
+      {} as any,
+      EMAIL_SERVICE_STUB as any
+    );
 
     await expect(
       service.captureLead({ leadId: 'lead-de-outra-org', email: 'a@b.com' } as any)
@@ -254,7 +293,12 @@ describe('ReligareFunnelService.captureLead — passo 2 (completeLead, por leadI
 
   it('rejeita passo 2 sem email nem whatsapp — nem chega a consultar o banco', async () => {
     const repo = { findLeadById: jest.fn() };
-    const service = new ReligareFunnelService(repo as any, {} as any, {} as any);
+    const service = new ReligareFunnelService(
+      repo as any,
+      {} as any,
+      {} as any,
+      EMAIL_SERVICE_STUB as any
+    );
 
     await expect(service.captureLead({ leadId: 'lead-1' } as any)).rejects.toThrow();
     expect(repo.findLeadById).not.toHaveBeenCalled();
@@ -272,7 +316,12 @@ describe('ReligareFunnelService — RELIGARE_PROD_ORG_ID fail-closed', () => {
 
   it('sem RELIGARE_PROD_ORG_ID -> recusa processar, NUNCA usa vocaccio-org-seed como default', async () => {
     const repo = { countRecentDraftsForOrg: jest.fn(), createDraftLead: jest.fn() };
-    const service = new ReligareFunnelService(repo as any, {} as any, {} as any);
+    const service = new ReligareFunnelService(
+      repo as any,
+      {} as any,
+      {} as any,
+      EMAIL_SERVICE_STUB as any
+    );
 
     await expect(
       service.captureLead({
@@ -329,7 +378,12 @@ describe('ReligareFunnelService.captureLead — URL pública (guard do passo 2)'
       markCheckoutFailed: jest.fn().mockResolvedValue(undefined),
     };
     const infinitePay = { createPaymentLink: jest.fn() };
-    const service = new ReligareFunnelService(repo as any, {} as any, infinitePay as any);
+    const service = new ReligareFunnelService(
+      repo as any,
+      {} as any,
+      infinitePay as any,
+      EMAIL_SERVICE_STUB as any
+    );
 
     const result = await service.captureLead({
       leadId: 'lead-1',
@@ -339,5 +393,112 @@ describe('ReligareFunnelService.captureLead — URL pública (guard do passo 2)'
     expect(infinitePay.createPaymentLink).not.toHaveBeenCalled();
     expect(repo.markCheckoutFailed).toHaveBeenCalledWith('checkout-1');
     expect(result.checkoutUrl).toBeNull();
+  });
+});
+
+/**
+ * Painel admin (docs/religare/funil-fundacao.md, seção 8, 6ª rodada):
+ * verificação manual de pagamento e marcação manual como pago. Ambas passam
+ * pelo mesmo `confirmCheckoutPaid` que o webhook -- por isso reaproveitam a
+ * asserção de e-mail em vez de reimplementar a lógica de disparo.
+ */
+describe('ReligareFunnelService — admin: verifyCheckoutPayment / markCheckoutPaidManually', () => {
+  beforeEach(() => {
+    process.env = { ...ORIGINAL_ENV, RELIGARE_PROD_ORG_ID: 'vocaccio-org-seed' };
+  });
+  afterAll(() => {
+    process.env = ORIGINAL_ENV;
+  });
+
+  const CHECKOUT = {
+    id: 'checkout-9',
+    providerReference: 'RLG-admin-test',
+    amountCents: 47_640,
+    status: 'PENDING',
+    lead: { id: 'lead-9', orgId: 'vocaccio-org-seed', email: 'admin-lead@example.com', fullName: 'Admin Lead', whatsapp: null },
+  };
+
+  function makeService(repoOverrides: Record<string, jest.Mock> = {}) {
+    const emailService = { sendEmailSync: jest.fn().mockResolvedValue(undefined) };
+    const infinitePay = { checkPayment: jest.fn() };
+    const repo = {
+      findCheckoutById: jest.fn().mockResolvedValue(CHECKOUT),
+      findLatestEventForCheckout: jest.fn().mockResolvedValue(null),
+      markCheckoutManuallyPaid: jest.fn().mockResolvedValue({
+        id: CHECKOUT.id,
+        lead: { email: CHECKOUT.lead.email, fullName: CHECKOUT.lead.fullName },
+      }),
+      markCheckoutPaid: jest.fn().mockResolvedValue({
+        id: CHECKOUT.id,
+        lead: { email: CHECKOUT.lead.email, fullName: CHECKOUT.lead.fullName },
+      }),
+      ...repoOverrides,
+    };
+    const service = new ReligareFunnelService(
+      repo as any,
+      {} as any,
+      infinitePay as any,
+      emailService as any
+    );
+    return { service, repo, infinitePay, emailService };
+  }
+
+  it('markCheckoutPaidManually: usa manualPaidAt/manualPaidByUserId, nunca chama a InfinitePay, dispara e-mail', async () => {
+    const { service, repo, infinitePay, emailService } = makeService();
+
+    const result = await service.markCheckoutPaidManually(CHECKOUT.id, 'admin-user-1');
+
+    expect(repo.findCheckoutById).toHaveBeenCalledWith(CHECKOUT.id, 'vocaccio-org-seed');
+    expect(repo.markCheckoutManuallyPaid).toHaveBeenCalledWith(CHECKOUT.id, 'admin-user-1');
+    expect(infinitePay.checkPayment).not.toHaveBeenCalled();
+    expect(emailService.sendEmailSync).toHaveBeenCalledWith(
+      CHECKOUT.lead.email,
+      expect.any(String),
+      expect.any(String)
+    );
+    expect(result.id).toBe(CHECKOUT.id);
+  });
+
+  it('markCheckoutPaidManually: checkout já PAID -> idempotente, não reprocessa nem reenvia e-mail', async () => {
+    const { service, repo, emailService } = makeService({
+      findCheckoutById: jest.fn().mockResolvedValue({ ...CHECKOUT, status: 'PAID' }),
+    });
+
+    await service.markCheckoutPaidManually(CHECKOUT.id, 'admin-user-1');
+
+    expect(repo.markCheckoutManuallyPaid).not.toHaveBeenCalled();
+    expect(emailService.sendEmailSync).not.toHaveBeenCalled();
+  });
+
+  it('verifyCheckoutPayment: sem ReligareCheckoutEvent ainda -> recusa (gap conhecido), não inventa transaction_nsu', async () => {
+    const { service, infinitePay } = makeService({
+      findLatestEventForCheckout: jest.fn().mockResolvedValue(null),
+    });
+
+    await expect(service.verifyCheckoutPayment(CHECKOUT.id)).rejects.toThrow(
+      'no_webhook_event_to_reconcile'
+    );
+    expect(infinitePay.checkPayment).not.toHaveBeenCalled();
+  });
+
+  it('verifyCheckoutPayment: evento presente, InfinitePay confirma valor -> marca PAID (paidAt, não manualPaidAt) e dispara e-mail', async () => {
+    const { service, repo, infinitePay, emailService } = makeService({
+      findLatestEventForCheckout: jest.fn().mockResolvedValue({
+        payload: { transaction_nsu: 'txn-admin-1', invoice_slug: 'slug-admin-1' },
+      }),
+    });
+    infinitePay.checkPayment.mockResolvedValue({ paid: true, paidAmountCents: CHECKOUT.amountCents });
+
+    const result = await service.verifyCheckoutPayment(CHECKOUT.id);
+
+    expect(infinitePay.checkPayment).toHaveBeenCalledWith({
+      orderNsu: CHECKOUT.providerReference,
+      transactionNsu: 'txn-admin-1',
+      invoiceSlug: 'slug-admin-1',
+    });
+    expect(repo.markCheckoutPaid).toHaveBeenCalledWith(CHECKOUT.id);
+    expect(repo.markCheckoutManuallyPaid).not.toHaveBeenCalled();
+    expect(emailService.sendEmailSync).toHaveBeenCalled();
+    expect(result.status).toBe('paid');
   });
 });
