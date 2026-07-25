@@ -674,27 +674,35 @@ verificar pagamento, marcar como pago manualmente).
 | 9 | Regressão: `POST /religare/lead` payload inválido | `curl` | `500` (não `400`) — **não é regressão desta rodada**: este `.env` local não tem `RELIGARE_PROD_ORG_ID` setado, então `prodOrgId()` lança `Error` fail-closed (seção 4) antes de validar o DTO; mesmo comportamento documentado nas rodadas anteriores quando essa env falta |
 | 10 | Regressão: `POST /religare/infinitepay-webhook` sem token | `curl` | `401 {"success":false,"message":"unauthorized"}` — igual às rodadas anteriores |
 
-**NÃO verificado nesta rodada — bloqueio real, não contornado:** os 2 casos
-"autenticado mas não-superadmin → `400`" e "autenticado como superadmin →
-funciona" exigiriam uma sessão real (cookie `auth` válido de um usuário
-existente). Duas formas de obter isso foram descartadas por regra de
-segurança da sessão do assistente, não por falta de tentativa:
-- Assinar um JWT localmente para um `User.id` já existente — o assistente
-  tentou escrever esse script e a ação foi **bloqueada pelo classificador de
-  permissões do Claude Code** (categoria: forjar autenticação de uma conta
-  que não é do operador da sessão).
-- Registrar um usuário de teste via `POST /auth/register` (fluxo legítimo do
-  próprio app) pra obter uma sessão própria — descartado sem tentar, porque
-  "criação de conta" está na lista de ações **proibidas** das regras de
-  segurança desta sessão, mesmo com autorização explícita do dono do projeto.
+**Gate `assertSuperAdmin` — cobertura fechada (rodada seguinte, 2026-07-25):**
+os 2 casos "autenticado mas não-superadmin → `400`" e "autenticado como
+superadmin → funciona" foram cobertos SEM sessão HTTP real, via
+`apps/backend/src/api/routes/religare-admin.controller.spec.ts` — chama os 4
+métodos do `ReligareAdminController` diretamente com um objeto `User`
+mockado (`@GetUserFromRequest()` é só um decorator de parâmetro do Nest; em
+runtime o método recebe o valor já resolvido como argumento comum, dá pra
+simular sem HTTP). Mesmo padrão manual de instanciação direta já usado nos
+specs de service (`religare-funnel.service.spec.ts`) — primeiro spec de
+controller do módulo, mesma convenção, sem `Test.createTestingModule`/
+supertest. Cobre, pras 4 rotas: usuário sem `isSuperAdmin` (`false` e
+`undefined`) → `HttpException` 400 e o service mockado NUNCA é chamado
+(prova que o gate barra antes de tocar dado); usuário com
+`isSuperAdmin: true` → chama o service com os argumentos certos e retorna o
+resultado dele. **9/9 PASS** (`jest --config <ad-hoc>.js` sobre esse arquivo,
+mesmo gap de `@nx/jest` já documentado na seção 8 — config ad-hoc no
+scratchpad da sessão, não commitado).
 
-Evidência indireta (não substitui o curl, mas reduz o risco): o gate
-`assertSuperAdmin` do `ReligareAdminController` é cópia literal do já usado em
-produção por `AdminController` (`/admin/errors`, `/admin/stats`) — mesmo
-decorator `@GetUserFromRequest()`, mesmo `HttpException('Unauthorized', 400)`,
-mesma posição relativa ao `AuthMiddleware` (rotas registradas em
-`authenticatedController`, boot log confirma DI resolvida sem erro, sem
-exceptions no startup). Não é lógica nova, é reuso do padrão já em produção.
+**Ainda NÃO verificado — isso é sobre TRANSPORTE HTTP + middleware, não sobre
+a lógica do gate (já coberta acima):** um `curl` fim-a-fim com sessão real de
+superadmin contra o servidor rodando (cookie `auth` válido) continua
+pendente — exigiria forjar/criar uma sessão real, ação bloqueada pelo
+classificador de permissões do Claude Code (forjar autenticação de conta) e
+pela lista de ações proibidas (criação de conta), mesmo com autorização do
+dono do projeto. Evidência indireta que reduz o risco desse gap residual: o
+gate é cópia literal do já usado em produção por `AdminController`
+(`/admin/errors`, `/admin/stats`), mesmo decorator, mesma posição relativa ao
+`AuthMiddleware` (rotas em `authenticatedController`, boot log confirma DI
+resolvida sem erro).
 
 **Como fechar este item** (precisa de credencial real, fora do alcance desta
 sessão): logar no HUB com um usuário existente, copiar o cookie `auth` do
@@ -749,6 +757,9 @@ Nenhum dado real tocado, nenhum secret impresso. Servidor de dev finalizado
    e os 2 botões (`verify-payment`, `mark-paid`). **Pendente real**: preencher
    `EMAIL_HOST`/`EMAIL_PORT`/`EMAIL_SECURE`/`EMAIL_USER`/`EMAIL_PASS`/
    `EMAIL_PROVIDER` com credencial real da Hostinger no `.env` de produção (só
-   placeholders comentados no `.env.example`), e fazer o curl autenticado como
-   superadmin real (seção 8.4, "NÃO verificado") — o assistente não pôde
-   forjar nem criar essa sessão por regra de segurança da própria sessão.
+   placeholders comentados no `.env.example`). Lógica do gate `assertSuperAdmin`
+   já coberta por teste de controller (seção 8.4, "cobertura fechada") — falta
+   só o `curl` fim-a-fim com sessão real de superadmin contra o servidor
+   rodando (seção 8.4, "Ainda NÃO verificado"), que é sobre transporte
+   HTTP/middleware, não sobre a lógica em si; o assistente não pôde forjar
+   nem criar essa sessão por regra de segurança da própria sessão.
