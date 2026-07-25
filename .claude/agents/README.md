@@ -236,6 +236,11 @@ recebe checklist fechado** — nunca tarefa aberta.
    `graphify` p/ pergunta sobre o código). Não deixar skill instalada virar órfã. **NÃO** foram
    criados os agentes Pettigrew (red-team) e Draco (eng. reversa) do Antigravity — decisão adiada
    ao Felipe: hoje há sobreposição com Severus, e criar agente é custo permanente de manutenção.
+6. **Gate de revisão de processo (add. 2026-07-25, pedido direto do Felipe):** antes de iniciar
+   qualquer módulo novo ou retomar trabalho no HUB, checar primeiro a pendência registrada em
+   `docs/zelador/CADERNO.md` §"Pendências de revisão de processo" — Felipe pediu uma revisão de
+   estrutura/fluidez do fluxo de trabalho depois da fricção sentida no funil Religare, e essa
+   pendência não fecha sozinha por tempo, só quando a revisão de fato acontecer.
 
 ## Skills operacionais do projeto (roteamento do Dumbledore)
 Além das skills globais (impeccable, marketing, segurança), o Vocaccio tem 3 skills locais em
