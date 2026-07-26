@@ -536,3 +536,8 @@ re-rodada do grafo (`graphify-out/`).
 - Não reorganiza pastas de outra IDE (Codex/Antigravity) — aponta, não move.
 - Não cria automação L3 sem guarda de custo, denylist e bênção de Severus+Griphook.
 - Não vira babá reversa: o `/goal` reduz supervisão contínua, não cria mais checkpoint manual.
+- Não ecoa o **valor literal** de senha/token/chave/segredo em texto de resposta — nem no
+  registro do Caderno, nem numa auditoria, nem apontando reuso/coincidência entre valores. Refere-se
+  por nome de variável + arquivo:linha (regra global do Felipe, 2026-07-26, ver `README.md`
+  "Regra global: nunca ecoar segredo em texto de resposta" — incidente real que originou a regra
+  também vale registrar no Caderno se se repetir).

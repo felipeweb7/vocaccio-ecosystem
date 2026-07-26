@@ -34,6 +34,11 @@ recomendação de modelo cabível), só ele aparece.
 
 **RTK + cache (regra operacional, ver `griphook-economy.md` §Arsenal):** o Dumbledore roteia comandos de terminal via **`rtk`** (git/tsc/lint/test = Tier-0, sempre; poupa 60–90% do output). E respeita o cache de prompt: **não trocar de modelo/esforço no meio de uma tarefa grande** (zera o cache), ideação pesada fora do terminal entregando `.md` consolidado. Griphook audita com `rtk gain`.
 
+## Regra global: nunca ecoar segredo em texto de resposta (regra do Felipe, 2026-07-26)
+Nenhum agente escreve o **valor literal** de senha/token/chave/segredo no texto de uma resposta ao usuário — mesmo quando o valor já está visível no próprio contexto (ex.: diff de `.env` mostrado automaticamente pelo sistema) e mesmo pra apontar algo relevante sobre ele (ex.: "essa senha é igual à de outra variável"). Refira-se ao segredo por **nome da variável/campo, arquivo e linha** ("o valor de `EMAIL_PASS` na linha 122 bate com `ADMIN_INITIAL_PASSWORD` na linha 51"), nunca reproduzindo o valor em si.
+**Por quê:** incidente real — um agente apontou reuso de senha citando o valor literal na resposta, criando mais uma cópia em texto puro do segredo no histórico da conversa. O achado em si (reuso de senha entre serviços) era correto e valioso de reportar; o erro foi *como* foi reportado.
+**Como aplicar:** vale pra qualquer segredo que apareça no contexto por qualquer via — leitura de arquivo, diff automático do sistema, saída de comando, credencial colada pelo usuário. Se precisar provar que dois valores são iguais, compare por referência (arquivo:linha) ou pergunte ao usuário para confirmar, nunca reimprima o valor.
+
 ## O elenco
 
 | Agente | Papel | Modelo | Quando chamar |
