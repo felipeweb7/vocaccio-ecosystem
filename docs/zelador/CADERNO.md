@@ -76,6 +76,41 @@ _(nenhum ainda — primeira ronda)_
   se repetir numa próxima sessão, promover a cluster e levar a proposta de hook ao
   Dumbledore + Griphook (dono de `rtk`/economia) pra aprovação.
 
+- **2026-07-25 | causa-raiz: skill `boot-real` cobre boot geral + matriz de curl "para cada
+  rota nova/alterada" (Passo 3), mas a execução desta sessão validou o funil público (rotas
+  já conhecidas) e só rodou curl nas rotas admin novas tardiamente, via teste manual do
+  Felipe, não como parte do fluxo formal da skill | incidente: `.env` local sem
+  `RELIGARE_PROD_ORG_ID` — backend subiu limpo (boot passou), gate `isSuperAdmin` das rotas
+  `/admin/religare/*` implementado e testado corretamente, mas toda chamada real derrubava
+  com `500 religare_funnel_misconfigured` porque a env var não existia. Só foi descoberto
+  quando o Felipe testou manualmente as rotas admin — não durante a verificação `boot-real`
+  desta sessão (rodada via Sirius) | análise: a regra que deveria ter pego isso **já existe
+  em texto** (Passo 3 do `boot-real`: "para cada rota nova/alterada, no mínimo 3 chamadas de
+  curl") — não é gap de especificação, é indício de que a matriz não foi de fato executada
+  contra as rotas admin novas (execução parcial, não falha de mecanismo) | mecanismo: **NÃO
+  promovido** — 1ª ocorrência deste padrão específico, e o texto do Passo 3 já é genérico o
+  bastante; reescrever o que já está escrito arriscaria redundância (violaria o critério 2 do
+  portão de dois aprovadores, "não-redundância"). Se recorrer, a correção provável não é
+  "mais texto" — é tornar a matriz de curl um passo não-pulável (checklist/script formal em
+  vez de prosa); hipótese anotada aqui pra quando/se houver 2ª ocorrência | status: **EM
+  OBSERVAÇÃO**.
+
+- **2026-07-25 | causa-raiz: `rtk git log --oneline origin/main` (RTK, ferramenta de
+  terceiro) devolveu um commit desatualizado como tip de `origin/main`, divergindo de `git
+  rev-parse origin/main` puro (correto) | incidente: nesta sessão, uma decisão sobre o estado
+  real de `origin/main` quase se apoiou na saída filtrada do `rtk`, que mostrava um commit
+  antigo; conferência cruzada com `git` sem wrapper revelou que `origin/main` já tinha
+  avançado — a saída do `rtk` pra esse comando específico estava **errada**, não só resumida
+  | mecanismo: **NÃO** editar `griphook-economy.md` ainda (1 ocorrência, não passa o critério
+  de recorrência ≥2x do portão de dois aprovadores) — registrado aqui e também anotado na
+  memória do Griphook (`feedback-griphook-token-economy.md`) como fato observado, pra ele
+  carregar na próxima sessão sem reabrir investigação. A mitigação prática já existe como
+  regra geral ("cole, não afirme" do `CLAUDE.md`): nunca declarar estado de ref remota como
+  fato só pela saída filtrada do `rtk` quando a resposta for decisiva — conferir com `git`
+  puro | status: **EM OBSERVAÇÃO** — se `rtk` errar de novo em `git log`/refs remotas, isso
+  vira achado formal de confiabilidade de ferramenta pro Griphook decidir (usar com ressalva,
+  reportar upstream, ou restringir o uso do `rtk` nesse subcomando específico).
+
 ## Clusters maduros (≥3, correção rascunhada/pendente de aprovação)
 
 - **2026-07-16 | causa-raiz: `git worktree remove --force` falha silenciosamente no Windows
@@ -138,6 +173,25 @@ _(nenhum ainda — primeira ronda)_
   e os 2 pontos VERIFICAR-BROWSER.
 
 ## Clusters graduados (correção já aplicada)
+
+- **2026-07-25 | causa-raiz: restart de dev server no Windows matando só o processo que
+  segura a porta, não a árvore inteira (`cross-env → dotenv-cli → nest.js watcher → node
+  app runner`)** | incidentes: 2026-07-16 (2 grupos órfãos, um de sessão já encerrada + um
+  do próprio restart do Dumbledore) e 2026-07-25 (4 árvores órfãs na mesma sessão, achadas
+  só quando o Felipe pediu pra derrubar tudo por causa de memória — laptop 8GB RAM), total
+  ≥6 árvores órfãs em 2 sessões distintas, mesma causa-raiz | **correção aplicada**: skill
+  `boot-real` (`.claude/skills/boot-real/SKILL.md`) ganhou seção "Restart limpo do dev
+  server (Windows)" dentro do Passo 2 — depois de matar processo de dev server, confirmar
+  com `Get-CimInstance Win32_Process` que a árvore inteira morreu antes de considerar o
+  restart limpo, nunca assumir pelo exit code do kill isolado do PID da porta. Edição feita
+  no domínio de skill (não `.md` de agente de execução — Sirius é o consumidor, não o dono
+  de poder de execução alterado), portão aplicado: doutrina de recorrência (≥2x mesma
+  causa-raiz, aqui ≥3x) + critérios de necessidade/não-redundância/segurança/organização
+  autoconferidos (não havia texto prévio cobrindo isso no `boot-real`; a edição só adiciona
+  um passo de verificação, não amplia poder de execução de ninguém). Revisão formal do
+  Moody recomendada na próxima sessão como checagem leve, dado que este ambiente de sessão
+  não tinha ferramenta de invocação de sub-agente disponível para uma revisão síncrona | ver
+  entrada original 2026-07-16 acima (mantida, não apagada) | status: **GRADUADO**.
 
 - **2026-07-21 | scratchpad efêmero com arquivo útil preso lá** | Sessão publicou 2 Artifacts
   (fontes HTML) + 1 briefing de design pro claude.ai/design e deixou os 3 arquivos só no
@@ -291,6 +345,18 @@ sessão/infra em vez do padrão de convenção textual; nota de organização ig
   num processo pai, confirme com `Get-NetTCPConnection -LocalPort <porta>` ou
   `Get-CimInstance Win32_Process | Where CommandLine -match <pasta>` que a árvore inteira
   morreu — não assuma pelo exit code do kill do PID isolado.
+  **RECORREU 2026-07-25** (sessão SMTP Hostinger + rotas admin Religare): mesma causa-raiz,
+  4 árvores órfãs completas encontradas só no fim da sessão, quando o Felipe pediu pra
+  derrubar backend/frontend por causa de memória (laptop 8GB RAM). Cada restart de backend
+  ao longo da sessão matou só o processo escutando a porta 3000 (via
+  `Get-NetTCPConnection`+`Stop-Process`, ou `TaskStop`), deixando o `nest.js` watcher pai
+  vivo como órfão — o mesmo padrão exato do incidente de 15/07, agora 2ª sessão distinta,
+  total de ≥6 árvores órfãs entre as duas ocorrências. **Passa o portão de recorrência
+  (≥2x, mesma causa-raiz) → promovido.** Correção aplicada: passo de restart limpo
+  adicionado à skill `boot-real` (`.claude/skills/boot-real/SKILL.md`, seção "Restart
+  limpo do dev server (Windows)" dentro do Passo 2). **Status: GRADUADO** — mecanismo
+  agora escrito na skill; se recorrer uma 3ª vez, o problema passa a ser "instrução na
+  skill não foi seguida", não "faltava instrução".
 
 - **2026-07-16** — Dumbledore (esta sessão, bem longa) esqueceu o cabeçalho "Time atual"
   em TODAS as respostas, do início ao fim — convenção já documentada em
