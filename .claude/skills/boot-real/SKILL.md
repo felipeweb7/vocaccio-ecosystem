@@ -47,6 +47,32 @@ Antes de sugerir Docker/WSL para "resolver" ambiente: **cheque o `.env`** — o
 projeto usa Supabase/Upstash remotos, não Postgres/Redis locais (memória
 `feedback-docker-confusion-recorrente`).
 
+### Restart limpo do dev server (Windows) — antes de reiniciar backend/orchestrator
+
+Reiniciar `dev-backend` no Windows **não é** "matar o processo que segura a
+porta e pronto". `pnpm run dev-backend` sobe uma árvore
+(`cross-env → dotenv-cli → nest.js watcher → node app runner`); matar só o PID
+que aparece em `Get-NetTCPConnection -LocalPort 3000` (via `Stop-Process`,
+`taskkill` ou `TaskStop`) mata a folha, não a árvore — o `nest.js` watcher pai
+sobrevive **órfão**, consumindo memória sem escutar porta nenhuma (invisível
+pra quem só olha `netstat`). Confirmado 2x em produção de sessão real (Caderno
+do Zelador, cluster graduado 2026-07-25): 2 grupos órfãos em 2026-07-16 e 4
+árvores órfãs completas em 2026-07-25, só descobertas quando o Felipe pediu
+pra derrubar tudo por causa de memória (laptop 8GB RAM).
+
+Depois de qualquer kill de processo de dev server, **confirme que a árvore
+inteira morreu** antes de considerar o restart limpo:
+
+```powershell
+Get-CimInstance Win32_Process | Where-Object {
+  $_.CommandLine -match 'nest start --watch' -or $_.CommandLine -match 'dev-backend'
+} | Select-Object ProcessId, ParentProcessId, CommandLine
+```
+
+Se sobrar linha, mate cada `ProcessId` restante (ou o `ParentProcessId` raiz)
+antes de subir de novo. Nunca assuma que matar o listener da porta bastou —
+confirme pela árvore de processos, não pelo exit code do kill isolado.
+
 ## Passo 3 — Matriz de curl
 
 Para cada rota nova/alterada, no mínimo 3 chamadas:
