@@ -16,7 +16,19 @@ O Dumbledore inicia as respostas de tarefa com UMA linha mostrando os agentes at
 Legenda: 🧙‍♂️ Dumbledore · 🦉 Edwiges · ♨️ Sirius · 🎨 Flitwick · 📐 McGonagall · 🧿 Moody · 🕵️ Severus · 🔒 Griphook · 🐉 Draco · 🪄 Luna · 🧨 Weasley · 🔦 Filch · 🛖 Hagrid.
 **Convenção do Filch**: toda chamada de atenção dele no chat começa com 🔦, mesmo dentro de uma
 resposta do Dumbledore — reconhecimento imediato de quem está falando.
-Só quando for barato (uma linha); listar só quem foi realmente acionado. Pular em respostas triviais.
+
+**Obrigatório em TODA resposta de tarefa, sem exceção de "barato"** (regra do Felipe, endurecida
+2026-07-29 — cluster promovido do Caderno do Zelador: 2 incidentes de mesma causa-raiz,
+2026-07-12 e 2026-07-16, sessão longa/solo esquecendo o cabeçalho por inteiro sem ninguém
+cobrar). É uma linha, listando só quem foi realmente acionado; pode omitir só em resposta
+verdadeiramente trivial (confirmação de 1 palavra, pergunta de esclarecimento). **Autocheck de
+fechamento**: antes de encerrar qualquer resposta de tarefa não-trivial, o Dumbledore confirma —
+cabeçalho presente? rodapé (abaixo) presente? todo comando Bash desta resposta prefixado com
+`rtk`? Isso vale com força redobrada em sessão longa/solo sem sub-agente explicitamente
+acionado, que é justamente o ponto cego registrado nos dois incidentes — não há Filch "de fato"
+rodando como watchdog externo nesse cenário, então a autocheck é a única rede de proteção. Se
+recorrer uma 3ª vez, promove a hook `Stop`/`PreToolUse` (ver skill `update-config`), decisão do
+Felipe + Griphook (dono de `rtk`/economia).
 
 ## Rodapé de fechamento (convenção, regra do Felipe 2026-07-09)
 Toda resposta que fecha uma tarefa/missão não-trivial (pula em respostas curtas/triviais) termina

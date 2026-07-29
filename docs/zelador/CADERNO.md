@@ -50,7 +50,34 @@ Formato de entrada: `AAAA-MM-DD | causa-raiz | incidente(s) | mecanismo proposto
 
 ## Clusters ativos (≥2 incidentes, mesma causa-raiz)
 
-_(nenhum ainda — primeira ronda)_
+- **2026-07-29 | causa-raiz: cabeçalho "Time atual"/rodapé/prefixo `rtk` esquecidos por sessão
+  longa e solo, sem sub-agente explícito rodando como watchdog | incidentes: 2026-07-12 (sessão
+  de retomada, nenhuma das três convenções usada em nenhuma resposta) e 2026-07-16 (sessão longa,
+  cabeçalho ausente do início ao fim) — mesma causa-raiz (convenção documentada mas sem
+  enforcement mecânico; ponto cego maior quando não há Filch de fato rodando como sub-agente
+  ativo) | mecanismo promovido: autocheck de fechamento obrigatório escrito em
+  `.claude/agents/README.md` §"Cabeçalho 'Time atual'" (2026-07-29) — cabeçalho deixa de ser
+  "só quando for barato" e vira obrigatório em toda resposta de tarefa não-trivial, com autocheck
+  explícito antes de encerrar. Se recorrer uma 3ª vez, sobe pra hook `Stop`/`PreToolUse` (decisão
+  do Felipe + Griphook) | status: **CLUSTER, mecanismo L1 aplicado (texto no README)** — aguarda
+  3ª ocorrência antes de virar hook L2. Entradas originais mantidas abaixo em "Em observação"
+  (histórico não se apaga).
+
+- **2026-07-29 | causa-raiz: saída filtrada do `rtk` (ferramenta de terceiro) divergindo do
+  comando puro numa decisão que importa | incidentes: (1) 2026-07-25, `rtk git log --oneline
+  origin/main` devolveu tip desatualizado de `origin/main` vs. `git rev-parse` puro (correto) —
+  ver entrada abaixo; (2) 2026-07-29, `rtk diff` normalizou fim-de-linha (CRLF→LF) ao comparar
+  `~/.claude/agents/*.md` com `.claude/agents/*.md` e reportou "Files are identical" para
+  `griphook-economy.md`, `severus-security.md`, `weasley-growth.md` e `edwiges.md` — 2 desses 4
+  (griphook, severus) na verdade **divergiam em conteúdo real** (não só fim-de-linha), só
+  descoberto ao refazer o diff com `diff <(tr -d '\r' < A) <(tr -d '\r' < B)`. Mesma causa-raiz:
+  saída filtrada do `rtk` mascarando estado real quando a resposta é decisiva | mecanismo: **NÃO**
+  editar `griphook-economy.md` sozinho ainda — passa o portão de recorrência (2x), vira
+  apontamento formal pro Griphook decidir entre (a) usar `rtk diff`/`rtk git log` só como
+  triagem, sempre confirmando com a ferramenta pura antes de decisão irreversível, (b) reportar
+  bug upstream ao projeto `rtk`, ou (c) restringir uso do `rtk` nesses subcomandos específicos |
+  status: **CLUSTER — decisão pendente do Griphook**, não bloqueia nada nesta rodada (a
+  consolidação de hoje já foi refeita com diff correto antes de aplicar qualquer merge).
 
 ## Em observação (1 incidente, aguardando recorrência antes de virar regra)
 
@@ -110,6 +137,10 @@ _(nenhum ainda — primeira ronda)_
   puro | status: **EM OBSERVAÇÃO** — se `rtk` errar de novo em `git log`/refs remotas, isso
   vira achado formal de confiabilidade de ferramenta pro Griphook decidir (usar com ressalva,
   reportar upstream, ou restringir o uso do `rtk` nesse subcomando específico).
+  **RECORREU 2026-07-29** (`rtk diff` mascarando drift real entre agentes globais/projeto,
+  fim-de-linha normalizado escondendo divergência de conteúdo) — mesma causa-raiz (saída
+  filtrada do `rtk` divergindo do comando puro numa decisão que importa). **Passa o portão de
+  recorrência → PROMOVIDO a cluster ativo**, ver entrada em "Clusters ativos" acima.
 
 ## Clusters maduros (≥3, correção rascunhada/pendente de aprovação)
 
@@ -172,7 +203,51 @@ _(nenhum ainda — primeira ronda)_
   checkout principal (`C:\dev\vocaccio`, dev server real), sobretudo `carousel-editor.component.tsx`
   e os 2 pontos VERIFICAR-BROWSER.
 
+- **2026-07-29 | causa-raiz: harness não registrou `severus-security.md` como sub-agente
+  disponível numa sessão, apesar do arquivo estar íntegro | incidente: chamada
+  `Agent(subagent_type="severus-security")` retornou "not found" e a lista de agentes
+  disponíveis da sessão trazia os outros 10 do time, sem o Severus. Investigação descartou as
+  hipóteses óbvias: frontmatter válido (`name`/`tools`/`model: sonnet` normais, não a string
+  composta "sonnet→opus" que só existe na tabela do README), UTF-8 sem BOM/null-bytes, CRLF
+  presente mas também presente em `moody-revisor.md`/`sirius-backend.md`/`flitwick-
+  frontend.md`/`griphook-economy.md` que carregam normalmente (não é o diferenciador), sem
+  colisão de nome no disco, mtime do arquivo no mesmo lote de edição de 2026-07-19 que os
+  4 agentes-irmãos que carregam bem. Achado: o arquivo já rodou com sucesso em sessão anterior
+  (`C:\Users\felip\.claude\projects\C--dev-vocaccio\302009ad-...\subagents\`, transcrições
+  reais). Este incidente já era pauta de retraining pendente desde 2026-07-19 (nota antiga do
+  Filch: "diagnosticar por que severus-security.md não carregou na sessão de 19/07") — 10 dias
+  sem reteste até esta ronda | hipótese mais provável: falha de registro transitória/específica
+  de sessão (bug de harness), não defeito de conteúdo | teste que confirma: nova sessão +
+  `Agent(subagent_type="severus-security")` de novo — se funcionar, era glitch pontual; se
+  falhar de novo em sessão limpa, vira bug de plataforma reportável, não conserto de conteúdo |
+  status: **EM OBSERVAÇÃO, severidade ALTA** (zero agente de segurança ativo até resolver, e o
+  Felipe já reclamou de falta de proatividade de segurança) — dono do conserto é
+  ambiente/harness (reteste do Felipe em sessão nova), não um `.md` de agente.
+
 ## Clusters graduados (correção já aplicada)
+
+- **2026-07-29 | causa-raiz: duas cópias editáveis do mesmo agente (`~/.claude/agents/` global
+  e `.claude/agents/` do projeto) divergindo sem sincronia — pendência aberta desde 2026-07-06
+  (`TIME-HP-PORTAVEL.md:145-152`)** | incidentes: `draco-benchmark.md` só existia no projeto;
+  `luna-games.md` só existia no global; `filch-caretaker.md`, `flitwick-frontend.md`,
+  `griphook-economy.md`, `hagrid-brand.md`, `mcgonagall-planner.md`, `moody-revisor.md`,
+  `severus-security.md` e `sirius-backend.md` tinham conteúdo genuinamente divergente entre os
+  dois lados (confirmado com `diff` fim-de-linha normalizado, não o `rtk diff` que mascarava
+  parte disso — ver cluster de confiabilidade do `rtk` acima); casos mais graves: Sirius global
+  não tinha a seção de skills `boot-real`/`poda-segura`, Flitwick global não tinha o gate
+  "acione a Luna antes do hero/scroll" (nascido do incidente real `FX-2026-07-20-01`) |
+  **decisão do Felipe (2026-07-29, direta em sessão): global vira única cópia editável; cada
+  projeto ganha um "Caderno da Casa" pra especificidade local, evitando poluir os agentes
+  globais.** **Correção aplicada**: os 8 arquivos divergentes foram unidos por união (nada
+  perdido — conferido linha a linha) em `~/.claude/agents/`; `draco-benchmark.md` copiado ao
+  global; criado `C:\dev\vocaccio\.claude\CADERNO-DA-CASA.md` com a especificidade Vocaccio
+  extraída de `filch-caretaker.md`/`hagrid-brand.md` (os dois que tinham framing genérico +
+  "prefira local", agora reescrito para apontar ao Caderno da Casa em vez de a uma cópia local
+  completa); as 11 cópias de agente em `.claude/agents/` (exceto `README.md`, que é o manual do
+  Dumbledore, conteúdo próprio) viraram ponteiros de 3-5 linhas pro global + Caderno da Casa;
+  `.claude/agents/README.md` §"Cabeçalho 'Time atual'" ganhou o cluster promovido acima (header
+  obrigatório) | status: **GRADUADO** — mão única em vigor a partir de agora: nada específico de
+  projeto volta pro global.
 
 - **2026-07-25 | causa-raiz: restart de dev server no Windows matando só o processo que
   segura a porta, não a árvore inteira (`cross-env → dotenv-cli → nest.js watcher → node
