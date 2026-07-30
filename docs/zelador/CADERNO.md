@@ -48,6 +48,23 @@ Formato de entrada: `AAAA-MM-DD | causa-raiz | incidente(s) | mecanismo proposto
 
 ---
 
+## Em observação (1 incidente, aguardando recorrência antes de virar regra) — continuação
+
+- **2026-07-29/30 | causa-raiz: `graphify.exe` está instalado (`C:\Users\felip\.local\bin\`,
+  v0.9.7, via `uv tool install graphifyy`) mas essa pasta NÃO está no PATH que sessões Bash desta
+  máquina herdam | incidente: um subagente instruído a rodar rebuild do Graphify travou 10 minutos
+  tentando "configurar o interpretador Python" (procurando/reinstalando um pacote que já existia)
+  e foi encerrado pelo watchdog de stall (sem progresso por 600s) | mecanismo: diagnosticado pelo
+  Dumbledore em paralelo — `graphify --version` falha por comando não encontrado, mas
+  `"C:\Users\felip\.local\bin\graphify.exe" --version` funciona direto. Qualquer agente que invoque
+  o Graphify via Bash nesta máquina deve prefixar o caminho completo
+  (`C:\Users\felip\.local\bin\graphify.exe` ou `.../uv/tools/graphifyy/Scripts/graphify.exe`, os
+  dois funcionam) em vez de confiar em `graphify` estar no PATH, e **nunca** tentar `pip
+  install`/`uv tool install` de novo achando que falta instalar — isso é a causa mais provável do
+  próprio travamento (rede ou prompt esperando confirmação) | status: **EM OBSERVAÇÃO** — 1ª
+  ocorrência; se recorrer, promove a nota permanente na skill `graphify` (`~/.claude/skills/graphify/SKILL.md`) sobre PATH nesta máquina, ou a um passo de detecção automática de caminho
+  antes de qualquer chamada.
+
 ## Clusters ativos (≥2 incidentes, mesma causa-raiz)
 
 - **2026-07-29 | causa-raiz: cabeçalho "Time atual"/rodapé/prefixo `rtk` esquecidos por sessão
