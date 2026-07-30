@@ -27,7 +27,11 @@ process.stdin.on('end', () => {
     return;
   }
 
-  const isLintOrTsc = /\bpnpm\s+(run\s+)?(lint|tsc|typecheck)\b/i.test(command);
+  // Cobre pnpm run tsc, pnpm lint, rtk tsc, rtk lint, npx tsc. Achado do Severus
+  // (2026-07-29): a versao anterior so casava a via `pnpm`, entao `rtk tsc` sozinho
+  // — liberado no allowlist — escapava da guarda de heap e podia sair 0 falso por OOM.
+  const isLintOrTsc =
+    /\b(?:pnpm\s+(?:run\s+)?|rtk\s+|npx\s+)(?:lint|tsc|typecheck)\b/i.test(command);
   if (isLintOrTsc && !/NODE_OPTIONS/.test(command)) {
     // deny (nao ask): ha uma unica resposta correta, entao perguntar ao usuario
     // e devolver a ele uma decisao que o proprio hook ja sabe. O agente reescreve
