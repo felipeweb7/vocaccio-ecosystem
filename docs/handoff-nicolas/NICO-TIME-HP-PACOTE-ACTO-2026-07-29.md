@@ -186,3 +186,38 @@ devolver a decisão pro usuário toda vez — isso só vale quando a correção 
 5. Configure a allowlist de permissão (seção 5) na sua máquina.
 6. Releia este documento a cada expansão relevante do time — se algo aqui ficar defasado em
    relação ao que você mesmo evoluiu, ajuste seu lado; isto é ponto de partida, não contrato.
+
+---
+
+## Addendum (2026-07-30) — três atualizações desde a primeira versão
+
+**(a) Skill de concisão `i-have-adhd` (opcional).** Se você quiser uma skill que resume/enxuga a
+saída da IA por padrão, o pacote `ayghri/i-have-adhd` (MIT) é instalável via
+`claude plugin marketplace add ayghri/i-have-adhd` seguido de
+`claude plugin install i-have-adhd@i-have-adhd`. **Importante**: ela tem um modo de concisão
+agressivo (sem preâmbulo, listas curtas) que pode colidir com convenções de time que você queira
+manter sempre visíveis (cabeçalho, rodapé, citação de evidência). A skill já prevê um mecanismo
+de exceção nomeada ("override quando a regra conflita com a substância da tarefa") — decida
+**você** quais das suas próprias convenções entram como exceção; não herde as nossas
+automaticamente, porque talvez você nem tenha adotado cabeçalho/rodapé obrigatório do jeito que
+a gente adotou.
+
+**(b) Feitiço de resgate de pendência esquecida — nome correto é `accio`, não `memorium`.** Se
+você for criar uma skill/agente equivalente (varredura de trabalho não commitado, branch órfã, PR
+parado, item de caderno envelhecido, e — o diferencial — compromisso feito em outra sessão e
+nunca cumprido), use o nome **`accio`** ("convocar o que está perdido", nome já presente no cânone
+Harry Potter) — um nome anterior sem lastro no cânone foi corrigido do nosso lado por essa mesma
+razão. Estrutura recomendada, em ordem crescente de custo (pare assim que uma camada vier limpa):
+aqui-e-agora (`git status`/`stash list`) → físico-vs-registrado (pasta de worktree sem registro
+no git) → remoto (PR aberto e parado, branch que devia ter morrido) → documental (item "pendente"
+envelhecido nos seus próprios docs) → cross-sessão (se sua ferramenta tiver busca em histórico de
+sessões antigas, procure "fica pendente"/"depois eu"/"TODO" e confirme no disco antes de
+reportar). Regra dura: é sempre read-only, nunca commita/mergeia/deleta sozinha.
+
+**(c) Se for importar o Draco (benchmark de dependência/skill externa), cuidado com nome
+duplicado.** Duas skills novas foram incorporadas a ele recentemente: uma de decompor
+DOM/visual de referência em componentes/tokens reproduzíveis, e outra de gerar contrato de
+API/modelo de dados/esqueleto de sistema a partir de uma referência. Se você já tiver vindo de
+outro kit de agentes (por exemplo um "AG Kit" genérico) que já inclua ferramenta equivalente de
+extração visual ou de scaffolding de sistema, **não duplique** — funda no que já existe em vez de
+instalar as duas por cima. O mérito de qual manter é seu a decidir, não herdado.
