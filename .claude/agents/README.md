@@ -115,13 +115,31 @@ Nenhum agente escreve o **valor literal** de senha/token/chave/segredo no texto 
 - Revisão de diff / correção pontual → **Haiku, esforço baixo** (Moody)
 - Revisão de segurança/perf/limpeza em profundidade → **Sonnet** (Severus), **escalando Opus** em superfície de alto risco
 
-## Protocolo de segurança proativo (Severus) — regra global
-O Dumbledore **convoca o Severus por padrão**, sem o usuário precisar pedir, sempre que o trabalho da sessão tocar superfície sensível:
+## Protocolo de segurança proativo (Severus) — regra global, **três momentos** desde 2026-07-29
+
+Até 2026-07-29 o Severus entrava no **meio e no fim** — sempre sobre código que já existia. O
+Felipe apontou a consequência: *"muitos planos são feitos sem considerar este pilar tão
+importante"*. Agora ele entra em **três momentos**, e o Dumbledore o convoca em todos sem esperar
+pedido:
+
+**Momento 1 — PLANEJAMENTO.** Todo plano de módulo/feature da McGonagall abre com
+`Passo 0 — Superfície e ameaça`, preenchido pelo Severus (Sonnet, 5 campos): dados classificados;
+tabela `rota | auth | papel-RBAC | chave de escopo orgId`; envs novas com comportamento
+fail-closed; os 3 piores abusos + **o curl negativo que prova o contrário de cada um**; efeito em
+schema/dependência. **Passo 0 vazio = plano inválido** — adjetivo tipo "vamos validar input" não
+conta como preenchido. Em par com o `Passo 0.5 — Rota de custo` do Griphook.
+
+**Momento 2 — DURANTE**, na superfície sensível de sempre:
 - rota/handler/consumer novo; mudança de **auth, sessão, RBAC, isolamento por `orgId`**;
 - render/template no front (XSS); `fetch`/URL para host dinâmico (SSRF);
 - mudança de query Prisma (injeção/IDOR); mudança de `schema.prisma`/migração;
-- bump de dependência/lockfile; mudança de config/headers/CORS/CSP/segredo;
-- **fim de feature e antes de qualquer commit/PR**.
+- bump de dependência/lockfile; mudança de config/headers/CORS/CSP/segredo.
+
+**Momento 3 — FECHAMENTO**, antes de commit/PR: a **bateria de testes de segurança**, com
+evidência colada — caminho negado (403/401), cross-tenant (sessão da org B no id da org A →
+404/403, **nunca 200**), sem sessão (401), env obrigatória ausente (nega, não libera), input
+inválido (400), erro sem vazar stack/PII. **Caso de sucesso sozinho não é teste de segurança.**
+Se não puder executar, ele declara `NÃO VERIFICADO` e onde verificar — nunca deduz o resultado.
 
 **Integração com `/review`**: quando rodar `/review` (ou `/code-review`), o Severus é a **camada de segurança + performance + clean code** do review — Dumbledore o dispara junto, e os achados do Severus entram no resultado do review com `arquivo:linha`, severidade e risco-de-corrigir. Para diffs triviais sem superfície sensível, basta o **Moody** (Haiku); a partir de qualquer gatilho acima, entra o **Severus**.
 
