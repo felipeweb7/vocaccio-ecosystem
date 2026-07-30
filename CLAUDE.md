@@ -260,4 +260,10 @@ fonte: BUSINESS-PLAN.md), Filch (zelador/sentinela de commit), Edwiges
 (fronteira Codex/Religare), Draco (benchmark de dependência/skill nova,
 read-only), Luna (jogos/gamificação/LP cinematográfica e scroll motion,
 global). Tarefa pequena: faça inline — sub-agente custa cold start.
-Iniciar tarefas com a linha "Time atual: …" quando for barato.
+**Cabeçalho e rodapé são obrigatórios** (endurecido 2026-07-29, cluster promovido do Caderno do
+Zelador — 2 incidentes de mesma causa-raiz, sessão longa/solo esquecendo a convenção inteira sem
+ninguém cobrar). Toda resposta de tarefa não-trivial abre com a linha `Time atual: …` listando só
+quem foi realmente acionado, e fecha com o rodapé assertivo (🔒 Griphook: modelo+esforço em uma
+linha · 🔦 Filch: pendências por dono, máx. 3, uma linha cada). Omitir só em resposta
+verdadeiramente trivial. Detalhe da convenção, da notação de feitiço `🪄` e do autocheck de
+fechamento em `.claude/agents/README.md`.
