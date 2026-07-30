@@ -64,3 +64,15 @@
 3. Resumo de 1 página do plano de leveza (não o doc inteiro — só o que afeta ambiente/Mac).
 4. Confirmar com o Felipe se algo do roster de agentes HP mudou entre o kit antigo e agora
    antes de reenviar `.claude/agents/`.
+
+## Entregável avulso já pronto (2026-07-29)
+- **`NICO-TIME-HP-PACOTE-ACTO-2026-07-29.md`** (nesta mesma pasta): pacote autocontido do time
+  de agentes HP para o Acto, escrito do zero pra recomendar a arquitetura "fonte global única +
+  Caderno da Casa" desde o início (fecha uma pendência que o nosso lado só resolveu depois de
+  já ter divergido — o Nicolas não precisa repetir esse erro). Cobre roster que porta (McGonagall,
+  Moody, Griphook, Filch, Severus, Draco, Hagrid — com fonte de marca a trocar, Hermione, Luna
+  condicional), o que NÃO porta como está (Sirius/Flitwick, amarrados à nossa stack/licença),
+  convenções de resposta, allowlist de permissão recomendada e o que fica de fora por ser
+  segredo/IP nosso. Sem caminho de máquina do Felipe, sem fila de coordenação entre ferramentas,
+  sem nada específico do nosso projeto — pode ser enviado avulso, não depende do pacote de
+  design/arquitetura consolidar.
