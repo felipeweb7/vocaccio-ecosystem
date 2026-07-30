@@ -46,6 +46,26 @@ Formato de entrada: `AAAA-MM-DD | causa-raiz | incidente(s) | mecanismo proposto
   "pendente" quando a sessão de revisão de estrutura acontecer de fato e produzir uma
   decisão/plano registrado (aqui ou em documento próprio, ex. `docs/planejamento/`).
 
+- **2026-07-30 | poda de worktree — 1 de 3 autorizadas não removida, pendência aberta** |
+  O Felipe autorizou a remoção de 3 worktrees órfãs; `branch-cleanup-worktree-3671a9` e
+  `religare-funnel-foundation-13e6d1` foram removidas com sucesso. A terceira,
+  `religare-smtp-admin-routes-6bd311`, travou **duas vezes** com erro "sendo usado por outro
+  processo" (Windows) — sem processo identificável via inspeção padrão e sem `handle.exe`
+  disponível na máquina para confirmar qual handle segura a pasta. Seguindo a regra de
+  anti-loop (2 falhas no mesmo ponto → pare e devolva o estado), a 3ª tentativa não foi feita.
+  **Achado de ferramenta relacionado** (útil para quem for tentar de novo): verificar processo
+  vivo com `Get-CimInstance Win32_Process | Where-Object CommandLine -match <caminho>` dá
+  **falso positivo** quando o próprio comando de diagnóstico contém o caminho como string
+  literal na linha de comando — ele casa consigo mesmo. Antes de concluir "há processo vivo
+  usando a pasta", excluir `powershell.exe`/`pwsh.exe` do resultado do filtro, ou o diagnóstico
+  vai sempre "confirmar" um processo travando a pasta mesmo quando não há nenhum.
+  **Status: PENDENTE** — pasta `religare-smtp-admin-routes-6bd311` continua no disco, não
+  registrada mais em `git worktree list` (registro já solto), conteúdo não auditado. Próxima
+  sessão: tentar `git worktree prune -v` + `Remove-Item -Recurse -Force` com o filtro de
+  processo corrigido (excluindo powershell/pwsh) antes de decidir se há mesmo handle vivo, ou
+  investigar com Process Explorer/`handle.exe` instalado. Não forçar remoção sem confirmar
+  ausência de processo real.
+
 ---
 
 ## Em observação (1 incidente, aguardando recorrência antes de virar regra) — continuação
@@ -97,6 +117,22 @@ Formato de entrada: `AAAA-MM-DD | causa-raiz | incidente(s) | mecanismo proposto
   consolidação de hoje já foi refeita com diff correto antes de aplicar qualquer merge).
 
 ## Em observação (1 incidente, aguardando recorrência antes de virar regra)
+
+- **2026-07-30 | achado de segurança incidental — credencial em linha de comando de processo
+  local, fora do escopo desta rodada** | Reportado pelo Dumbledore/Felipe (não verificado
+  diretamente por esta sessão — registrado por relato confiável do próprio dono, não por
+  reprodução própria, para não expandir a superfície de exposição investigando de novo): durante
+  uma checagem de processo vivo (contexto: poda de worktree, ver entrada acima), apareceu um
+  processo `mcp-remote` com uma chave de API (Google/Stitch) **em texto claro na linha de
+  comando** do processo — visível a qualquer processo local que liste processos do SO (ex.
+  `Get-CimInstance Win32_Process`, Task Manager, `ps`). **Nenhum valor de credencial é
+  reproduzido aqui nem em nenhum outro documento**; o achado é só: qual processo, que tipo de
+  credencial, e qual a superfície de exposição (linha de comando de processo é legível
+  localmente por qualquer usuário/processo com permissão de listar processos, não exige
+  privilégio elevado). **Status: PENDENTE — aguarda rodada dedicada do Severus** para avaliar
+  se a credencial precisa ser rotacionada e se a configuração do MCP pode passar a chave por
+  variável de ambiente/arquivo protegido em vez de argumento de linha de comando. Não é
+  cluster (1 incidente); registrado aqui só para não se perder, não para virar regra ainda.
 
 - **2026-07-12 | causa-raiz: convenção textual em doc lida 1x no início da sessão não é
   reforçada em cada resposta/comando — depende da memória de execução do Dumbledore, sem
