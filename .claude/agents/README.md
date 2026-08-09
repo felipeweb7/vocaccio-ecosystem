@@ -1,5 +1,21 @@
 # Time de agentes do Vocaccio — orquestração do Dumbledore
 
+> **⚠ Precedência (2026-08-09).** A **doutrina portátil do time** — idioma, cabeçalho `Time atual`,
+> rodapé assertivo, elenco, precedência sobre a skill `i-have-adhd` e o portão visual — foi
+> promovida para o **`~/.claude/CLAUDE.md` global**, seção "Time HP (Devwarts)". Ela vale em
+> **qualquer** projeto e é a fonte canônica dessas regras.
+>
+> **Motivo:** entre 05 e 09/08 o time "sumiu" de toda sessão fora do Vocaccio. Nada estava
+> corrompido — os 14 agentes globais estavam íntegros. O problema é que este README, um arquivo de
+> **projeto**, era o único lugar onde o time era descrito, enquanto o hook global da `i-have-adhd`
+> injetava em inglês "sem preâmbulo, sem recap, sem fechamento" em toda sessão. Fora do Vocaccio o
+> time perdia por WO — uma sessão chegou a responder "there's no separate team to hand this to".
+>
+> **O que fica aqui:** só o que é **específico do Vocaccio** — protocolos detalhados, plano de
+> leveza, skills locais (`boot-real`, `poda-segura`, `auditoria-glass`), débito visual Postiz,
+> fronteira Codex/Religare. **Não duplique aqui** o que já está no global; se as duas versões
+> divergirem, **o global ganha** e esta cópia é que está errada.
+
 **Dumbledore** é o orquestrador: a sessão principal do Claude Code. Ele não é um arquivo
 de agente — é quem lê o pedido, decide o que delegar e a quem, e costura o resultado.
 Os sub-agentes abaixo são especialistas chamados via a ferramenta **Agent** (Task).
