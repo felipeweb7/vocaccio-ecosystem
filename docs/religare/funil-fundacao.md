@@ -338,21 +338,63 @@ Ordem exata (coberta pelos testes da seção 7):
 1. Valida token (`401` se errado, antes de tocar no banco).
 2. Valida `order_nsu`/`transaction_nsu` presentes no payload (`400
    invalid_payload` se não).
-3. Grava `ReligareCheckoutEvent` **antes** de processar — idempotência por
-   `providerEventId` (assumido = `transaction_nsu`; a InfinitePay não
-   documenta um "event id" explícito, **validar contra payload real de
-   sandbox antes de produção**). Conflito = replay, retorna `200
-   {success:true}` sem reprocessar.
+3. Grava `ReligareCheckoutEvent` **antes** de processar —
+   `providerEventId` é `@unique` (assumido = `transaction_nsu`; a InfinitePay
+   não documenta um "event id" explícito, **validar contra payload real de
+   sandbox antes de produção**). Se o insert conflita (P2002), o service
+   busca o evento já gravado (`findCheckoutEventByProviderEventId`):
+   - **já tem `processedAt`** → replay idempotente: `200 {success:true}`,
+     sem `payment_check`, sem e-mail;
+   - **existe mas sem `processedAt`** (entrega anterior não concluiu) →
+     **reprocessa** a partir do passo 4, reaproveitando a mesma linha;
+   - **busca devolve `null`** (conflito sem linha visível) → `400
+     server_error` (loga `religare_webhook_event_conflict_missing`), **sem**
+     chamar `payment_check`; a retentativa decide.
 4. Localiza `ReligareCheckout` por `providerReference = order_nsu` (nunca
    por um id vindo do payload — a InfinitePay nem envia um).
-   `order_nsu` desconhecido → `400 unknown_order`, sem chamar `payment_check`.
+   `order_nsu` desconhecido → `400 unknown_order`, sem chamar
+   `payment_check` e **sem marcar o evento processado** (pode ser corrida
+   com a criação do checkout). Depois vincula o evento ao checkout.
 5. Se já `PAID`, marca evento processado e responde sucesso (idempotência de
-   negócio, não só de evento).
-6. Chama `payment_check`. Se `paid !== true`, responde sucesso sem marcar
-   pago (evento válido, mas ainda não é confirmação).
-7. Se `paid_amount` não bate com `amountCents` → `400 amount_mismatch`,
-   **nunca marca `PAID`**.
-8. Só então: `markCheckoutPaid` + `markEventProcessed`.
+   negócio, não só de evento), sem `payment_check` nem e-mail.
+6. Chama `payment_check` (reconciliação ativa). Se **lançar** (timeout/rede)
+   → cai no `catch`: `400 server_error`, evento **não** marcado processado
+   (transitório). Se responder `paid !== true` → `400 payment_not_confirmed`
+   (loga `warn`), evento **não** marcado processado: o webhook só chega em
+   pagamento aprovado, então "não pago" é tratado como atraso de
+   consistência e a retentativa reconcilia de novo.
+7. Se `paid_amount` não bate com `amountCents` → `400 amount_mismatch`
+   (loga `error`), **nunca marca `PAID`**, evento **não** marcado processado
+   (a retentativa ou a verificação admin podem resolver).
+8. Só então confirma: `markCheckoutPaid` + `markEventProcessed`.
+
+**Transição atômica (CAS) e e-mail só na transição.** `markCheckoutPaid`/
+`markCheckoutManuallyPaid` fazem `updateMany` com
+`where: { id, status: { not: PAID } }`; `count === 1` ⇒ `transitioned: true`.
+Só quem faz a transição dispara o e-mail de confirmação
+(`sendPaidConfirmationEmail`, via `confirmCheckoutPaid`) e só ele grava
+`paidAt`; quem perde a corrida (outro webhook, ou admin) recebe
+`transitioned: false`, loga `religare_checkout_already_paid_concurrent` e
+**não reenvia e-mail** — mas ainda marca o próprio evento como processado.
+Cobertura: `religare-funnel.repository.spec.ts` (argumentos do `updateMany`)
+e `religare-funnel.service.spec.ts`.
+
+**Teto de 72h para evento que nunca confirma.** Constante
+`WEBHOOK_REPROCESS_MAX_AGE_MS` (72h) em `religare-funnel.service.ts`. Quando
+um evento **existente e não processado** é reprocessado e a reconciliação
+**conclui** com `payment_not_confirmed`, `unknown_order` ou `amount_mismatch`,
+e `receivedAt` do evento é mais velho que o teto, o evento é marcado
+processado, o service registra `logger.error`
+`religare_webhook_stale_<motivo> … eventId=… ageHours=…` (só ids e motivo,
+sem PII) e responde `200 {success:true}` — a InfinitePay para de reentregar.
+Erro **lançado** por `payment_check` continua transitório (não marca,
+`400 server_error`), e dentro do teto tudo segue como descrito acima.
+Nada é perdido: o admin concilia à mão (`verifyCheckoutPayment` /
+`markCheckoutPaidManually`, ver seção 8.4) — `verifyCheckoutPayment` exige
+um evento de webhook gravado para o checkout (`no_webhook_event_to_reconcile`
+caso contrário). Ainda **a confirmar** em sandbox/produção: o prazo real de
+reentrega da InfinitePay (o teto de 72h é escolha nossa, não dado do
+provedor).
 
 Resposta segue o contrato documentado pela InfinitePay:
 `{ success: boolean, message: string | null }`, `200` em sucesso, `400` em
@@ -362,11 +404,13 @@ erro retry-ável do lado deles.
 
 Depois do passo 8 (`markCheckoutPaid`), o `ReligareCheckout` fica com
 `status = PAID` — verificado, reconciliado com a InfinitePay, sem
-ambiguidade de valor. **E é só isso que acontece.** Nenhum `ServiceRequest`
-(o model que o Ateliê Virtual usa pra fila de produção) é criado. Nenhuma
-notificação sai pro time. Nenhum e-mail de confirmação é disparado pro
-cliente. O `TODO` comentado em `handleInfinitePayWebhook()` marca
-exatamente esse ponto de extensão, mas **não está implementado** — depende
+ambiguidade de valor — e o cliente recebe o e-mail de confirmação
+(`EmailService.sendEmailSync`; pulado com log se o SMTP/`EMAIL_FROM_*` não
+estiver configurado ou se o lead não tiver e-mail). **Fora isso, nada
+acontece.** Nenhum `ServiceRequest` (o model que o Ateliê Virtual usa pra
+fila de produção) é criado e nenhuma notificação sai pro time. O `TODO`
+comentado em `handleInfinitePayWebhook()` marca exatamente esse ponto de
+extensão, mas **não está implementado** — depende
 de mapear Religare → `ServiceOffering` (domínio do Ateliê Virtual), decisão
 de produto ainda não tomada (que oferta? que nível de escopo? processo
 manual ou automático?).
@@ -384,19 +428,44 @@ automático existir).
 
 `libraries/nestjs-libraries/src/database/prisma/religare/religare-funnel.service.spec.ts`
 — Jest, mocks manuais do repository/InfinitePayService. **Executado de
-verdade em 2026-07-24** (ver seção 8) — **11/11 PASS**:
+verdade em 2026-07-24** (ver seção 8) — **11/11 PASS** naquela rodada; o
+webhook foi reescrito depois (seção 6) e a cobertura abaixo é a **atual**
+(também em `religare-funnel.repository.spec.ts`, novo). Contagem da última
+execução: ver o resultado da sessão que alterou o webhook (não consta do
+histórico das rodadas da seção 8).
 
 Webhook (`handleInfinitePayWebhook`):
 - **Sucesso**: `payment_check` confirma `paid:true` com valor correto →
-  `markCheckoutPaid` chamado, resposta `{success:true}`.
-- **Replay**: `providerEventId` já existe (conflito no insert) → `payment_check`
-  **não é chamado de novo**, `markCheckoutPaid` não é chamado, resposta
-  `{success:true}` (idempotente, sem reprocessar).
-- **Valor incorreto**: `payment_check` confirma `paid:true` mas com valor
-  diferente do esperado → `markCheckoutPaid` **nunca** chamado, resposta
-  `{success:false, message:'amount_mismatch'}`.
-- **order_nsu desconhecido**: checkout não encontrado → não chama
-  `payment_check`, responde `unknown_order`.
+  `markCheckoutPaid` chamado, e-mail enviado, evento marcado processado.
+- **Replay de evento já processado**: conflito no insert + `processedAt`
+  preenchido → `payment_check` **não é chamado de novo**, sem `markCheckoutPaid`,
+  sem e-mail, `{success:true}`.
+- **Replay de evento NÃO processado**: conflito + `processedAt` nulo →
+  reprocessa e confirma.
+- **`payment_check` lança**: `server_error`, evento não marcado; a
+  retentativa confirma; a terceira entrega é replay.
+- **Valor incorreto**, **não pago** e **`order_nsu` desconhecido**: cada um
+  responde `amount_mismatch` / `payment_not_confirmed` / `unknown_order`,
+  sem marcar `PAID` nem o evento; e cada um **seguido de sucesso na
+  retentativa** (estado corrigido) confirma e marca processado.
+- **Conflito sem linha visível**: `server_error`, sem chamar `payment_check`.
+- **Checkout já `PAID`**: marca o evento processado sem `payment_check` nem e-mail.
+- **Concorrência**: mesmo `transaction_nsu` em paralelo (CAS com estado
+  compartilhado) e dois `transaction_nsu` pro mesmo checkout → **um** e-mail.
+- **Teto de 72h**: evento mais velho + (`payment_not_confirmed` |
+  `amount_mismatch` | `unknown_order`) → marca processado, `logger.error`
+  sem PII, `200`; dentro do teto → `400` e não marca; `payment_check` lançando
+  mesmo acima do teto → continua transitório; pago e correto acima do teto →
+  confirma normalmente.
+
+Repository (`religare-funnel.repository.spec.ts`): `updateMany` da confirmação
+chamado com `where: { id, status: { not: PAID } }`; `count 1` ⇒
+`transitioned: true`, `count 0` ⇒ `false`; manual grava
+`manualPaidAt`/`manualPaidByUserId`, nunca `paidAt`.
+
+Admin (`verifyCheckoutPayment`): checkout de **outra org** (repo filtra por
+`orgId` e devolve `null`) → `checkout_not_found` sem `payment_check`; já `PAID`
+→ `already_paid` sem `payment_check` nem e-mail.
 
 Passo 1 (`startLead`):
 - Cria lead `DRAFT` sem email/whatsapp quando nascimento+consentVersion

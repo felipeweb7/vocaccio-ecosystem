@@ -11,6 +11,16 @@ import { EmailService } from '@gitroom/nestjs-libraries/services/email.service';
 const RATE_LIMIT_WINDOW_MS = 60_000;
 const RATE_LIMIT_MAX = 30;
 
+/**
+ * Teto de idade pra reprocessar evento de webhook EXISTENTE e não processado
+ * cuja reconciliação concluiu com resposta negativa/inconsistente
+ * (`payment_not_confirmed`, `unknown_order`, `amount_mismatch`). Passou disso,
+ * o evento é encerrado (marcado processado + `logger.error`) pra InfinitePay
+ * parar de reentregar pra sempre; o admin ainda concilia à mão
+ * (`verifyCheckoutPayment`). Erros LANÇADOS (timeout/rede) não entram aqui.
+ */
+export const WEBHOOK_REPROCESS_MAX_AGE_MS = 72 * 60 * 60 * 1000;
+
 function normalizeWhatsapp(value: string): string | null {
   const digits = value.replace(/\D/g, '');
   if (digits.length < 10 || digits.length > 13) return null;
@@ -295,7 +305,12 @@ export class ReligareFunnelService {
     // = transaction_nsu (confirmado na doc oficial da InfinitePay como "ID
     // único da transação"; não existe campo de event id separado — ver
     // docs/religare/funil-fundacao.md).
-    const event = await this._repo.insertCheckoutEventIfNew({
+    //
+    // Regra de `processedAt` (WH-01): só marca processado numa decisão
+    // TERMINAL correta (pago e confirmado, ou checkout já PAID). Erro
+    // TRANSITÓRIO/indefinido não marca e responde 400 — a retentativa da
+    // InfinitePay cai no ramo "existe mas não processado" e reprocessa.
+    let event = await this._repo.insertCheckoutEventIfNew({
       providerEventId: transactionNsu,
       eventType: 'payment_webhook',
       // Prisma.InputJsonValue não aceita `unknown` recursivamente — mesmo
@@ -304,14 +319,29 @@ export class ReligareFunnelService {
     });
 
     if (!event) {
-      // Já processado antes — replay idempotente, não reprocessa.
-      return { success: true, message: null };
+      const existing = await this._repo.findCheckoutEventByProviderEventId(transactionNsu);
+      if (!existing) {
+        // Conflito de unique sem linha visível — não dá pra decidir; pede retentativa.
+        this.logger.error(`religare_webhook_event_conflict_missing transaction_nsu=${transactionNsu}`);
+        return { success: false, message: 'server_error' };
+      }
+      if (existing.processedAt) {
+        // Já processado com decisão terminal — replay idempotente, não reprocessa.
+        return { success: true, message: null };
+      }
+      // Gravado antes mas nunca concluído (falha anterior) — reprocessa.
+      event = existing;
     }
 
     try {
       const checkout = await this._repo.findCheckoutByProviderReference(orderNsu);
       if (!checkout) {
+        // NÃO marca processado: pode ser corrida/replicação com a criação do
+        // checkout; sem checkout não há efeito colateral a duplicar.
         this.logger.error(`religare_webhook_unknown_order order_nsu=${orderNsu}`);
+        if (await this.closeEventIfStale(event, 'unknown_order', `order_nsu=${orderNsu}`)) {
+          return { success: true, message: null };
+        }
         return { success: false, message: 'unknown_order' };
       }
 
@@ -323,6 +353,7 @@ export class ReligareFunnelService {
       }
 
       // 2) Reconciliação ativa — nunca confia no valor/status do payload recebido.
+      // Falha/timeout aqui cai no catch: NÃO marca processado (transitório).
       const check = await this._infinitePay.checkPayment({
         orderNsu,
         transactionNsu,
@@ -330,18 +361,35 @@ export class ReligareFunnelService {
       });
 
       if (!check.paid) {
-        await this._repo.markEventProcessed(event.id);
-        return { success: true, message: null };
+        // NÃO marca processado: o webhook só vem em pagamento aprovado, então
+        // "não pago" no payment_check é atraso de consistência até prova em
+        // contrário — 400 força a retentativa a reconciliar de novo.
+        this.logger.warn(
+          `religare_webhook_payment_not_confirmed checkoutId=${checkout.id} transaction_nsu=${transactionNsu}`
+        );
+        if (
+          await this.closeEventIfStale(event, 'payment_not_confirmed', `checkoutId=${checkout.id}`)
+        ) {
+          return { success: true, message: null };
+        }
+        return { success: false, message: 'payment_not_confirmed' };
       }
 
       if (check.paidAmountCents !== checkout.amountCents) {
+        // NÃO marca processado: pode ser divergência corrigível (ex.: juros de
+        // parcelamento); evento fica pendente pra retentativa/verificação admin.
         this.logger.error(
           `religare_webhook_amount_mismatch checkoutId=${checkout.id} expected=${checkout.amountCents} got=${check.paidAmountCents}`
         );
+        if (await this.closeEventIfStale(event, 'amount_mismatch', `checkoutId=${checkout.id}`)) {
+          return { success: true, message: null };
+        }
         return { success: false, message: 'amount_mismatch' };
       }
 
       // 3) Confirmado pela própria InfinitePay — só agora marca como pago.
+      // Transição atômica: um webhook concorrente que perder a corrida não
+      // reenvia e-mail (ver confirmCheckoutPaid); ambos marcam o evento.
       await this.confirmCheckoutPaid(checkout.id, { manual: false });
       await this._repo.markEventProcessed(event.id);
 
@@ -360,6 +408,29 @@ export class ReligareFunnelService {
   }
 
   /**
+   * Se o evento passou do teto (`WEBHOOK_REPROCESS_MAX_AGE_MS`), encerra:
+   * marca processado e registra `logger.error` (só ids e motivo, sem PII).
+   * Retorna `true` quando encerrou (o chamador responde sucesso/200).
+   * `receivedAt` ausente/inválido nunca encerra (falha pro lado seguro).
+   */
+  private async closeEventIfStale(
+    event: { id: string; receivedAt?: Date | string | null },
+    reason: 'payment_not_confirmed' | 'unknown_order' | 'amount_mismatch',
+    ref: string
+  ): Promise<boolean> {
+    const receivedMs = event.receivedAt ? new Date(event.receivedAt).getTime() : NaN;
+    if (Number.isNaN(receivedMs)) return false;
+    const ageMs = Date.now() - receivedMs;
+    if (ageMs <= WEBHOOK_REPROCESS_MAX_AGE_MS) return false;
+
+    await this._repo.markEventProcessed(event.id);
+    this.logger.error(
+      `religare_webhook_stale_${reason} ${ref} eventId=${event.id} ageHours=${Math.floor(ageMs / 3_600_000)}`
+    );
+    return true;
+  }
+
+  /**
    * Ponto ÚNICO de confirmação de pagamento — compartilhado pelos 3 gatilhos
    * possíveis: webhook automático, verificação manual de admin confirmada
    * pela InfinitePay (`verifyCheckoutPayment`), e admin confiando sem
@@ -367,18 +438,28 @@ export class ReligareFunnelService {
    * própria InfinitePay confirmou (usa `paidAt`); `manual: true` só quando o
    * admin está confiando por conta própria (usa `manualPaidAt`/
    * `manualPaidByUserId` — ver comentário do campo em schema.prisma).
-   * Dispara o e-mail de confirmação em TODOS os casos, um só lugar.
+   * Dispara o e-mail de confirmação em TODOS os casos, um só lugar — mas
+   * SÓ quando esta chamada fez a transição atômica para PAID (`transitioned`).
+   * Quem perdeu a corrida para outro gatilho concorrente não reenvia e-mail.
    */
   private async confirmCheckoutPaid(
     checkoutId: string,
     options: { manual: false } | { manual: true; adminUserId: string }
   ) {
-    const checkout = options.manual
+    const { transitioned, checkout } = options.manual
       ? await this._repo.markCheckoutManuallyPaid(checkoutId, options.adminUserId)
       : await this._repo.markCheckoutPaid(checkoutId);
 
-    await this.sendPaidConfirmationEmail(checkout);
-    return checkout;
+    if (!checkout) {
+      throw new Error(`religare_checkout_not_found_after_paid checkoutId=${checkoutId}`);
+    }
+
+    if (transitioned) {
+      await this.sendPaidConfirmationEmail(checkout);
+    } else {
+      this.logger.log(`religare_checkout_already_paid_concurrent checkoutId=${checkoutId}`);
+    }
+    return { transitioned, checkout };
   }
 
   /**
@@ -490,8 +571,12 @@ export class ReligareFunnelService {
       };
     }
 
-    const updated = await this.confirmCheckoutPaid(checkoutId, { manual: false });
-    return { status: 'paid' as const, checkout: updated };
+    const { transitioned, checkout: updated } = await this.confirmCheckoutPaid(checkoutId, {
+      manual: false,
+    });
+    return transitioned
+      ? { status: 'paid' as const, checkout: updated }
+      : { status: 'already_paid' as const, checkout: updated };
   }
 
   /**
@@ -510,6 +595,10 @@ export class ReligareFunnelService {
     if (checkout.status === ReligareCheckoutStatus.PAID) {
       return checkout;
     }
-    return this.confirmCheckoutPaid(checkoutId, { manual: true, adminUserId });
+    const { checkout: updated } = await this.confirmCheckoutPaid(checkoutId, {
+      manual: true,
+      adminUserId,
+    });
+    return updated;
   }
 }

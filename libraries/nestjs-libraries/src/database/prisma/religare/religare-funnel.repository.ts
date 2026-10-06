@@ -202,30 +202,45 @@ export class ReligareFunnelRepository {
    * ver `markCheckoutManuallyPaid`). Inclui o e-mail/nome do lead pra
    * `ReligareFunnelService.sendPaidConfirmationEmail` disparar o e-mail sem
    * uma segunda query.
+   *
+   * Transição ATÔMICA (compare-and-set): só vira PAID se ainda não era PAID.
+   * `transitioned` = esta chamada fez a transição (afetou exatamente 1 linha);
+   * dois webhooks/admins concorrentes → só um recebe `true`, `paidAt` não é
+   * sobrescrito e só ele dispara efeitos colaterais (e-mail).
    */
   markCheckoutPaid(id: string) {
-    return this._db.model.religareCheckout.update({
-      where: { id },
-      data: { status: ReligareCheckoutStatus.PAID, paidAt: new Date() },
-      include: CHECKOUT_LEAD_CONTACT_INCLUDE,
+    return this.transitionCheckoutToPaid(id, {
+      status: ReligareCheckoutStatus.PAID,
+      paidAt: new Date(),
     });
   }
 
   /**
    * Admin confia no pagamento sem reconciliar contra a InfinitePay — por
    * isso `manualPaidAt`/`manualPaidByUserId`, nunca `paidAt` (ver comentário
-   * do campo no schema.prisma).
+   * do campo no schema.prisma). Mesma transição atômica de `markCheckoutPaid`.
    */
   markCheckoutManuallyPaid(id: string, adminUserId: string) {
-    return this._db.model.religareCheckout.update({
+    return this.transitionCheckoutToPaid(id, {
+      status: ReligareCheckoutStatus.PAID,
+      manualPaidAt: new Date(),
+      manualPaidByUserId: adminUserId,
+    });
+  }
+
+  private async transitionCheckoutToPaid(
+    id: string,
+    data: Prisma.ReligareCheckoutUncheckedUpdateManyInput
+  ) {
+    const { count } = await this._db.model.religareCheckout.updateMany({
+      where: { id, status: { not: ReligareCheckoutStatus.PAID } },
+      data,
+    });
+    const checkout = await this._db.model.religareCheckout.findUnique({
       where: { id },
-      data: {
-        status: ReligareCheckoutStatus.PAID,
-        manualPaidAt: new Date(),
-        manualPaidByUserId: adminUserId,
-      },
       include: CHECKOUT_LEAD_CONTACT_INCLUDE,
     });
+    return { transitioned: count === 1, checkout };
   }
 
   /**
@@ -307,7 +322,8 @@ export class ReligareFunnelRepository {
 
   /**
    * Grava o evento ANTES de processar. Retorna null se já existia (conflito
-   * de providerEventId) — idempotência de webhook, sem reprocessar.
+   * de providerEventId) — o service então consulta `findCheckoutEventByProviderEventId`
+   * e só trata como replay idempotente se `processedAt` já estiver preenchido.
    */
   async insertCheckoutEventIfNew(data: {
     providerEventId: string;
@@ -325,6 +341,13 @@ export class ReligareFunnelRepository {
       }
       throw err;
     }
+  }
+
+  /** Evento já gravado (conflito em `insertCheckoutEventIfNew`) — usado pra decidir replay × reprocesso. */
+  findCheckoutEventByProviderEventId(providerEventId: string) {
+    return this._db.model.religareCheckoutEvent.findUnique({
+      where: { providerEventId },
+    });
   }
 
   linkEventToCheckout(eventId: string, checkoutId: string) {
