@@ -1,5 +1,6 @@
 import { BadRequestException, Injectable, Logger } from '@nestjs/common';
 import { randomUUID } from 'crypto';
+import { escape as escapeHtml } from 'lodash';
 import { Prisma, ReligareCheckoutStatus, ReligareLeadStatus } from '@prisma/client';
 import { ReligareFunnelRepository } from './religare-funnel.repository';
 import { ReligareRepository } from './religare.repository';
@@ -480,7 +481,11 @@ export class ReligareFunnelService {
       return;
     }
 
-    const greeting = checkout.lead?.fullName ? `Olá, ${checkout.lead.fullName}!` : 'Olá!';
+    // fullName é texto digitado pelo lead (formulário público) e entra num e-mail
+    // HTML — sempre escapado, nunca interpolado cru.
+    const greeting = checkout.lead?.fullName
+      ? `Olá, ${escapeHtml(checkout.lead.fullName)}!`
+      : 'Olá!';
     await this._emailService.sendEmailSync(
       email,
       'Seu pagamento do Mapa Religare foi confirmado',

@@ -130,6 +130,55 @@ describe('ReligareFunnelService.handleInfinitePayWebhook', () => {
     expect(result).toEqual({ success: true, message: null });
   });
 
+  describe('e-mail de confirmação: nome do lead é escapado no HTML', () => {
+    function serviceWithLeadName(fullName: string | null) {
+      return makeService({
+        markCheckoutPaid: jest.fn().mockResolvedValue({
+          transitioned: true,
+          checkout: { id: CHECKOUT_ID, lead: { email: LEAD_EMAIL, fullName } },
+        }),
+      });
+    }
+    const WEBHOOK_BODY = { order_nsu: ORDER_NSU, transaction_nsu: TRANSACTION_NSU, invoice_slug: 'slug-1' };
+
+    it('nome hostil: <script> e <img onerror> viram texto inerte, nunca tag', async () => {
+      const hostile = '<script>alert(1)</script>"><img src=x onerror=alert(2)>';
+      const { service, emailService } = serviceWithLeadName(hostile);
+
+      await service.handleInfinitePayWebhook(WEBHOOK_BODY);
+
+      expect(emailService.sendEmailSync).toHaveBeenCalledTimes(1);
+      const html = emailService.sendEmailSync.mock.calls[0][2] as string;
+      expect(html).not.toContain('<script');
+      expect(html).not.toContain('<img');
+      expect(html).toContain('&lt;script&gt;');
+      expect(html).toContain('&lt;img src=x onerror=alert(2)&gt;');
+      // o resto do template continua íntegro
+      expect(html.startsWith('<p>Olá, ')).toBe(true);
+      expect(html).toContain('<strong>');
+    });
+
+    it('nome legítimo: acento preservado; & e apóstrofo escapados (nada de dupla escapada)', async () => {
+      const { service, emailService } = serviceWithLeadName("José & Maria D'Ávila");
+
+      await service.handleInfinitePayWebhook(WEBHOOK_BODY);
+
+      const html = emailService.sendEmailSync.mock.calls[0][2] as string;
+      expect(html).toContain('Olá, José &amp; Maria D&#39;Ávila!');
+      expect(html).not.toContain('&amp;amp;');
+    });
+
+    it('sem nome: saudação genérica, sem "null" nem "undefined" no HTML', async () => {
+      const { service, emailService } = serviceWithLeadName(null);
+
+      await service.handleInfinitePayWebhook(WEBHOOK_BODY);
+
+      const html = emailService.sendEmailSync.mock.calls[0][2] as string;
+      expect(html.startsWith('<p>Olá!</p>')).toBe(true);
+      expect(html).not.toMatch(/null|undefined/);
+    });
+  });
+
   const BODY = { order_nsu: ORDER_NSU, transaction_nsu: TRANSACTION_NSU, invoice_slug: 'slug-1' };
 
   it('(b) replay de evento JÁ processado -> idempotente, não chama payment_check de novo', async () => {
