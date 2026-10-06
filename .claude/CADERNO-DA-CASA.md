@@ -37,6 +37,19 @@ Ao validar comercial/marca, confira qual versão está de fato ativa antes de ci
 
 ---
 
+## Skills GSAP — promovidas a global (2026-08-14)
+
+As 8 skills GSAP (`gsap-core`, `gsap-frameworks`, `gsap-performance`, `gsap-plugins`,
+`gsap-react`, `gsap-scrolltrigger`, `gsap-timeline`, `gsap-utils`) não tinham nada específico do
+Vocaccio — MIT, oficiais, zero referência a este repo. Copiadas para `~/.claude/skills/` para
+servir qualquer projeto (Luna/`luna-gamedev` já usa GSAP em jogos e LPs fora daqui). **Cópia
+local removida em 2026-08-14** (o `rm -rf` inicial foi bloqueado pelo classificador de ação
+destrutiva; rodado depois com confirmação do Felipe). Fonte canônica agora é só a global.
+Comando que foi usado, por registro:
+```bash
+cd C:/dev/vocaccio/.claude/skills && rm -rf gsap-core gsap-frameworks gsap-performance gsap-plugins gsap-react gsap-scrolltrigger gsap-timeline gsap-utils
+```
+
 ## ♨️ Sirius (back-end)
 - `apps/backend` (controllers finos, importam de libs) + `apps/orchestrator` (Temporal:
   workflows/activities) + `libraries/nestjs-libraries` (a maior parte da lógica).
@@ -118,6 +131,8 @@ Ao validar comercial/marca, confira qual versão está de fato ativa antes de ci
   `docs/zelador/CADERNO.md`). Teste pendente: nova sessão + `Agent(subagent_type=
   "severus-security")`. Já era pauta de retraining pendente desde 2026-07-19 ("diagnosticar por
   que severus-security.md não carregou") — 10 dias sem reteste.
+  **Causa achada em 2026-10-06:** arquivo CRLF + `: ` na `description:` (L-024) — corrigido no
+  global; a hipótese de "bug de harness" acima estava errada. Reteste em sessão nova: pendente.
 
 ## 🔒 Griphook (economia)
 - RTK instalado (`~/.cargo/bin/rtk`), ~60-90% de economia medida via `rtk gain`. Prefixar

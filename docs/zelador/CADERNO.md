@@ -276,6 +276,13 @@ Formato de entrada: `AAAA-MM-DD | causa-raiz | incidente(s) | mecanismo proposto
   status: **EM OBSERVAÇÃO, severidade ALTA** (zero agente de segurança ativo até resolver, e o
   Felipe já reclamou de falta de proatividade de segurança) — dono do conserto é
   ambiente/harness (reteste do Felipe em sessão nova), não um `.md` de agente.
+  **Atualização 2026-10-06 — causa-raiz ACHADA, a hipótese acima ("bug de harness") estava
+  errada:** o gatilho é determinístico no conteúdo — arquivo **CRLF + `: ` dentro do
+  `description:`** faz o harness ignorar o agente em silêncio (anthropics/claude-code#81781,
+  confirmado pela equipe do Claude Code). Dos 20 agentes globais só o Severus tinha o padrão
+  ("não um: (1)"). Corrigido no global (LF + `—`), os outros 4 agentes CRLF viraram LF, e há
+  `~/.claude/devwarts/check-elenco.py` para detectar. Lição L-024 em `~/.claude/devwarts/LICOES.md`.
+  Reteste do registro em sessão nova do app: pendente do Felipe.
 
 ## Clusters graduados (correção já aplicada)
 
@@ -364,6 +371,33 @@ em histórico já escrito; próxima reorganização de fundo do Caderno deve fun
   dentro de CADA worktree candidata é obrigatório antes de recomendar poda; diff sujo = pare e
   resuma, não classifique como lixo | status: GRADUADO — regra já escrita no `.md`, poda das
   duas worktrees continua pausada até o Felipe decidir o que fazer com o diff de cada uma.**
+
+## Incoerências técnicas (achadas via auditoria Graphify + grep, 2026-07-29)
+
+- **2026-07-29 | causa-raiz: doc de arquitetura nunca reconciliado com o código real | incidente:
+  `PLANO-MESTRE.md` (Camada 1, tabela de Stack) lista "Scheduling MVP (F1-F2) | BullMQ + Upstash
+  Redis" — `grep -rl "bullmq"` no monorepo inteiro (código + todos os `package.json`) retorna
+  **zero ocorrências**. O que existe de verdade: `@temporalio/activity|client|common|worker|
+  workflow` (^1.14.0) instalados e usados no `apps/orchestrator` desde o início — BullMQ nunca foi
+  implementado, o plano descreve uma arquitetura que não existe | mecanismo proposto: McGonagall
+  atualiza a tabela de Stack do `PLANO-MESTRE.md` pra refletir Temporal como único mecanismo de
+  scheduling (não "MVP BullMQ depois Temporal"); Dumbledore decide o momento (não bloqueia nada em
+  produção, é só doc desatualizado) | status: EM OBSERVAÇÃO, aguardando janela de baixo custo pra
+  corrigir o doc. Dono: McGonagall (plano) — nenhuma mudança de código necessária.**
+
+- **2026-07-29 | causa-raiz: tenancy indireta em modelos de dado de cliente | incidente:
+  varredura em `schema.prisma` (58 models) encontra 8 modelos de dado de cliente sem coluna
+  `organizationId`/`orgId` direta — `Project`, `ClientExpert`, `ClientContact`,
+  `ClientInteraction`, `ProjectAccessLink`, `AccessLinkEvent`, `ContentItemEvent`,
+  `ServiceRequestEvent` — todos escopados só indiretamente via `clientId` → `Client` →
+  (presumivelmente) `organizationId`. É a **mesma forma estrutural do VOC-01** (o IDOR já
+  corrigido uma vez: `findUnique`/`findFirst` por id sem checar org). Não é uma vulnerabilidade
+  confirmada — pode estar seguro se toda query já faz o join até `Client.organizationId` — mas
+  não foi confirmado nesta sessão (sem acesso a rodar query real) | mecanismo proposto: **Severus**
+  audita as queries desses 8 modelos confirmando que nenhum `findUnique(id)` pula o join até
+  `organizationId`; se algum pular, vira ticket de segurança (VOC-4x) e prioridade P1. Cruza com a
+  decisão **P-02** já aberta na Edwiges (tenancy do Religare) — mesmo princípio, escopos
+  diferentes | status: EM OBSERVAÇÃO, aguardando o Severus rodar a auditoria. Dono: Severus.**
 
 ## Decisões de skill/dependência (mérito avaliado, inclusive rejeições)
 
