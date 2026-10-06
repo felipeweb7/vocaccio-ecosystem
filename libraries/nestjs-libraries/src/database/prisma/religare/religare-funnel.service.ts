@@ -13,6 +13,13 @@ const RATE_LIMIT_WINDOW_MS = 60_000;
 const RATE_LIMIT_MAX = 30;
 
 /**
+ * Valor vindo do corpo do webhook (não confiável) que vai parar em log:
+ * `JSON.stringify` escapa quebra de linha e aspas (sem forjar linha de log) e o
+ * `slice` limita o tamanho.
+ */
+const safeLogValue = (value: string) => JSON.stringify(value.slice(0, 80));
+
+/**
  * Teto de idade pra reprocessar evento de webhook EXISTENTE e não processado
  * cuja reconciliação concluiu com resposta negativa/inconsistente
  * (`payment_not_confirmed`, `unknown_order`, `amount_mismatch`). Passou disso,
@@ -323,7 +330,7 @@ export class ReligareFunnelService {
       const existing = await this._repo.findCheckoutEventByProviderEventId(transactionNsu);
       if (!existing) {
         // Conflito de unique sem linha visível — não dá pra decidir; pede retentativa.
-        this.logger.error(`religare_webhook_event_conflict_missing transaction_nsu=${transactionNsu}`);
+        this.logger.error(`religare_webhook_event_conflict_missing transaction_nsu=${safeLogValue(transactionNsu)}`);
         return { success: false, message: 'server_error' };
       }
       if (existing.processedAt) {
@@ -339,8 +346,8 @@ export class ReligareFunnelService {
       if (!checkout) {
         // NÃO marca processado: pode ser corrida/replicação com a criação do
         // checkout; sem checkout não há efeito colateral a duplicar.
-        this.logger.error(`religare_webhook_unknown_order order_nsu=${orderNsu}`);
-        if (await this.closeEventIfStale(event, 'unknown_order', `order_nsu=${orderNsu}`)) {
+        this.logger.error(`religare_webhook_unknown_order order_nsu=${safeLogValue(orderNsu)}`);
+        if (await this.closeEventIfStale(event, 'unknown_order', `order_nsu=${safeLogValue(orderNsu)}`)) {
           return { success: true, message: null };
         }
         return { success: false, message: 'unknown_order' };
@@ -366,7 +373,7 @@ export class ReligareFunnelService {
         // "não pago" no payment_check é atraso de consistência até prova em
         // contrário — 400 força a retentativa a reconciliar de novo.
         this.logger.warn(
-          `religare_webhook_payment_not_confirmed checkoutId=${checkout.id} transaction_nsu=${transactionNsu}`
+          `religare_webhook_payment_not_confirmed checkoutId=${checkout.id} transaction_nsu=${safeLogValue(transactionNsu)}`
         );
         if (
           await this.closeEventIfStale(event, 'payment_not_confirmed', `checkoutId=${checkout.id}`)

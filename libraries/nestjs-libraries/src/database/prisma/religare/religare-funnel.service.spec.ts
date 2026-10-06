@@ -179,6 +179,30 @@ describe('ReligareFunnelService.handleInfinitePayWebhook', () => {
     });
   });
 
+  describe('logs: valor do corpo do webhook não forja linha de log nem estoura o tamanho', () => {
+    it('order_nsu com quebra de linha e gigante: log de uma linha só, aspas escapadas, valor truncado', async () => {
+      const forged = 'abc\n[Nest] 1 ERROR [Fake] pagamento aprovado' + 'x'.repeat(500);
+      const { service, loggerError } = makeService({
+        findCheckoutByProviderReference: jest.fn().mockResolvedValue(null),
+      });
+
+      const result = await service.handleInfinitePayWebhook({
+        order_nsu: forged,
+        transaction_nsu: TRANSACTION_NSU,
+      });
+
+      expect(result).toEqual({ success: false, message: 'unknown_order' });
+      const logged = loggerError.mock.calls.map((c) => String(c[0]));
+      expect(logged.length).toBeGreaterThan(0);
+      for (const line of logged) {
+        expect(line).not.toMatch(/[\r\n]/); // nenhuma quebra de linha crua
+      }
+      const unknown = logged.find((l) => l.includes('religare_webhook_unknown_order')) as string;
+      expect(unknown).toContain('order_nsu="abc\\n[Nest]'); // aspas + \n escapado
+      expect(unknown.length).toBeLessThan(200); // valor truncado
+    });
+  });
+
   const BODY = { order_nsu: ORDER_NSU, transaction_nsu: TRANSACTION_NSU, invoice_slug: 'slug-1' };
 
   it('(b) replay de evento JÁ processado -> idempotente, não chama payment_check de novo', async () => {
