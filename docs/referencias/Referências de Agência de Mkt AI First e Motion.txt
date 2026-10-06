@@ -1,0 +1,170 @@
+Referências de Agência de Mkt AI First e Scroll Motion
+AI-Agent Company | AI first
+
+https://github.com/zubair-trabzada/ai-marketing-claude
+https://github.com/zubair-trabzada/ai-sales-team-claude
+https://github.com/zubair-trabzada/geo-seo-claude?tab=readme-ov-file
+https://github.com/thatrebeccarae/claude-marketing
+
+https://www.reddit.com/r/SmallBusinessCanada/comments/1uwzzpc/ca_i_built_ai_marketing_team_fully_automated/
+https://www.reddit.com/r/SaaS/comments/1rpm9n2/i_replaced_a_5person_marketing_team_with_45_ai/
+https://www.reddit.com/r/hermesagent/comments/1uym4en/hermes_use_cases_and_my_personal_lp_tech_stack/
+https://www.reddit.com/r/hermesagent/comments/1uh308s/i_built_an_app_to_run_247_agent_teams_where_each/
+https://bestcontent.ai/pt/products/autopilot
+https://www.reddit.com/r/ClaudeAI/comments/1qy2l07/i_built_18_ai_marketing_agents_for_claude_code/
+
+
+https://youtu.be/LmfIIpWgaFQ
+https://www.youtube.com/watch?v=tGemYHFE1W8
+https://github.com/oso95/scroll-world
+https://www.youtube.com/watch?v=VjFWL2RpHhw
+
+
+
+https://youtu.be/m-f56P_L660
+Prompt Website Pack" (the guide that breaks down how to make websites look like those award-winning designs on Awwwards).
+Helping him track it down got me thinking... why haven’t I actually tested this out myself yet?
+So, I decided to dive in, use the prompts from the PDF, and build my own portfolio site from scratch.
+Here is what I used and the final result:
+📂 The Exact Resource (10 Site Prompts PDF): If you’ve been looking for this pack or want to build something clean, you can access the classroom resource here: 👉 Get the One-Prompt Website Pack here
+🌐 My Final Portfolio Site: I used the prompts to generate a clean, modern design. Check out how it turned out: 👉 My AI-Generated Portfolio
+The prompt structure in that document is a total game-changer if you want to bypass standard templates and get that premium, award-winning look instantly.
+
+
+
+
+LEARN HOW TO SELL THIS TO REAL BUSINESSES - https://www.skool.com/aiworkshop/classroom/5881d8f1?md=a4292c7ccf6d422faff11b2f3a8b58da
+
+🛠️ What We're Installing: The AI Marketing tool is a Claude Code "skill" — a set of pre-built commands that give Claude Code marketing superpowers. Once installed, you'll have 15 new commands that can audit any website's marketing, analyze copy, scan competitors, generate email sequences, and produce client-ready PDF reports.
+
+📺 What This Video Covers:
+
+
+
+
+
+Open Claude Code in your editor's terminal (just like we did in the setup video)
+
+
+
+Run the install command — Copy and paste this single line:
+
+curl -fsSL https://raw.githubusercontent.com/zubair-trabzada/ai-marketing-claude/main/install.sh | bash
+
+
+
+
+That's it. It downloads everything and puts it in the right folders automatically.
+
+
+
+
+
+Verify it worked — Type /market inside Claude Code. You should see a menu with all 15 commands. If you see them, you're good.
+
+
+
+Quick tour of the key commands:
+
+
+
+
+
+/market audit — The flagship. Launches 5 AI agents in parallel to score any website across 6 marketing dimensions.
+
+
+
+/market competitors — Scans competitor websites and compares positioning, pricing, and features.
+
+
+
+/market copy — Analyzes any page's copy and gives you specific before-and-after rewrites.
+
+
+
+/market emails — Generates full email sequences (welcome, launch, nurture) with subject lines and timing.
+
+
+
+/market report-pdf — Generates the professional PDF report you send to clients.
+
+
+
+The other 10 commands go deeper into specific areas (SEO, ads, funnels, landing pages, brand voice, etc.)
+
+
+
+
+
+💡 Good to Know:
+
+
+
+
+
+The tool is open-source and free — you can always update it by re-running the install command
+
+
+
+It installs to a hidden folder on your computer (~/.claude/skills/) — you don't need to touch those files
+
+
+
+It also installs 5 subagents to ~/.claude/agents/ — these are the AI agents that run in parallel during audits
+
+
+
+If something goes wrong, there's an uninstall script too: ./uninstall.sh
+
+
+
+The only external dependency is reportlab for PDF generation — the install script handles this automatically
+
+✅ Action Steps:
+
+
+
+
+
+Run the install command in your Claude Code terminal
+
+
+
+Type /market and confirm you see all 15 commands in the autocomplete menu
+
+
+
+Run /market audit on your own website or a client's website and see what it finds
+
+
+
+Take a screenshot of your audit results and post it in the Community tab
+
+
+
+If you hit any errors, post the error message in the Community tab and I'll help you troubleshoot
+
+⚠️ Common Issues:
+
+
+
+
+
+"Permission denied" — Try running with sudo in front of the command, or check that Python 3.8+ is installed
+
+
+
+Commands don't show up — Close Claude Code completely and reopen it. The skills load on startup.
+
+
+
+"Python not found" — You need Python 3.8 or higher. On Mac, run brew install python3. On Linux, run sudo apt install python3.
+
+
+
+"reportlab not found" — Run pip install reportlab manually. This is only needed for the PDF report command.
+
+
+
+PDF looks wrong — Make sure you have reportlab version 4.0 or higher: pip install --upgrade reportlab
+
