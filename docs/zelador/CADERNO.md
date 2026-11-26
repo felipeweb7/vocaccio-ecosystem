@@ -46,13 +46,93 @@ Formato de entrada: `AAAA-MM-DD | causa-raiz | incidente(s) | mecanismo proposto
   "pendente" quando a sessão de revisão de estrutura acontecer de fato e produzir uma
   decisão/plano registrado (aqui ou em documento próprio, ex. `docs/planejamento/`).
 
+- **2026-07-30 | poda de worktree — 1 de 3 autorizadas não removida, pendência aberta** |
+  O Felipe autorizou a remoção de 3 worktrees órfãs; `branch-cleanup-worktree-3671a9` e
+  `religare-funnel-foundation-13e6d1` foram removidas com sucesso. A terceira,
+  `religare-smtp-admin-routes-6bd311`, travou **duas vezes** com erro "sendo usado por outro
+  processo" (Windows) — sem processo identificável via inspeção padrão e sem `handle.exe`
+  disponível na máquina para confirmar qual handle segura a pasta. Seguindo a regra de
+  anti-loop (2 falhas no mesmo ponto → pare e devolva o estado), a 3ª tentativa não foi feita.
+  **Achado de ferramenta relacionado** (útil para quem for tentar de novo): verificar processo
+  vivo com `Get-CimInstance Win32_Process | Where-Object CommandLine -match <caminho>` dá
+  **falso positivo** quando o próprio comando de diagnóstico contém o caminho como string
+  literal na linha de comando — ele casa consigo mesmo. Antes de concluir "há processo vivo
+  usando a pasta", excluir `powershell.exe`/`pwsh.exe` do resultado do filtro, ou o diagnóstico
+  vai sempre "confirmar" um processo travando a pasta mesmo quando não há nenhum.
+  **Status: PENDENTE** — pasta `religare-smtp-admin-routes-6bd311` continua no disco, não
+  registrada mais em `git worktree list` (registro já solto), conteúdo não auditado. Próxima
+  sessão: tentar `git worktree prune -v` + `Remove-Item -Recurse -Force` com o filtro de
+  processo corrigido (excluindo powershell/pwsh) antes de decidir se há mesmo handle vivo, ou
+  investigar com Process Explorer/`handle.exe` instalado. Não forçar remoção sem confirmar
+  ausência de processo real.
+
 ---
+
+## Em observação (1 incidente, aguardando recorrência antes de virar regra) — continuação
+
+- **2026-07-29/30 | causa-raiz: `graphify.exe` está instalado (`C:\Users\felip\.local\bin\`,
+  v0.9.7, via `uv tool install graphifyy`) mas essa pasta NÃO está no PATH que sessões Bash desta
+  máquina herdam | incidente: um subagente instruído a rodar rebuild do Graphify travou 10 minutos
+  tentando "configurar o interpretador Python" (procurando/reinstalando um pacote que já existia)
+  e foi encerrado pelo watchdog de stall (sem progresso por 600s) | mecanismo: diagnosticado pelo
+  Dumbledore em paralelo — `graphify --version` falha por comando não encontrado, mas
+  `"C:\Users\felip\.local\bin\graphify.exe" --version` funciona direto. Qualquer agente que invoque
+  o Graphify via Bash nesta máquina deve prefixar o caminho completo
+  (`C:\Users\felip\.local\bin\graphify.exe` ou `.../uv/tools/graphifyy/Scripts/graphify.exe`, os
+  dois funcionam) em vez de confiar em `graphify` estar no PATH, e **nunca** tentar `pip
+  install`/`uv tool install` de novo achando que falta instalar — isso é a causa mais provável do
+  próprio travamento (rede ou prompt esperando confirmação) | status: **EM OBSERVAÇÃO** — 1ª
+  ocorrência; se recorrer, promove a nota permanente na skill `graphify` (`~/.claude/skills/graphify/SKILL.md`) sobre PATH nesta máquina, ou a um passo de detecção automática de caminho
+  antes de qualquer chamada.
 
 ## Clusters ativos (≥2 incidentes, mesma causa-raiz)
 
-_(nenhum ainda — primeira ronda)_
+- **2026-07-29 | causa-raiz: cabeçalho "Time atual"/rodapé/prefixo `rtk` esquecidos por sessão
+  longa e solo, sem sub-agente explícito rodando como watchdog | incidentes: 2026-07-12 (sessão
+  de retomada, nenhuma das três convenções usada em nenhuma resposta) e 2026-07-16 (sessão longa,
+  cabeçalho ausente do início ao fim) — mesma causa-raiz (convenção documentada mas sem
+  enforcement mecânico; ponto cego maior quando não há Filch de fato rodando como sub-agente
+  ativo) | mecanismo promovido: autocheck de fechamento obrigatório escrito em
+  `.claude/agents/README.md` §"Cabeçalho 'Time atual'" (2026-07-29) — cabeçalho deixa de ser
+  "só quando for barato" e vira obrigatório em toda resposta de tarefa não-trivial, com autocheck
+  explícito antes de encerrar. Se recorrer uma 3ª vez, sobe pra hook `Stop`/`PreToolUse` (decisão
+  do Felipe + Griphook) | status: **CLUSTER, mecanismo L1 aplicado (texto no README)** — aguarda
+  3ª ocorrência antes de virar hook L2. Entradas originais mantidas abaixo em "Em observação"
+  (histórico não se apaga).
+
+- **2026-07-29 | causa-raiz: saída filtrada do `rtk` (ferramenta de terceiro) divergindo do
+  comando puro numa decisão que importa | incidentes: (1) 2026-07-25, `rtk git log --oneline
+  origin/main` devolveu tip desatualizado de `origin/main` vs. `git rev-parse` puro (correto) —
+  ver entrada abaixo; (2) 2026-07-29, `rtk diff` normalizou fim-de-linha (CRLF→LF) ao comparar
+  `~/.claude/agents/*.md` com `.claude/agents/*.md` e reportou "Files are identical" para
+  `griphook-economy.md`, `severus-security.md`, `weasley-growth.md` e `edwiges.md` — 2 desses 4
+  (griphook, severus) na verdade **divergiam em conteúdo real** (não só fim-de-linha), só
+  descoberto ao refazer o diff com `diff <(tr -d '\r' < A) <(tr -d '\r' < B)`. Mesma causa-raiz:
+  saída filtrada do `rtk` mascarando estado real quando a resposta é decisiva | mecanismo: **NÃO**
+  editar `griphook-economy.md` sozinho ainda — passa o portão de recorrência (2x), vira
+  apontamento formal pro Griphook decidir entre (a) usar `rtk diff`/`rtk git log` só como
+  triagem, sempre confirmando com a ferramenta pura antes de decisão irreversível, (b) reportar
+  bug upstream ao projeto `rtk`, ou (c) restringir uso do `rtk` nesses subcomandos específicos |
+  status: **CLUSTER — decisão pendente do Griphook**, não bloqueia nada nesta rodada (a
+  consolidação de hoje já foi refeita com diff correto antes de aplicar qualquer merge).
 
 ## Em observação (1 incidente, aguardando recorrência antes de virar regra)
+
+- **2026-07-30 | achado de segurança incidental — credencial em linha de comando de processo
+  local, fora do escopo desta rodada** | Reportado pelo Dumbledore/Felipe (não verificado
+  diretamente por esta sessão — registrado por relato confiável do próprio dono, não por
+  reprodução própria, para não expandir a superfície de exposição investigando de novo): durante
+  uma checagem de processo vivo (contexto: poda de worktree, ver entrada acima), apareceu um
+  processo `mcp-remote` com uma chave de API (Google/Stitch) **em texto claro na linha de
+  comando** do processo — visível a qualquer processo local que liste processos do SO (ex.
+  `Get-CimInstance Win32_Process`, Task Manager, `ps`). **Nenhum valor de credencial é
+  reproduzido aqui nem em nenhum outro documento**; o achado é só: qual processo, que tipo de
+  credencial, e qual a superfície de exposição (linha de comando de processo é legível
+  localmente por qualquer usuário/processo com permissão de listar processos, não exige
+  privilégio elevado). **Status: PENDENTE — aguarda rodada dedicada do Severus** para avaliar
+  se a credencial precisa ser rotacionada e se a configuração do MCP pode passar a chave por
+  variável de ambiente/arquivo protegido em vez de argumento de linha de comando. Não é
+  cluster (1 incidente); registrado aqui só para não se perder, não para virar regra ainda.
 
 - **2026-07-12 | causa-raiz: convenção textual em doc lida 1x no início da sessão não é
   reforçada em cada resposta/comando — depende da memória de execução do Dumbledore, sem
@@ -110,6 +190,10 @@ _(nenhum ainda — primeira ronda)_
   puro | status: **EM OBSERVAÇÃO** — se `rtk` errar de novo em `git log`/refs remotas, isso
   vira achado formal de confiabilidade de ferramenta pro Griphook decidir (usar com ressalva,
   reportar upstream, ou restringir o uso do `rtk` nesse subcomando específico).
+  **RECORREU 2026-07-29** (`rtk diff` mascarando drift real entre agentes globais/projeto,
+  fim-de-linha normalizado escondendo divergência de conteúdo) — mesma causa-raiz (saída
+  filtrada do `rtk` divergindo do comando puro numa decisão que importa). **Passa o portão de
+  recorrência → PROMOVIDO a cluster ativo**, ver entrada em "Clusters ativos" acima.
 
 ## Clusters maduros (≥3, correção rascunhada/pendente de aprovação)
 
@@ -172,7 +256,58 @@ _(nenhum ainda — primeira ronda)_
   checkout principal (`C:\dev\vocaccio`, dev server real), sobretudo `carousel-editor.component.tsx`
   e os 2 pontos VERIFICAR-BROWSER.
 
+- **2026-07-29 | causa-raiz: harness não registrou `severus-security.md` como sub-agente
+  disponível numa sessão, apesar do arquivo estar íntegro | incidente: chamada
+  `Agent(subagent_type="severus-security")` retornou "not found" e a lista de agentes
+  disponíveis da sessão trazia os outros 10 do time, sem o Severus. Investigação descartou as
+  hipóteses óbvias: frontmatter válido (`name`/`tools`/`model: sonnet` normais, não a string
+  composta "sonnet→opus" que só existe na tabela do README), UTF-8 sem BOM/null-bytes, CRLF
+  presente mas também presente em `moody-revisor.md`/`sirius-backend.md`/`flitwick-
+  frontend.md`/`griphook-economy.md` que carregam normalmente (não é o diferenciador), sem
+  colisão de nome no disco, mtime do arquivo no mesmo lote de edição de 2026-07-19 que os
+  4 agentes-irmãos que carregam bem. Achado: o arquivo já rodou com sucesso em sessão anterior
+  (`C:\Users\felip\.claude\projects\C--dev-vocaccio\302009ad-...\subagents\`, transcrições
+  reais). Este incidente já era pauta de retraining pendente desde 2026-07-19 (nota antiga do
+  Filch: "diagnosticar por que severus-security.md não carregou na sessão de 19/07") — 10 dias
+  sem reteste até esta ronda | hipótese mais provável: falha de registro transitória/específica
+  de sessão (bug de harness), não defeito de conteúdo | teste que confirma: nova sessão +
+  `Agent(subagent_type="severus-security")` de novo — se funcionar, era glitch pontual; se
+  falhar de novo em sessão limpa, vira bug de plataforma reportável, não conserto de conteúdo |
+  status: **EM OBSERVAÇÃO, severidade ALTA** (zero agente de segurança ativo até resolver, e o
+  Felipe já reclamou de falta de proatividade de segurança) — dono do conserto é
+  ambiente/harness (reteste do Felipe em sessão nova), não um `.md` de agente.
+  **Atualização 2026-10-06 — causa-raiz ACHADA, a hipótese acima ("bug de harness") estava
+  errada:** o gatilho é determinístico no conteúdo — arquivo **CRLF + `: ` dentro do
+  `description:`** faz o harness ignorar o agente em silêncio (anthropics/claude-code#81781,
+  confirmado pela equipe do Claude Code). Dos 20 agentes globais só o Severus tinha o padrão
+  ("não um: (1)"). Corrigido no global (LF + `—`), os outros 4 agentes CRLF viraram LF, e há
+  `~/.claude/devwarts/check-elenco.py` para detectar. Lição L-024 em `~/.claude/devwarts/LICOES.md`.
+  Reteste do registro em sessão nova do app: pendente do Felipe.
+
 ## Clusters graduados (correção já aplicada)
+
+- **2026-07-29 | causa-raiz: duas cópias editáveis do mesmo agente (`~/.claude/agents/` global
+  e `.claude/agents/` do projeto) divergindo sem sincronia — pendência aberta desde 2026-07-06
+  (`TIME-HP-PORTAVEL.md:145-152`)** | incidentes: `draco-benchmark.md` só existia no projeto;
+  `luna-games.md` só existia no global; `filch-caretaker.md`, `flitwick-frontend.md`,
+  `griphook-economy.md`, `hagrid-brand.md`, `mcgonagall-planner.md`, `moody-revisor.md`,
+  `severus-security.md` e `sirius-backend.md` tinham conteúdo genuinamente divergente entre os
+  dois lados (confirmado com `diff` fim-de-linha normalizado, não o `rtk diff` que mascarava
+  parte disso — ver cluster de confiabilidade do `rtk` acima); casos mais graves: Sirius global
+  não tinha a seção de skills `boot-real`/`poda-segura`, Flitwick global não tinha o gate
+  "acione a Luna antes do hero/scroll" (nascido do incidente real `FX-2026-07-20-01`) |
+  **decisão do Felipe (2026-07-29, direta em sessão): global vira única cópia editável; cada
+  projeto ganha um "Caderno da Casa" pra especificidade local, evitando poluir os agentes
+  globais.** **Correção aplicada**: os 8 arquivos divergentes foram unidos por união (nada
+  perdido — conferido linha a linha) em `~/.claude/agents/`; `draco-benchmark.md` copiado ao
+  global; criado `C:\dev\vocaccio\.claude\CADERNO-DA-CASA.md` com a especificidade Vocaccio
+  extraída de `filch-caretaker.md`/`hagrid-brand.md` (os dois que tinham framing genérico +
+  "prefira local", agora reescrito para apontar ao Caderno da Casa em vez de a uma cópia local
+  completa); as 11 cópias de agente em `.claude/agents/` (exceto `README.md`, que é o manual do
+  Dumbledore, conteúdo próprio) viraram ponteiros de 3-5 linhas pro global + Caderno da Casa;
+  `.claude/agents/README.md` §"Cabeçalho 'Time atual'" ganhou o cluster promovido acima (header
+  obrigatório) | status: **GRADUADO** — mão única em vigor a partir de agora: nada específico de
+  projeto volta pro global.
 
 - **2026-07-25 | causa-raiz: restart de dev server no Windows matando só o processo que
   segura a porta, não a árvore inteira (`cross-env → dotenv-cli → nest.js watcher → node
@@ -236,6 +371,33 @@ em histórico já escrito; próxima reorganização de fundo do Caderno deve fun
   dentro de CADA worktree candidata é obrigatório antes de recomendar poda; diff sujo = pare e
   resuma, não classifique como lixo | status: GRADUADO — regra já escrita no `.md`, poda das
   duas worktrees continua pausada até o Felipe decidir o que fazer com o diff de cada uma.**
+
+## Incoerências técnicas (achadas via auditoria Graphify + grep, 2026-07-29)
+
+- **2026-07-29 | causa-raiz: doc de arquitetura nunca reconciliado com o código real | incidente:
+  `PLANO-MESTRE.md` (Camada 1, tabela de Stack) lista "Scheduling MVP (F1-F2) | BullMQ + Upstash
+  Redis" — `grep -rl "bullmq"` no monorepo inteiro (código + todos os `package.json`) retorna
+  **zero ocorrências**. O que existe de verdade: `@temporalio/activity|client|common|worker|
+  workflow` (^1.14.0) instalados e usados no `apps/orchestrator` desde o início — BullMQ nunca foi
+  implementado, o plano descreve uma arquitetura que não existe | mecanismo proposto: McGonagall
+  atualiza a tabela de Stack do `PLANO-MESTRE.md` pra refletir Temporal como único mecanismo de
+  scheduling (não "MVP BullMQ depois Temporal"); Dumbledore decide o momento (não bloqueia nada em
+  produção, é só doc desatualizado) | status: EM OBSERVAÇÃO, aguardando janela de baixo custo pra
+  corrigir o doc. Dono: McGonagall (plano) — nenhuma mudança de código necessária.**
+
+- **2026-07-29 | causa-raiz: tenancy indireta em modelos de dado de cliente | incidente:
+  varredura em `schema.prisma` (58 models) encontra 8 modelos de dado de cliente sem coluna
+  `organizationId`/`orgId` direta — `Project`, `ClientExpert`, `ClientContact`,
+  `ClientInteraction`, `ProjectAccessLink`, `AccessLinkEvent`, `ContentItemEvent`,
+  `ServiceRequestEvent` — todos escopados só indiretamente via `clientId` → `Client` →
+  (presumivelmente) `organizationId`. É a **mesma forma estrutural do VOC-01** (o IDOR já
+  corrigido uma vez: `findUnique`/`findFirst` por id sem checar org). Não é uma vulnerabilidade
+  confirmada — pode estar seguro se toda query já faz o join até `Client.organizationId` — mas
+  não foi confirmado nesta sessão (sem acesso a rodar query real) | mecanismo proposto: **Severus**
+  audita as queries desses 8 modelos confirmando que nenhum `findUnique(id)` pula o join até
+  `organizationId`; se algum pular, vira ticket de segurança (VOC-4x) e prioridade P1. Cruza com a
+  decisão **P-02** já aberta na Edwiges (tenancy do Religare) — mesmo princípio, escopos
+  diferentes | status: EM OBSERVAÇÃO, aguardando o Severus rodar a auditoria. Dono: Severus.**
 
 ## Decisões de skill/dependência (mérito avaliado, inclusive rejeições)
 

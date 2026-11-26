@@ -201,6 +201,25 @@ Cada erro tem nome e a regra que o previne. Se você se pegar no padrão, pare.
 - [ ] Memória (`MEMORY.md` + arquivo) atualizada se algo não-derivável do código mudou
 - [ ] Datas absolutas, não "hoje/ontem"
 
+**MÓDULO/FEATURE de ponta a ponta está pronto quando** (critério novo, 2026-07-29 — esta era
+a lacuna real por trás da frustração do funil Religare: cada peça tinha critério, o **conjunto**
+não tinha nenhum, então dois dias de trabalho não mostravam progresso mensurável):
+- [ ] `Passo 0 — Superfície e ameaça` preenchido pelo **Severus** ANTES de codar, com valor
+      concreto nos 5 campos (dados classificados; tabela rota/auth/papel/`orgId`; envs novas com
+      comportamento fail-closed; 3 piores abusos + o curl negativo de cada; efeito em schema/dep)
+- [ ] `Passo 0.5 — Rota de custo` preenchido pelo **Griphook** (modelo fixo por fase, inline vs.
+      subagente, teto de contexto; veredito de compatibilidade se entrar dep/runtime novo)
+- [ ] **Fluxo completo percorrido de ponta a ponta**, não a soma das peças — o usuário final
+      consegue ir do começo ao fim do que o módulo promete, numa passada
+- [ ] **Toda env nova documentada** com nome, onde é setada e o que acontece se faltar; e
+      verificada **faltando** (env ausente nega, nunca libera). Incidente que criou o item:
+      `RELIGARE_PROD_ORG_ID` ausente passou pelo boot limpo e derrubava toda chamada real com
+      `500`, descoberto só em teste manual tardio do Felipe
+- [ ] **Bateria de fechamento do Severus** com evidência colada: caminho negado (403/401),
+      cross-tenant (org B no id da org A → 404/403, nunca 200), sem sessão (401), input inválido
+      (400), erro sem vazar stack/PII. Caso de sucesso sozinho **não** é teste de segurança
+- [ ] Linha `/goal` do plano satisfeita, ou o que faltou declarado explicitamente
+
 **Regra transversal — cole, não afirme:** toda alegação de "verificado/
 testado/buildou" cita a evidência real da própria sessão (exit code, resposta
 do curl, output do grep). Sem evidência citável, reporte como NÃO verificado.
@@ -241,4 +260,10 @@ fonte: BUSINESS-PLAN.md), Filch (zelador/sentinela de commit), Edwiges
 (fronteira Codex/Religare), Draco (benchmark de dependência/skill nova,
 read-only), Luna (jogos/gamificação/LP cinematográfica e scroll motion,
 global). Tarefa pequena: faça inline — sub-agente custa cold start.
-Iniciar tarefas com a linha "Time atual: …" quando for barato.
+**Cabeçalho e rodapé são obrigatórios** (endurecido 2026-07-29, cluster promovido do Caderno do
+Zelador — 2 incidentes de mesma causa-raiz, sessão longa/solo esquecendo a convenção inteira sem
+ninguém cobrar). Toda resposta de tarefa não-trivial abre com a linha `Time atual: …` listando só
+quem foi realmente acionado, e fecha com o rodapé assertivo (🔒 Griphook: modelo+esforço em uma
+linha · 🔦 Filch: pendências por dono, máx. 3, uma linha cada). Omitir só em resposta
+verdadeiramente trivial. Detalhe da convenção, da notação de feitiço `🪄` e do autocheck de
+fechamento em `.claude/agents/README.md`.

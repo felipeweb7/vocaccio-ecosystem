@@ -63,13 +63,13 @@ Vem de *vocatio*, do latim: chamado, convite, ato de chamar. A mesma raiz que de
 
 Para nós, vocação não é apenas uma escolha profissional. É aquilo que chama por dentro antes de ganhar forma no mundo. A força que leva alguém a criar, ensinar, cuidar, liderar, empreender e transformar.
 
-Em um ambiente que incentiva marcas a produzir mais, seguir fórmulas e disputar atenção a qualquer custo, a Vocaccio escolhe outro caminho: reconhecer o essencial.
+Em um ambiente que incentiva marcas a produzir mais, seguir fórmulas e disputar atenção a qualquer custo, a Vocaccio escolhe outro caminho: reconhecer o essencial. 
 
 Escutar antes de criar.  
  Compreender antes de comunicar.  
  Escolher antes de multiplicar.
 
-Acreditamos que resultados consistentes não deveriam depender de dispersão, esforço excessivo ou de uma presença que apaga quem está por trás dela.
+Acreditamos que resultados consistentes não deveriam depender de dispersão, esforço excessivo ou de uma presença que apaga quem está por trás dela. Sustentar resultados não deveria depender de uma rotina insustentável.
 
 Por isso, unimos estratégia, identidade, tecnologia e curadoria para transformar ideias, conhecimentos e potenciais em marcas, conteúdos, produtos, experiências e caminhos de crescimento.
 
@@ -206,7 +206,7 @@ A narrativa institucional deve aumentar o valor percebido das ofertas, nunca com
 
 A Vocaccio pretende liderar e popularizar uma abordagem de marketing que combina foco estratégico, identidade (essência), tecnologia humanizada e expansão de resultados.
 
-Não se trata de fazer menos como objetivo. Trata-se de eliminar dispersões para investir melhor no que realmente gera valor conectando o essencial com a essência.
+Não se trata de fazer menos como objetivo. Trata-se de eliminar dispersões para investir melhor no que realmente gera valor conectando o essencial com a essência. Sustentar resultados não deveria depender de uma rotina insustentável.
 
 Acreditamos que a Alma é a Alma do Negócio. Não somos B2B, nem B2C. Somos Soul 2 Soul.
 
@@ -346,7 +346,7 @@ Ela surge quando:
 
 ## **Promessa institucional**
 
-**Marketing essencialista para expandir o que realmente importa.**
+**Marketing essencialista para expandir resultados fazendo o que realmente importa.**
 
 ## **Promessa comercial da fase atual**
 
@@ -386,7 +386,7 @@ O marketing se transforma em uma segunda profissão que compete com atendimento,
 
 ### **Convicção**
 
-Resultados sustentáveis não deveriam depender de uma rotina insustentável.
+Sustentar resultados não deveria depender de uma rotina insustentável.
 
 Produzir mais não resolve posicionamento genérico, ofertas confusas, projetos fragmentados ou ausência de direção.
 
@@ -862,31 +862,29 @@ Não deve ser tratada como resultado garantido.
 
 # **12\. Arquitetura de soluções**
 
-A Vocaccio vende resultados e transformações. Os serviços são combinados de forma flexível conforme o objetivo, o momento, a estrutura e o investimento de cada cliente.
+A Vocaccio promove e expande resultados e transformações. Os serviços são combinados de forma flexível conforme o objetivo, o momento, a estrutura e o investimento de cada cliente.
 
 ## **Primeira fase**
 
-### **1\. Vídeos Virais que Expandem sua presença digital**
+### **1\. Vídeos Virais que Expandem seus Resultados no Digital**
 
 **Resultado**
 
-Transformar ideias, gravações, aulas, lives, podcasts e conteúdos longos em vídeos estratégicos que ampliam autoridade, alcance, retenção e oportunidades. Roteizando do zero ou aproveitando conteúdos que você já fez ou faz.  Vídeos e cortes estratégicos para ampliar alcance, fortalecer posicionamento, construir autoridade e apoiar vendas.
+Transformar ideias, gravações, aulas, lives, podcasts e conteúdos longos em vídeos estratégicos que ampliam autoridade, alcance, retenção e oportunidades. Roteirizando do zero ou aproveitando conteúdos que você já fez ou faz.  Vídeos e cortes estratégicos para ampliar alcance, fortalecer posicionamento, construir autoridade e apoiar vendas.
 
 **Para quem é**
 
-Podcasts, creators, experts, educadores, terapeutas, empresas e infoprodutores que já gravam ou desejam produzir vídeos com mais estratégia, consistência e acabamento.
+Podcasts, creators, experts, educadores, terapeutas, empresas e infoprodutores que já gravam ou desejam produzir vídeos com mais estratégia, consistência e engajamento.
 
 **Quais dores resolve**
 
 ●       Gravações longas ou acervos pouco aproveitados
 
-●       Falta de tempo ou habilidade para roteirizar e editar
-
-●       Vídeos com aparência amadora ou sem unidade
+●       Falta de tempo ou habilidade para roteirizar, editar e publicar
 
 ●       Dificuldade para identificar os trechos e formatos com maior potencial
 
-●       Dependência de uma nova gravação para cada publicação
+●       Dependência de uma rotina exaustiva de gravação
 
 **Principais entregas**
 
@@ -902,7 +900,7 @@ Inteligência utilizada: Back-office principalmente com a integração de Acto \
 
 ●       Seus melhores pensamentos não precisam desaparecer dentro de vídeos longos.
 
-●       Vídeos autênticos podem ter estratégia, retenção e acabamento sem perder naturalidade.
+●       Vídeos com estratégia, retenção e conversão sem perder autenticidade.
 
 **CTA**
 
